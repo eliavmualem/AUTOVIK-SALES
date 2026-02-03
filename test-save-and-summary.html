@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת שמירה וסיכום</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background: #f5f7fa; padding: 20px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+        <h1 style="text-align: center; color: #764ba2;">🧪 בדיקת שמירה וסיכום שנתי</h1>
+        
+        <div style="background: white; padding: 20px; margin: 20px 0; border-radius: 10px;">
+            <h3>🎯 תהליך הבדיקה:</h3>
+            <ol>
+                <li>יצירת נתונים לינואר 2026</li>
+                <li>הזנת נתונים בשדות</li>
+                <li>הרצת חישוב</li>
+                <li>שמירת נתונים (כולל תוצאות מחושבות)</li>
+                <li>הצגת סיכום שנתי</li>
+            </ol>
+            <button onclick="runFullTest()" style="padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; font-weight: 700;">
+                🚀 הרץ בדיקה מלאה
+            </button>
+            <button onclick="localStorage.clear(); location.reload();" style="padding: 12px 25px; background: #dc3545; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; font-weight: 700; margin-right: 10px;">
+                🗑️ נקה ורענן
+            </button>
+        </div>
+        
+        <div id="test-content"></div>
+        
+        <div id="yearly-summary-section" style="display: none; margin-top: 30px;">
+            <h2 style="text-align: center; color: #764ba2;">📊 סיכום שנתי</h2>
+            <div id="yearly-summary-content"></div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/new-layout-generator.js"></script>
+    <script src="js/calc-simple.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        function runFullTest() {
+            console.log('═══════════════════════════════════════════');
+            console.log('🚀 מתחיל בדיקה מלאה');
+            console.log('═══════════════════════════════════════════');
+            
+            const testMonth = '2026-01';
+            
+            // Step 1: Create HTML
+            console.log('\n📝 שלב 1: יוצר HTML...');
+            document.getElementById('test-content').innerHTML = createNewMonthLayout(testMonth);
+            
+            // Add event listeners
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => calculateMonth(testMonth));
+            });
+            
+            // Step 2: Fill test data
+            console.log('\n📝 שלב 2: ממלא נתונים...');
+            setTimeout(() => {
+                document.getElementById('hj-2026-01-branch-target').value = 30;
+                
+                document.getElementById('hj-2026-01-daniel-target').value = 15;
+                document.getElementById('hj-2026-01-daniel-cars').value = 20;
+                document.getElementById('hj-2026-01-daniel-insurance').value = 10;
+                document.getElementById('hj-2026-01-daniel-topservice').value = 15;
+                document.getElementById('hj-2026-01-daniel-topservice-potential').value = 18;
+                document.getElementById('hj-2026-01-daniel-warranty').value = 5;
+                document.getElementById('hj-2026-01-daniel-mystery').value = 95;
+                document.getElementById('hj-2026-01-daniel-demo').value = 1000;
+                document.getElementById('hj-2026-01-daniel-diff').value = 500;
+                document.getElementById('hj-2026-01-daniel-finance').value = 800;
+                document.getElementById('hj-2026-01-daniel-tradein').value = 500;
+                
+                document.getElementById('hj-2026-01-alfred-target').value = 15;
+                document.getElementById('hj-2026-01-alfred-cars').value = 12;
+                document.getElementById('hj-2026-01-alfred-insurance').value = 5;
+                document.getElementById('hj-2026-01-alfred-topservice').value = 8;
+                document.getElementById('hj-2026-01-alfred-topservice-potential').value = 10;
+                document.getElementById('hj-2026-01-alfred-warranty').value = 3;
+                document.getElementById('hj-2026-01-alfred-mystery').value = 85;
+                document.getElementById('hj-2026-01-alfred-demo').value = 500;
+                document.getElementById('hj-2026-01-alfred-diff').value = 200;
+                document.getElementById('hj-2026-01-alfred-finance').value = 300;
+                document.getElementById('hj-2026-01-alfred-tradein').value = 200;
+                
+                document.getElementById('hj-2026-01-daniele-insurance').value = 0;
+                
+                document.getElementById('hj-2026-01-meir-demo').value = 500;
+                document.getElementById('hj-2026-01-meir-diff').value = 300;
+                document.getElementById('hj-2026-01-meir-finance').value = 1000;
+                document.getElementById('hj-2026-01-meir-tradein').value = 800;
+                
+                console.log('✓ נתונים הוזנו');
+                
+                // Step 3: Calculate
+                console.log('\n🧮 שלב 3: מחשב...');
+                calculateMonth(testMonth);
+                
+                setTimeout(() => {
+                    // Step 4: Check calculated results
+                    console.log('\n🔍 שלב 4: בודק תוצאות מחושבות...');
+                    if (window.lastCalculatedResults && window.lastCalculatedResults[testMonth]) {
+                        console.log('✓ יש תוצאות מחושבות:', window.lastCalculatedResults[testMonth]);
+                    } else {
+                        console.error('❌ אין תוצאות מחושבות!');
+                    }
+                    
+                    // Step 5: Save
+                    console.log('\n💾 שלב 5: שומר נתונים...');
+                    
+                    // Manually do what saveCurrentMonth does
+                    const inputData = collectMonthData(testMonth);
+                    console.log('  - Collected', Object.keys(inputData).length, 'input fields');
+                    
+                    if (window.lastCalculatedResults && window.lastCalculatedResults[testMonth]) {
+                        inputData.calculatedResults = window.lastCalculatedResults[testMonth];
+                        console.log('  - Added calculated results');
+                    }
+                    
+                    saveMonthData('hyundai-jerusalem', testMonth, inputData);
+                    console.log('✓ נתונים נשמרו');
+                    
+                    // Step 6: Verify save
+                    console.log('\n🔍 שלב 6: מאמת שמירה...');
+                    const allData = getAllData();
+                    console.log('All data:', allData);
+                    
+                    if (allData['hyundai-jerusalem'] && allData['hyundai-jerusalem'][testMonth]) {
+                        console.log('✓ נתוני החודש נשמרו:', allData['hyundai-jerusalem'][testMonth]);
+                        
+                        if (allData['hyundai-jerusalem'][testMonth].calculatedResults) {
+                            console.log('✅ יש תוצאות מחושבות בנתונים השמורים!');
+                        } else {
+                            console.error('❌ אין תוצאות מחושבות בנתונים השמורים!');
+                        }
+                    } else {
+                        console.error('❌ הנתונים לא נשמרו!');
+                    }
+                    
+                    // Step 7: Display yearly summary
+                    console.log('\n📊 שלב 7: מציג סיכום שנתי...');
+                    displayYearlySummary();
+                    document.getElementById('yearly-summary-section').style.display = 'block';
+                    
+                    console.log('\n═══════════════════════════════════════════');
+                    console.log('✅ בדיקה הסתיימה!');
+                    console.log('═══════════════════════════════════════════');
+                }, 500);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

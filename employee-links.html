@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 קישורים למחשבוני עובדים</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .showroom-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .showroom-section h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .employee-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .employee-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .employee-icon {
+            font-size: 2rem;
+            margin-left: 12px;
+        }
+        
+        .employee-info {
+            flex: 1;
+        }
+        
+        .employee-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .employee-role {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .employee-link {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .employee-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+        }
+        
+        .copy-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Heebo', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        
+        .instructions {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .instructions li {
+            padding: 8px 0;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .instructions li::before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 50%;
+            transform: translateX(50%);
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 קישורים למחשבוני עובדים</h1>
+            <p>כל עובד מקבל קישור אישי למחשבון שלו</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 הוראות שימוש</h3>
+            <ul>
+                <li>לחץ על "פתח מחשבון" כדי לראות את המחשבון של העובד</li>
+                <li>לחץ על "העתק קישור" כדי להעתיק את הקישור ללוח</li>
+                <li>שלח את הקישור לעובד בוואטסאפ/מייל</li>
+                <li>כל עובד יכול לראות רק את המחשבון שלו</li>
+                <li>המחשבון אישי ואינו משפיע על הנתונים הרשמיים במערכת</li>
+            </ul>
+        </div>
+        
+        <!-- Hyundai Jerusalem -->
+        <div class="showroom-section">
+            <h2>🚗 יונדאי אוטולין ירושלים</h2>
+            <div class="employees-grid" id="hyundai-jerusalem-employees"></div>
+        </div>
+        
+        <!-- Hyundai Modiin -->
+        <div class="showroom-section">
+            <h2>🚗 יונדאי מודיעין</h2>
+            <div class="employees-grid" id="hyundai-modiin-employees"></div>
+        </div>
+        
+        <!-- Mitsubishi Modiin -->
+        <div class="showroom-section">
+            <h2>🚗 מיצובישי מודיעין</h2>
+            <div class="employees-grid" id="mitsubishi-modiin-employees"></div>
+        </div>
+        
+        <!-- Omoda Modiin -->
+        <div class="showroom-section">
+            <h2>🚗 אומודה ג'אקו מודיעין</h2>
+            <div class="employees-grid" id="omoda-modiin-employees"></div>
+        </div>
+        
+        <!-- Kalmobil Modiin -->
+        <div class="showroom-section">
+            <h2>🚗 כלמוביל טרייד אין מודיעין</h2>
+            <div class="employees-grid" id="kalmobil-modiin-employees"></div>
+        </div>
+        
+        <!-- Geely Modiin -->
+        <div class="showroom-section">
+            <h2>🚗 ג'ילי מודיעין</h2>
+            <div class="employees-grid" id="geely-modiin-employees"></div>
+        </div>
+        
+        <!-- Geely Jerusalem -->
+        <div class="showroom-section">
+            <h2>🚗 ג'ילי ירושלים</h2>
+            <div class="employees-grid" id="geely-jerusalem-employees"></div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="index.html" class="back-btn">← חזרה למערכת הראשית</a>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">הקישור הועתק ללוח!</div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script>
+        // Build showrooms list from showroom-config.js
+        const showroomIds = ['hyundai-jerusalem', 'hyundai-modiin', 'mitsubishi-modiin', 'omoda-modiin', 'kalmobil-modiin', 'geely-modiin', 'geely-jerusalem'];
+        
+        const showrooms = [];
+        
+        showroomIds.forEach(showroomId => {
+            const config = window.getShowroomConfig(showroomId);
+            if (!config) return;
+            
+            const employees = [];
+            
+            // Add manager
+            if (config.employees.manager) {
+                employees.push({
+                    id: config.employees.manager.id,
+                    name: config.employees.manager.name,
+                    role: config.employees.manager.role,
+                    icon: config.employees.manager.icon
+                });
+            }
+            
+            // Add salespeople
+            if (config.employees.salespeople) {
+                config.employees.salespeople.forEach(sp => {
+                    employees.push({
+                        id: sp.id,
+                        name: sp.name,
+                        role: sp.role,
+                        icon: sp.icon
+                    });
+                });
+            }
+            
+            // Add operations
+            if (config.employees.operations) {
+                employees.push({
+                    id: config.employees.operations.id,
+                    name: config.employees.operations.name,
+                    role: config.employees.operations.role,
+                    icon: config.employees.operations.icon
+                });
+            }
+            
+            showrooms.push({
+                id: showroomId,
+                name: config.name,
+                employees: employees
+            });
+        });
+        
+        // Get base URL
+        const baseURL = window.location.origin + window.location.pathname.replace('employee-links.html', '');
+        
+        // Generate employee cards
+        showrooms.forEach(showroom => {
+            const container = document.getElementById(`${showroom.id}-employees`);
+            if (!container) return;
+            
+            showroom.employees.forEach(emp => {
+                const link = `${baseURL}calculator.html?showroom=${showroom.id}&employee=${emp.id}`;
+                
+                const card = document.createElement('div');
+                card.className = 'employee-card';
+                card.innerHTML = `
+                    <div class="employee-header">
+                        <div class="employee-icon">${emp.icon}</div>
+                        <div class="employee-info">
+                            <div class="employee-name">${emp.name}</div>
+                            <div class="employee-role">${emp.role}</div>
+                        </div>
+                    </div>
+                    <a href="${link}" target="_blank" class="employee-link">
+                        🧮 פתח מחשבון
+                    </a>
+                    <button class="copy-btn" onclick="copyLink('${link}')">
+                        📋 העתק קישור
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        });
+        
+        // Copy link function
+        function copyLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        console.log('✓ Employee links page loaded');
+    </script>
+</body>
+</html>

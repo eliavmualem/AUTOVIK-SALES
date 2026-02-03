@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקת כל התיקונים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body style="padding: 20px; background: #f5f5f5;">
+    <h1 style="text-align: center; background: #764ba2; color: white; padding: 20px; border-radius: 10px;">
+        בדיקת כל התיקונים
+    </h1>
+    
+    <div style="text-align: center; margin: 20px;">
+        <button onclick="testShowroom('mitsubishi-modiin')" style="padding: 15px 30px; margin: 10px; background: #2196F3; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer;">
+            בדוק מיצובישי (שחף כהן)
+        </button>
+        <button onclick="testShowroom('omoda-modiin')" style="padding: 15px 30px; margin: 10px; background: #4CAF50; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer;">
+            בדוק אומודה (הילה שלומי)
+        </button>
+    </div>
+    
+    <div id="result" style="background: white; padding: 30px; border-radius: 10px; margin-top: 20px;"></div>
+    
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    
+    <script>
+        function testShowroom(showroomId) {
+            console.log(`\n=== Testing ${showroomId} ===`);
+            
+            const config = window.getShowroomConfig(showroomId);
+            console.log('Config:', config);
+            console.log('Manager type:', config.employees.manager.type);
+            
+            // Create layout
+            const html = window.createGenericMonthLayout(showroomId, '2026-01');
+            document.getElementById('result').innerHTML = `
+                <h2>${config.name}</h2>
+                ${html}
+            `;
+            
+            // Fill test data for manager
+            const managerId = config.employees.manager.id;
+            const prefix = config.prefix + '-2026-01';
+            
+            console.log('Filling test data for:', managerId);
+            
+            // Test data
+            document.getElementById(`${prefix}-${managerId}-target`).value = 20;
+            document.getElementById(`${prefix}-${managerId}-cars`).value = 10;
+            document.getElementById(`${prefix}-${managerId}-insurance`).value = 5;
+            document.getElementById(`${prefix}-${managerId}-topservice`).value = 6;
+            document.getElementById(`${prefix}-${managerId}-topservice-potential`).value = 10;
+            document.getElementById(`${prefix}-${managerId}-warranty`).value = 3;
+            document.getElementById(`${prefix}-${managerId}-mystery`).value = 85;
+            
+            // Calculate
+            console.log('Calculating...');
+            window.calculateGenericMonth(showroomId, '2026-01');
+            
+            // Check result
+            const total = document.getElementById(`${prefix}-${managerId}-total-display`).textContent;
+            const topService = document.getElementById(`${prefix}-${managerId}-topservice-display`).textContent;
+            
+            console.log('Results:');
+            console.log('  Total:', total);
+            console.log('  Top Service:', topService);
+            console.log('  (Should be 1000 ש"ח - 60% achievement)');
+            
+            alert(`תוצאות:\n\nסה"כ עמלות: ${total}\nטופ סרוויס: ${topService}\n(אמור להיות 1000 ש"ח - 60% ביצוע)`);
+        }
+        
+        // Auto-test Mitsubishi
+        setTimeout(() => testShowroom('mitsubishi-modiin'), 500);
+    </script>
+</body>
+</html>

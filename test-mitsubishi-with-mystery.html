@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 בדיקה: מיצובישי עם לקוח סמוי</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .test-container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; }
+        .test-header { text-align: center; margin-bottom: 30px; color: #764ba2; }
+        .test-info { background: #e3f2fd; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #2196f3; }
+        .test-scenario { background: #fff3cd; padding: 15px; border-radius: 10px; margin: 10px 0; border-left: 5px solid #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 בדיקה: מיצובישי - לקוח סמוי</h1>
+            <p>בדיקת 3 תרחישים: ללא לקוח סמוי, עם קנס (-20%), ועם בונוס (+20%)</p>
+        </div>
+
+        <div id="results-container"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script>
+        const showroomId = 'mitsubishi-modiin';
+        const month = '2026-01';
+        const prefix = 'mm-2026-01';
+
+        // Base data
+        const baseData = {
+            branchTarget: 10,
+            cars: 12,
+            insurance: 8,
+            warranty: 6,
+            topservice: 7,
+            topservicePot: 10,
+            demo: 150,
+            diff: 80
+        };
+
+        // Expected base calculation (without mystery)
+        const expectedCars = 12 * 200; // 2,400 - THIS is what mystery adjusts
+        const expectedIns = 8 * 75; // 600
+        const expectedWar = 6 * 60; // 360
+        const expectedTop = 1500; // 70% = 1,500
+        const expectedBaseTotal = expectedCars + expectedIns + expectedWar + expectedTop; // 4,860
+
+        const scenarios = [
+            {
+                name: 'תרחיש 1: ללא לקוח סמוי',
+                mystery: 0,
+                expectedAdj: 0,
+                expectedTotal: expectedBaseTotal + 150 + 80 // 5,090
+            },
+            {
+                name: 'תרחיש 2: לקוח סמוי נמוך (70) - קנס 20% מעמלת מסירות',
+                mystery: 70,
+                expectedAdj: -(expectedCars * 0.2), // -480 (only from cars: 2,400 × 0.2)
+                expectedTotal: expectedBaseTotal - (expectedCars * 0.2) + 150 + 80 // 4,610
+            },
+            {
+                name: 'תרחיש 3: לקוח סמוי גבוה (95) - בונוס 20% מעמלת מסירות',
+                mystery: 95,
+                expectedAdj: expectedCars * 0.2, // +480 (only from cars: 2,400 × 0.2)
+                expectedTotal: expectedBaseTotal + (expectedCars * 0.2) + 150 + 80 // 5,570
+            }
+        ];
+
+        const resultsContainer = document.getElementById('results-container');
+
+        scenarios.forEach((scenario, index) => {
+            // Create container for scenario
+            const scenarioDiv = document.createElement('div');
+            scenarioDiv.className = 'test-scenario';
+            scenarioDiv.innerHTML = `<h3>${scenario.name}</h3>`;
+            resultsContainer.appendChild(scenarioDiv);
+
+            // Create hidden layout
+            const layoutDiv = document.createElement('div');
+            layoutDiv.style.display = 'none';
+            layoutDiv.innerHTML = createGenericMonthLayout(showroomId, month);
+            document.body.appendChild(layoutDiv);
+
+            // Fill data
+            setTimeout(() => {
+                document.getElementById(`${prefix}-branch-target`).value = baseData.branchTarget;
+                document.getElementById(`${prefix}-shahaf-cars`).value = baseData.cars;
+                document.getElementById(`${prefix}-shahaf-insurance`).value = baseData.insurance;
+                document.getElementById(`${prefix}-shahaf-warranty`).value = baseData.warranty;
+                document.getElementById(`${prefix}-shahaf-topservice`).value = baseData.topservice;
+                document.getElementById(`${prefix}-shahaf-topservice-potential`).value = baseData.topservicePot;
+                document.getElementById(`${prefix}-shahaf-mystery`).value = scenario.mystery;
+                document.getElementById(`${prefix}-shahaf-demo`).value = baseData.demo;
+                document.getElementById(`${prefix}-shahaf-diff`).value = baseData.diff;
+
+                // Calculate
+                calculateGenericMonth(showroomId, month);
+
+                // Read results
+                setTimeout(() => {
+                    const mysteryAdj = document.getElementById(`${prefix}-shahaf-mystery-adjustment`)?.textContent || '₪0';
+                    const total = document.getElementById(`${prefix}-shahaf-vehicles-display`)?.textContent || '₪0';
+
+                    const actualAdj = parseFloat(mysteryAdj.replace(/[^\d-]/g, '')) || 0;
+                    const actualTotal = parseFloat(total.replace(/[^\d]/g, '')) || 0;
+
+                    const adjMatch = Math.abs(actualAdj - scenario.expectedAdj) < 1;
+                    const totalMatch = Math.abs(actualTotal - scenario.expectedTotal) < 1;
+
+                    scenarioDiv.innerHTML += `
+                        <ul>
+                            <li><strong>ציון לקוח סמוי:</strong> ${scenario.mystery || 'ללא'}</li>
+                            <li><strong>התאמה צפויה:</strong> ₪${scenario.expectedAdj.toLocaleString()} ${adjMatch ? '✅' : '❌'}</li>
+                            <li><strong>התאמה בפועל:</strong> ${mysteryAdj}</li>
+                            <li><strong>סה"כ צפוי:</strong> ₪${scenario.expectedTotal.toLocaleString()} ${totalMatch ? '✅' : '❌'}</li>
+                            <li><strong>סה"כ בפועל:</strong> ${total}</li>
+                        </ul>
+                    `;
+
+                    if (adjMatch && totalMatch) {
+                        scenarioDiv.style.background = '#d4edda';
+                        scenarioDiv.style.borderLeftColor = '#28a745';
+                    } else {
+                        scenarioDiv.style.background = '#f8d7da';
+                        scenarioDiv.style.borderLeftColor = '#dc3545';
+                    }
+                }, 300);
+            }, (index + 1) * 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Geely Init</title>
+</head>
+<body>
+    <h1>Debug Geely Initialization</h1>
+    <div id="output"></div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(msg, isError = false) {
+            const p = document.createElement('p');
+            p.textContent = msg;
+            p.style.color = isError ? 'red' : 'green';
+            output.appendChild(p);
+            console.log(msg);
+        }
+        
+        // Check if functions are defined
+        log('1. Checking window.getShowroomConfig: ' + (typeof window.getShowroomConfig));
+        log('2. Checking window.createGeelyMonthLayout: ' + (typeof window.createGeelyMonthLayout));
+        
+        // Try to get config
+        try {
+            const config = window.getShowroomConfig('geely-modiin');
+            log('3. Config loaded: ' + (config ? 'YES' : 'NO'));
+            if (config) {
+                log('   - Name: ' + config.name);
+                log('   - Prefix: ' + config.prefix);
+                log('   - Manager: ' + (config.employees.manager ? config.employees.manager.name : 'NOT FOUND'));
+            }
+        } catch (e) {
+            log('3. ERROR loading config: ' + e.message, true);
+        }
+        
+        // Try to create layout
+        try {
+            const layout = window.createGeelyMonthLayout('geely-modiin', '2026-01');
+            log('4. Layout created: ' + (layout ? 'YES' : 'NO'));
+            log('   - Length: ' + layout.length + ' characters');
+        } catch (e) {
+            log('4. ERROR creating layout: ' + e.message, true);
+        }
+    </script>
+</body>
+</html>

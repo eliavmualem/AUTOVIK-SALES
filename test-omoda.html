@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 בדיקה: אומודה ג'אקו מודיעין</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .test-container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; }
+        .test-header { text-align: center; margin-bottom: 30px; color: #764ba2; }
+        .test-info { background: #e3f2fd; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 בדיקה: אומודה ג'אקו מודיעין</h1>
+            <p>מנהלת (מודל מיצובישי) + 2 נציגים (מודל יונדאי) + איש תפעול</p>
+        </div>
+
+        <div class="test-info">
+            <h3>📋 תרחיש הבדיקה:</h3>
+            <ul>
+                <li><strong>יעד סניף</strong>: 20 מסירות</li>
+                <li><strong>הילה (מנהלת)</strong>: 5 מסירות, 6 ביטוח, 4 אחריות, 8/10 טופ (80%), ציון 85</li>
+                <li><strong>שיר (נציג)</strong>: יעד 8, מסר 8 (100%), 5 ביטוח, 6/8 טופ (75%), 3 אחריות, ציון 92</li>
+                <li><strong>יהב (נציג)</strong>: יעד 7, מסר 7 (100%), 4 ביטוח, 5/7 טופ (71%), 2 אחריות, ציון 88</li>
+                <li><strong>אשר (תפעול)</strong>: 8 ביטוח</li>
+            </ul>
+            <h4>צפי:</h4>
+            <ul>
+                <li><strong>סה"כ מסירות:</strong> 5 + 8 + 7 = 20 (עמד ביעד!)</li>
+                <li><strong>הילה:</strong> 20×200 = ₪4,000 (מסירות) + 450 (ביטוח) + 240 (אחריות) + 1,500 (טופ 80%) = ₪6,190</li>
+                <li><strong>שיר:</strong> בונוס סניף ✅, בונוס אישי ✅, בונוס לקוח סמוי ✅</li>
+                <li><strong>יהב:</strong> בונוס סניף ✅, בונוס אישי ✅, ללא בונוס לקוח סמוי (בין 80-89)</li>
+                <li><strong>אשר:</strong> 20 טופ / 15 פוטנציאל = 133% → 80 ש"ח + 8×75 ביטוח</li>
+            </ul>
+        </div>
+
+        <div id="layout-container"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script>
+        console.log('✓ All modules loaded');
+
+        const showroomId = 'omoda-modiin';
+        const month = '2026-01';
+        
+        // Create layout
+        const container = document.getElementById('layout-container');
+        container.innerHTML = createGenericMonthLayout(showroomId, month);
+        console.log('✓ Layout created');
+
+        // Fill test data
+        const prefix = 'om-2026-01';
+        setTimeout(() => {
+            // Branch
+            document.getElementById(`${prefix}-branch-target`).value = 20;
+            
+            // Hila (Manager)
+            document.getElementById(`${prefix}-hila-cars`).value = 5;
+            document.getElementById(`${prefix}-hila-insurance`).value = 6;
+            document.getElementById(`${prefix}-hila-warranty`).value = 4;
+            document.getElementById(`${prefix}-hila-topservice`).value = 8;
+            document.getElementById(`${prefix}-hila-topservice-potential`).value = 10;
+            document.getElementById(`${prefix}-hila-mystery`).value = 85;
+            document.getElementById(`${prefix}-hila-demo`).value = 100;
+            document.getElementById(`${prefix}-hila-diff`).value = 50;
+            
+            // Shir (Salesperson)
+            document.getElementById(`${prefix}-shir-target`).value = 8;
+            document.getElementById(`${prefix}-shir-cars`).value = 8;
+            document.getElementById(`${prefix}-shir-insurance`).value = 5;
+            document.getElementById(`${prefix}-shir-topservice`).value = 6;
+            document.getElementById(`${prefix}-shir-topservice-potential`).value = 8;
+            document.getElementById(`${prefix}-shir-warranty`).value = 3;
+            document.getElementById(`${prefix}-shir-mystery`).value = 92;
+            document.getElementById(`${prefix}-shir-demo`).value = 120;
+            document.getElementById(`${prefix}-shir-diff`).value = 60;
+            
+            // Yehav (Salesperson)
+            document.getElementById(`${prefix}-yehav-target`).value = 7;
+            document.getElementById(`${prefix}-yehav-cars`).value = 7;
+            document.getElementById(`${prefix}-yehav-insurance`).value = 4;
+            document.getElementById(`${prefix}-yehav-topservice`).value = 5;
+            document.getElementById(`${prefix}-yehav-topservice-potential`).value = 7;
+            document.getElementById(`${prefix}-yehav-warranty`).value = 2;
+            document.getElementById(`${prefix}-yehav-mystery`).value = 88;
+            document.getElementById(`${prefix}-yehav-demo`).value = 100;
+            document.getElementById(`${prefix}-yehav-diff`).value = 50;
+            
+            // Asher (Operations)
+            document.getElementById(`${prefix}-asher-insurance`).value = 8;
+            
+            console.log('✓ Test data filled');
+            
+            // Run calculation
+            calculateGenericMonth(showroomId, month);
+            console.log('✓ Calculation completed');
+            
+            // Verify results
+            setTimeout(() => {
+                const totalCars = document.getElementById(`${prefix}-perf-cars-actual`)?.textContent || '0';
+                const hilaTotal = document.getElementById(`${prefix}-hila-total-display`)?.textContent || '₪0';
+                const shirTotal = document.getElementById(`${prefix}-shir-total-display`)?.textContent || '₪0';
+                const yehavTotal = document.getElementById(`${prefix}-yehav-total-display`)?.textContent || '₪0';
+                const asherTotal = document.getElementById(`${prefix}-asher-total-display`)?.textContent || '₪0';
+                
+                console.log('📊 Results:');
+                console.log('  Total Cars:', totalCars);
+                console.log('  Hila Total:', hilaTotal);
+                console.log('  Shir Total:', shirTotal);
+                console.log('  Yehav Total:', yehavTotal);
+                console.log('  Asher Total:', asherTotal);
+                
+                // Add results to page
+                const resultsDiv = document.createElement('div');
+                resultsDiv.className = 'test-info';
+                resultsDiv.style.background = '#e8f5e9';
+                resultsDiv.style.borderLeftColor = '#4caf50';
+                resultsDiv.innerHTML = `
+                    <h3>✅ תוצאות בפועל:</h3>
+                    <ul>
+                        <li><strong>סה"כ מסירות סניף:</strong> ${totalCars} (צפי: 20)</li>
+                        <li><strong>הילה שלומי (מנהלת):</strong> ${hilaTotal}</li>
+                        <li><strong>שיר עלימה (נציג):</strong> ${shirTotal}</li>
+                        <li><strong>יהב בן דוד (נציג):</strong> ${yehavTotal}</li>
+                        <li><strong>אשר עמר (תפעול):</strong> ${asherTotal}</li>
+                    </ul>
+                `;
+                document.querySelector('.test-container').appendChild(resultsDiv);
+            }, 500);
+        }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת הצגת שמות</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        h4 {
+            background: yellow;
+            padding: 10px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">🧪 בדיקת הצגת שמות עובדים</h1>
+    
+    <div class="test-section">
+        <h2>אולם: יונדאי מודיעין</h2>
+        <div id="test-hm"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>אולם: מיצובישי מודיעין</h2>
+        <div id="test-mm"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>אולם: אומודה ג'אקו מודיעין</h2>
+        <div id="test-om"></div>
+    </div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script>
+        console.log('=== Testing Names Display ===');
+        
+        // Test Hyundai Modiin
+        const configHM = window.getShowroomConfig('hyundai-modiin');
+        console.log('Hyundai Modiin config:', configHM);
+        
+        const htmlHM = window.createGenericMonthLayout('hyundai-modiin', '2026-01');
+        document.getElementById('test-hm').innerHTML = htmlHM;
+        
+        // Count h4 elements with names
+        const h4sHM = document.querySelectorAll('#test-hm h4');
+        console.log(`Found ${h4sHM.length} h4 elements in Hyundai Modiin`);
+        h4sHM.forEach((h4, i) => {
+            console.log(`  H4 ${i + 1}: ${h4.textContent}`);
+        });
+        
+        // Test Mitsubishi Modiin
+        const configMM = window.getShowroomConfig('mitsubishi-modiin');
+        console.log('Mitsubishi Modiin config:', configMM);
+        
+        const htmlMM = window.createGenericMonthLayout('mitsubishi-modiin', '2026-01');
+        document.getElementById('test-mm').innerHTML = htmlMM;
+        
+        const h4sMM = document.querySelectorAll('#test-mm h4');
+        console.log(`Found ${h4sMM.length} h4 elements in Mitsubishi Modiin`);
+        h4sMM.forEach((h4, i) => {
+            console.log(`  H4 ${i + 1}: ${h4.textContent}`);
+        });
+        
+        // Test Omoda Modiin
+        const configOM = window.getShowroomConfig('omoda-modiin');
+        console.log('Omoda Modiin config:', configOM);
+        
+        const htmlOM = window.createGenericMonthLayout('omoda-modiin', '2026-01');
+        document.getElementById('test-om').innerHTML = htmlOM;
+        
+        const h4sOM = document.querySelectorAll('#test-om h4');
+        console.log(`Found ${h4sOM.length} h4 elements in Omoda Modiin`);
+        h4sOM.forEach((h4, i) => {
+            console.log(`  H4 ${i + 1}: ${h4.textContent}`);
+        });
+        
+        console.log('=== Test Complete ===');
+    </script>
+</body>
+</html>

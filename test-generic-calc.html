@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת חישוב גנרי</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <h1 style="text-align: center; padding: 20px;">🧪 בדיקת חישוב גנרי</h1>
+    
+    <div id="test-container"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script>
+        console.log('=== Testing Generic Calculation ===');
+        
+        // Test for Hyundai Modiin
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        
+        console.log(`Creating layout for: ${showroomId}, ${month}`);
+        
+        if (typeof window.createGenericMonthLayout === 'function') {
+            const html = window.createGenericMonthLayout(showroomId, month);
+            document.getElementById('test-container').innerHTML = html;
+            console.log('✅ Layout created!');
+            
+            // Fill with test data
+            console.log('📝 Filling test data...');
+            document.getElementById('hm-2026-01-branch-target').value = 30;
+            document.getElementById('hm-2026-01-dario-target').value = 15;
+            document.getElementById('hm-2026-01-dario-cars').value = 18;
+            document.getElementById('hm-2026-01-dario-insurance').value = 10;
+            document.getElementById('hm-2026-01-dario-topservice').value = 15;
+            document.getElementById('hm-2026-01-dario-topservice-potential').value = 18;
+            document.getElementById('hm-2026-01-dario-warranty').value = 5;
+            document.getElementById('hm-2026-01-dario-mystery').value = 500;
+            document.getElementById('hm-2026-01-dario-finance').value = 1000;
+            document.getElementById('hm-2026-01-dario-tradein').value = 2000;
+            
+            document.getElementById('hm-2026-01-asher-insurance').value = 8;
+            
+            console.log('✅ Test data filled!');
+            
+            // Run calculation
+            console.log('🧮 Running calculation...');
+            if (typeof window.calculateGenericMonth === 'function') {
+                window.calculateGenericMonth(showroomId, month);
+                console.log('✅ Calculation complete!');
+                
+                // Check results
+                const totalCars = document.getElementById('hm-2026-01-total-cars').value;
+                console.log(`📊 Total cars: ${totalCars}`);
+                
+                const darioTotal = document.getElementById('hm-2026-01-dario-total-display');
+                console.log(`💰 Dario total: ${darioTotal ? darioTotal.textContent : 'NOT FOUND'}`);
+                
+                const targetStatus = document.getElementById('hm-2026-01-target-status');
+                console.log(`🎯 Target status: ${targetStatus ? targetStatus.innerHTML : 'NOT FOUND'}`);
+                
+            } else {
+                console.error('❌ calculateGenericMonth function not found!');
+            }
+        } else {
+            console.error('❌ createGenericMonthLayout function not found!');
+        }
+        
+        console.log('=== Test Complete ===');
+    </script>
+</body>
+</html>

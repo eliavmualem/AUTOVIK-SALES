@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקה - כל האולמות</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .showroom-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-right: 5px solid #764ba2;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .status.ok { background: #28a745; color: white; }
+        .status.error { background: #dc3545; color: white; }
+        .employees {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .employee {
+            padding: 5px;
+            margin: 3px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקת כל האולמות</h1>
+    <p>בדיקה: האם כל האולמות מוגדרים נכון עם העובדים שלהם?</p>
+    
+    <div id="showrooms-list"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script>
+        console.log('=== Testing Showroom Configurations ===');
+        
+        const showroomIds = [
+            'hyundai-jerusalem',
+            'hyundai-modiin',
+            'mitsubishi-modiin',
+            'omoda-modiin'
+        ];
+        
+        const listEl = document.getElementById('showrooms-list');
+        
+        showroomIds.forEach(id => {
+            const config = window.getShowroomConfig(id);
+            const employees = window.getShowroomEmployees(id);
+            
+            const card = document.createElement('div');
+            card.className = 'showroom-card';
+            
+            if (config) {
+                console.log(`✅ ${id}:`, config);
+                card.innerHTML = `
+                    <h2>
+                        <span class="status ok">✅</span>
+                        ${config.name} (${config.prefix})
+                    </h2>
+                    <div class="employees">
+                        <h3>עובדים (${employees.length}):</h3>
+                        ${employees.map(emp => `
+                            <div class="employee">
+                                ${emp.icon} <strong>${emp.name}</strong> - ${emp.role}
+                                ${emp.placeholder ? '(משרה פתוחה)' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                console.error(`❌ ${id}: Not found!`);
+                card.innerHTML = `
+                    <h2>
+                        <span class="status error">❌</span>
+                        ${id}
+                    </h2>
+                    <p style="color: red;">תצורה לא נמצאה!</p>
+                `;
+            }
+            
+            listEl.appendChild(card);
+        });
+        
+        console.log('=== Test Complete ===');
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת חישוב עמלות - אוטוויק</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 מערכת חישוב עמלות - אוטוויק</h1>
+            <p class="subtitle">מערכת לחישוב עמלות לעובדים בכל אולמות התצוגה - שנת 2026</p>
+            <div style="text-align: center; margin-top: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <a href="calculator.html" style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    🧮 המחשבון שלי - חישוב אישי
+                </a>
+                <a href="employee-links.html" style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);">
+                    🔗 קישורים לעובדים
+                </a>
+                <a href="commission-manager-v3.html" style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);">
+                    ⚙️ ניהול כללי עמלות
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Navigation Tabs (Showrooms) -->
+        <nav class="main-tabs">
+            <button class="main-tab-button active" data-showroom="hyundai-jerusalem">יונדאי אוטולין ירושלים</button>
+            <button class="main-tab-button" data-showroom="hyundai-modiin">יונדאי מודיעין</button>
+            <button class="main-tab-button" data-showroom="mitsubishi-modiin">מיצובישי מודיעין</button>
+            <button class="main-tab-button" data-showroom="omoda-modiin">אומודה ג'אקו מודיעין</button>
+            <button class="main-tab-button" data-showroom="kalmobil-modiin">כלמוביל טרייד אין מודיעין</button>
+            <button class="main-tab-button" data-showroom="geely-modiin">ג'ילי מודיעין</button>
+            <button class="main-tab-button" data-showroom="geely-jerusalem">ג'ילי ירושלים</button>
+            <button class="main-tab-button summary-tab" data-showroom="summary">📊 סיכום כללי</button>
+        </nav>
+
+        <!-- Showroom Content Sections -->
+        <div id="showroom-content">
+            
+            <!-- ========== יונדאי אוטולין ירושלים ========== -->
+            <div id="hyundai-jerusalem" class="showroom-section active">
+                <h2>יונדאי אוטולין ירושלים</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== יונדאי מודיעין ========== -->
+            <div id="hyundai-modiin" class="showroom-section">
+                <h2>יונדאי מודיעין</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== מיצובישי מודיעין ========== -->
+            <div id="mitsubishi-modiin" class="showroom-section">
+                <h2>מיצובישי מודיעין</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== אומודה ג'אקו מודיעין ========== -->
+            <div id="omoda-modiin" class="showroom-section">
+                <h2>אומודה ג'אקו מודיעין</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== כלמוביל טרייד אין מודיעין ========== -->
+            <div id="kalmobil-modiin" class="showroom-section">
+                <h2>כלמוביל טרייד אין מודיעין</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== ג'ילי מודיעין ========== -->
+            <div id="geely-modiin" class="showroom-section">
+                <h2>ג'ילי מודיעין</h2>
+                
+                <!-- Secondary Tabs (Months) -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <!-- Month Content (Will be dynamically generated) -->
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <div id="geely-jerusalem" class="showroom-section">
+                <h2 class="showroom-title">ג'ילי ירושלים</h2>
+                
+                <!-- Secondary tabs (months) -->
+                <div class="secondary-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </div>
+                
+                <div class="month-content-wrapper">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ========== סיכום כללי ========== -->
+            <div id="summary" class="showroom-section">
+                <h2>📊 סיכום כללי - כל האולמות</h2>
+                
+                <!-- Secondary Tabs (Months) for Summary -->
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+                    <button class="month-tab-button" data-month="2026-03">מרץ 2026</button>
+                    <button class="month-tab-button" data-month="2026-04">אפריל 2026</button>
+                    <button class="month-tab-button" data-month="2026-05">מאי 2026</button>
+                    <button class="month-tab-button" data-month="2026-06">יוני 2026</button>
+                    <button class="month-tab-button" data-month="2026-07">יולי 2026</button>
+                    <button class="month-tab-button" data-month="2026-08">אוגוסט 2026</button>
+                    <button class="month-tab-button" data-month="2026-09">ספטמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-10">אוקטובר 2026</button>
+                    <button class="month-tab-button" data-month="2026-11">נובמבר 2026</button>
+                    <button class="month-tab-button" data-month="2026-12">דצמבר 2026</button>
+                </nav>
+
+                <div class="month-content-wrapper">
+                    <p class="coming-soon">הסיכום יופיע כאן לאחר הזנת נתונים</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/commission-rules.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    <script src="js/new-layout-generator.js"></script>
+    <script src="js/simulation-helpers.js"></script>
+    <script src="js/calc-simple.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

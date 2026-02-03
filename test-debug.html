@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>בדיקה</h1>
+    <input type="number" id="test-input" value="10">
+    <button onclick="testCalc()">בדוק</button>
+    <div id="result"></div>
+    
+    <script>
+        function testCalc() {
+            const val = document.getElementById('test-input').value;
+            document.getElementById('result').textContent = 'ערך: ' + val;
+            console.log('Test value:', val);
+        }
+    </script>
+</body>
+</html>

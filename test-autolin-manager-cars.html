@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 בדיקה: מסירות מנהל - אוטולין ירושלים</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .test-container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .test-header { text-align: center; margin-bottom: 30px; color: #764ba2; }
+        .test-results { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .test-result { padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 בדיקה: מסירות מנהל - אוטולין ירושלים</h1>
+            <p>בדיקה שמאיר מועלם יכול למכור רכבים וזה משפיע על סה"כ הסניף ועל עמלות הנציגים</p>
+        </div>
+
+        <div id="test-content"></div>
+        
+        <div class="test-results">
+            <h3>📊 תוצאות הבדיקה</h3>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script src="js/new-layout-generator.js"></script>
+    <script src="js/calc-simple.js"></script>
+    <script>
+        console.log('✓ new-layout-generator loaded:', typeof createMonthContent);
+        console.log('✓ calc-simple loaded:', typeof calculateMonth);
+        
+        if (typeof createMonthContent === 'undefined') {
+            console.error('❌ createMonthContent not found!');
+        }
+
+        const month = '2026-01';
+        const prefix = 'hj-' + month;
+
+        // Create the layout
+        const contentDiv = document.getElementById('test-content');
+        contentDiv.innerHTML = createNewMonthLayout(month);
+
+        // Fill test data
+        function fillTestData() {
+            // Branch target
+            document.getElementById(`${prefix}-branch-target`).value = 17;
+            
+            // Meir (Manager) - 3 cars
+            document.getElementById(`${prefix}-meir-cars`).value = 3;
+            document.getElementById(`${prefix}-meir-demo`).value = 100;
+            document.getElementById(`${prefix}-meir-diff`).value = 50;
+            document.getElementById(`${prefix}-meir-tradein`).value = 200;
+            document.getElementById(`${prefix}-meir-finance`).value = 300;
+            
+            // Daniel - 8 cars
+            document.getElementById(`${prefix}-daniel-target`).value = 8;
+            document.getElementById(`${prefix}-daniel-cars`).value = 8;
+            document.getElementById(`${prefix}-daniel-insurance`).value = 6;
+            document.getElementById(`${prefix}-daniel-topservice`).value = 5;
+            document.getElementById(`${prefix}-daniel-topservice-potential`).value = 8;
+            document.getElementById(`${prefix}-daniel-warranty`).value = 4;
+            document.getElementById(`${prefix}-daniel-mystery`).value = 85;
+            document.getElementById(`${prefix}-daniel-demo`).value = 150;
+            document.getElementById(`${prefix}-daniel-diff`).value = 75;
+            
+            // Alfred - 6 cars
+            document.getElementById(`${prefix}-alfred-target`).value = 6;
+            document.getElementById(`${prefix}-alfred-cars`).value = 6;
+            document.getElementById(`${prefix}-alfred-insurance`).value = 4;
+            document.getElementById(`${prefix}-alfred-topservice`).value = 3;
+            document.getElementById(`${prefix}-alfred-topservice-potential`).value = 6;
+            document.getElementById(`${prefix}-alfred-warranty`).value = 2;
+            document.getElementById(`${prefix}-alfred-mystery`).value = 75;
+            document.getElementById(`${prefix}-alfred-demo`).value = 120;
+            document.getElementById(`${prefix}-alfred-diff`).value = 60;
+            
+            // Daniel E (Operations)
+            document.getElementById(`${prefix}-daniele-insurance`).value = 10;
+        }
+
+        fillTestData();
+        console.log('✓ Test data filled');
+
+        // Run calculation
+        calculateMonth(month);
+        console.log('✓ Calculation completed');
+
+        // Verify results
+        function verifyResults() {
+            const results = [];
+            
+            // Test 1: Total cars should be 3 + 8 + 6 = 17
+            const totalCarsDisplay = document.getElementById(`${prefix}-summary-cars-actual`);
+            const totalCars = parseInt(totalCarsDisplay?.textContent || '0');
+            const test1 = totalCars === 17;
+            results.push({
+                test: 'סה"כ מסירות סניף',
+                expected: '17 (3 מאיר + 8 דניאל + 6 אלפרד)',
+                actual: totalCars,
+                pass: test1
+            });
+            
+            // Test 2: Meir's commission should be 17 × 200 = 3,400
+            const meirBaseDisplay = document.getElementById(`${prefix}-meir-base-display`);
+            const meirBase = meirBaseDisplay?.textContent.replace(/[^\d]/g, '') || '0';
+            const test2 = parseInt(meirBase) === 3400;
+            results.push({
+                test: 'עמלת מאיר (200 × סה"כ סניף)',
+                expected: '₪3,400 (17 × 200)',
+                actual: `₪${parseInt(meirBase).toLocaleString()}`,
+                pass: test2
+            });
+            
+            // Test 3: Daniel should get branch bonus (17 cars × 10 = 170)
+            const danielVehiclesDisplay = document.getElementById(`${prefix}-daniel-vehicles-display`) || 
+                                         document.getElementById(`${prefix}-daniel-vehicles`);
+            const danielVehicles = danielVehiclesDisplay?.textContent.replace(/[^\d]/g, '') || '0';
+            const danielExpectedBase = 8 * 150; // 1,200
+            const danielExpectedBranch = 17 * 10; // 170 (branch bonus)
+            const danielExpectedInsurance = 6 * 75; // 450
+            const danielExpectedTop = 5 * 175; // 875 (62.5% top service)
+            const danielExpectedWarranty = 4 * 60; // 240
+            const danielExpectedMystery = 0; // 85% = no adjustment
+            const danielExpectedVehicles = danielExpectedBase + danielExpectedBranch + danielExpectedInsurance + danielExpectedTop + danielExpectedWarranty + 150 + 75;
+            
+            results.push({
+                test: 'עמלת דניאל - רכיב רכבים (כולל בונוס סניף)',
+                expected: `₪${danielExpectedVehicles.toLocaleString()}`,
+                actual: `₪${parseInt(danielVehicles).toLocaleString()}`,
+                pass: Math.abs(parseInt(danielVehicles) - danielExpectedVehicles) < 50
+            });
+            
+            // Test 4: Alfred should also get branch bonus
+            const alfredVehiclesDisplay = document.getElementById(`${prefix}-alfred-vehicles-display`) || 
+                                         document.getElementById(`${prefix}-alfred-vehicles`);
+            const alfredVehicles = alfredVehiclesDisplay?.textContent.replace(/[^\d]/g, '') || '0';
+            const alfredExpectedBase = 6 * 150; // 900
+            const alfredExpectedBranch = 17 * 10; // 170 (branch bonus)
+            const alfredExpectedInsurance = 4 * 75; // 300
+            const alfredExpectedTop = 3 * 150; // 450 (50% top service)
+            const alfredExpectedWarranty = 2 * 60; // 120
+            const alfredExpectedVehicles = alfredExpectedBase + alfredExpectedBranch + alfredExpectedInsurance + alfredExpectedTop + alfredExpectedWarranty + 120 + 60;
+            
+            results.push({
+                test: 'עמלת אלפרד - רכיב רכבים (כולל בונוס סניף)',
+                expected: `₪${alfredExpectedVehicles.toLocaleString()}`,
+                actual: `₪${parseInt(alfredVehicles).toLocaleString()}`,
+                pass: Math.abs(parseInt(alfredVehicles) - alfredExpectedVehicles) < 50
+            });
+            
+            return results;
+        }
+
+        const testResults = verifyResults();
+        const resultsDiv = document.getElementById('test-results');
+        
+        testResults.forEach(result => {
+            const div = document.createElement('div');
+            div.className = `test-result ${result.pass ? 'pass' : 'fail'}`;
+            div.innerHTML = `
+                <strong>${result.pass ? '✅' : '❌'} ${result.test}</strong><br>
+                צפי: ${result.expected}<br>
+                בפועל: ${result.actual}
+            `;
+            resultsDiv.appendChild(div);
+        });
+
+        // Summary
+        const passCount = testResults.filter(r => r.pass).length;
+        const totalCount = testResults.length;
+        const summaryDiv = document.createElement('div');
+        summaryDiv.className = `test-result ${passCount === totalCount ? 'pass' : 'fail'}`;
+        summaryDiv.innerHTML = `<strong>${passCount === totalCount ? '🎉' : '⚠️'} סיכום: ${passCount}/${totalCount} בדיקות עברו</strong>`;
+        resultsDiv.appendChild(summaryDiv);
+
+        console.log('✓ Test completed:', passCount, '/', totalCount, 'passed');
+    </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 בדיקה: סיכום שנתי מודיעין</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #764ba2;
+        }
+        .test-step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .test-step h3 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+        }
+        .test-result {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+            margin: 10px 0;
+        }
+        .test-error {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #f44336;
+            margin: 10px 0;
+        }
+        #yearly-summary {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff8e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 בדיקה מלאה: סיכום שנתי - יונדאי מודיעין</h1>
+            <p>בדיקה אוטומטית של תהליך שמירה וסיכום שנתי</p>
+        </div>
+
+        <div id="test-steps"></div>
+        
+        <div id="yearly-summary">
+            <h2>📊 סיכום שנתי</h2>
+            <div id="yearly-summary-content">⏳ טוען...</div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    <script>
+        console.log('✓ All modules loaded');
+
+        const stepsDiv = document.getElementById('test-steps');
+        
+        function logStep(step, message, isError = false) {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = isError ? 'test-error' : 'test-result';
+            stepDiv.innerHTML = `<strong>שלב ${step}:</strong> ${message}`;
+            stepsDiv.appendChild(stepDiv);
+            console.log(`Step ${step}: ${message}`);
+        }
+
+        async function runTest() {
+            try {
+                logStep(1, '🔄 ניקוי נתונים ישנים מ-localStorage...');
+                for (let i = 1; i <= 12; i++) {
+                    const month = `2026-${String(i).padStart(2, '0')}`;
+                    localStorage.removeItem(`hyundai-modiin-${month}`);
+                }
+
+                logStep(2, '💾 שמירת נתונים לחודש ינואר 2026...');
+                const janData = {
+                    'hm-2026-01-branch-target': 25,
+                    'hm-2026-01-guy-cars': 5,
+                    'hm-2026-01-guy-demo': 100,
+                    'hm-2026-01-guy-diff': 50,
+                    'hm-2026-01-guy-tradein': 200,
+                    'hm-2026-01-guy-finance': 300,
+                    'hm-2026-01-dario-cars': 10,
+                    'hm-2026-01-dario-demo': 150,
+                    'hm-2026-01-dario-diff': 75,
+                    'hm-2026-01-dario-tradein': 250,
+                    'hm-2026-01-dario-finance': 350,
+                    'hm-2026-01-dario-insurance': 8,
+                    'hm-2026-01-dario-topservice': 7,
+                    'hm-2026-01-dario-topservice-pot': 10,
+                    'hm-2026-01-asher-insurance': 10,
+                    'hm-2026-01-total-cars': 15
+                };
+                
+                // חישוב התוצאות
+                const guy = {
+                    cars: 5,
+                    demo: 100,
+                    diff: 50,
+                    tradeIn: 200,
+                    finance: 300
+                };
+                const guyVehicles = 15 * 200 + 100 + 50; // totalCars * 200 + demo + diff = 3,150
+                const guyTotal = guyVehicles + 200 + 300; // + tradeIn + finance = 3,650
+
+                const dario = {
+                    cars: 10,
+                    demo: 150,
+                    diff: 75,
+                    tradeIn: 250,
+                    finance: 350,
+                    insurance: 8,
+                    topService: 7,
+                    topServicePot: 10
+                };
+                const darioBase = 10 * 150; // 1,500
+                const darioBranch = 15 * 10; // 150 (branch bonus)
+                const darioInsurance = 8 * 75; // 600
+                const darioTopService = 7 * 150; // 1,050 (< 60%)
+                const darioVehicles = darioBase + darioBranch + darioInsurance + darioTopService + 150 + 75; // 3,525
+                const darioTotal = darioVehicles + 250 + 350; // 4,125
+
+                janData.calculatedResults = {
+                    guy: {
+                        vehiclesComponent: guyVehicles,
+                        tradeInComponent: 200,
+                        financeComponent: 300,
+                        total: guyTotal
+                    },
+                    dario: {
+                        vehiclesComponent: darioVehicles,
+                        tradeInComponent: 250,
+                        financeComponent: 350,
+                        total: darioTotal
+                    }
+                };
+
+                // Save using storage.js format
+                const STORAGE_KEY = 'autoweek_commissions_2026';
+                const allData = localStorage.getItem(STORAGE_KEY);
+                const storageData = allData ? JSON.parse(allData) : {};
+                
+                if (!storageData['hyundai-modiin']) {
+                    storageData['hyundai-modiin'] = {};
+                }
+                storageData['hyundai-modiin']['2026-01'] = janData;
+                
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(storageData));
+                
+                window.lastCalculatedResults = window.lastCalculatedResults || {};
+                window.lastCalculatedResults['2026-01'] = janData.calculatedResults;
+                
+                logStep(3, '✅ נתונים נשמרו בהצלחה!');
+                logStep(4, `📝 גיא הררי: רכיבי רכבים=₪${guyVehicles.toLocaleString()}, סה"כ=₪${guyTotal.toLocaleString()}`);
+                logStep(5, `📝 דריו: רכיבי רכבים=₪${darioVehicles.toLocaleString()}, סה"כ=₪${darioTotal.toLocaleString()}`);
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                logStep(6, '📊 מציג סיכום שנתי...');
+                displayYearlySummary();
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const summaryContent = document.getElementById('yearly-summary-content');
+                console.log('📄 Summary content:', summaryContent ? summaryContent.innerHTML.substring(0, 200) : 'NOT FOUND');
+                
+                if (summaryContent && summaryContent.innerHTML.includes('גיא')) {
+                    logStep(7, '✅ סיכום שנתי הוצג בהצלחה! נמצא גיא הררי.');
+                } else if (summaryContent) {
+                    logStep(7, `⚠️ תוכן הסיכום: ${summaryContent.innerHTML.substring(0, 100)}...`, true);
+                } else {
+                    logStep(7, '❌ אלמנט yearly-summary-content לא נמצא!', true);
+                }
+
+            } catch (error) {
+                logStep('ERROR', `❌ שגיאה: ${error.message}`, true);
+                console.error('Test error:', error);
+            }
+        }
+
+        function displayYearlySummary() {
+            console.log('📊 displayYearlySummary called');
+            const showroomId = 'hyundai-modiin';
+            const showroomConfig = window.showroomConfigs?.[showroomId];
+            
+            if (!showroomConfig) {
+                console.error(`❌ No config found for showroom: ${showroomId}`);
+                return;
+            }
+
+            // קריאת כל הנתונים מ-localStorage
+            const allShowroomsData = getAllData(); // Get all showrooms
+            const allData = allShowroomsData[showroomId] || {}; // Get specific showroom data
+            console.log('📦 All data for showroom:', allData);
+            
+            const summaryContent = document.getElementById('yearly-summary-content');
+            if (!summaryContent) {
+                console.error('❌ yearly-summary-content not found!');
+                return;
+            }
+
+            if (!allData || Object.keys(allData).length === 0) {
+                summaryContent.innerHTML = `
+                    <div class="info-box">
+                        <p>אין עדיין נתונים לסיכום שנתי.</p>
+                        <p>שמור נתונים בחודשים כדי לראות סיכום.</p>
+                    </div>
+                `;
+                console.log('⚠️ No data found');
+                return;
+            }
+
+            // קבלת רשימת העובדים מה-config
+            const employeesList = window.getShowroomEmployeesList(showroomId);
+            console.log('👥 Employees:', employeesList);
+
+            // אתחול אובייקט סיכום לכל עובד
+            const employeeTotals = {};
+            employeesList.forEach(emp => {
+                employeeTotals[emp.id] = {
+                    name: emp.name,
+                    role: emp.type || 'עובד',
+                    vehiclesComponent: 0,
+                    tradeInComponent: 0,
+                    financeComponent: 0,
+                    total: 0,
+                    months: []
+                };
+            });
+
+            // חישוב סיכומים
+            const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', 
+                          '2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12'];
+            
+            console.log('🔍 Checking months in allData...');
+            months.forEach(month => {
+                console.log(`  ${month}: exists=${!!allData[month]}, has calculatedResults=${!!(allData[month]?.calculatedResults)}`);
+            });
+
+            months.forEach(month => {
+                if (allData[month] && allData[month].calculatedResults) {
+                    const results = allData[month].calculatedResults;
+                    console.log(`📅 ${month} results:`, results);
+                    console.log(`📅 ${month} result keys:`, Object.keys(results));
+
+                    Object.keys(results).forEach(empKey => {
+                        console.log(`  Processing empKey: ${empKey}, exists in totals: ${!!employeeTotals[empKey]}`);
+                        if (employeeTotals[empKey]) {
+                            const empResult = results[empKey];
+                            employeeTotals[empKey].vehiclesComponent += (empResult.vehiclesComponent || 0);
+                            employeeTotals[empKey].tradeInComponent += (empResult.tradeInComponent || 0);
+                            employeeTotals[empKey].financeComponent += (empResult.financeComponent || 0);
+                            employeeTotals[empKey].total += (empResult.total || 0);
+                            employeeTotals[empKey].months.push(month);
+                            console.log(`    ✓ Added to ${empKey}: total now ${employeeTotals[empKey].total}`);
+                        }
+                    });
+                }
+            });
+
+            console.log('📊 Employee totals:', employeeTotals);
+
+            // יצירת HTML
+            let html = '<div class="yearly-summary-grid">';
+            
+            Object.keys(employeeTotals).forEach(empKey => {
+                const emp = employeeTotals[empKey];
+                if (emp.months.length > 0) {
+                    const roleClass = emp.role === 'manager' ? 'manager-result' : 
+                                     emp.role === 'operations' ? 'manager-result' : 'salesperson-result';
+                    const roleLabel = emp.role === 'manager' ? 'מנהל אולם' :
+                                     emp.role === 'operations' ? 'איש תפעול' : 'איש מכירות';
+                    
+                    html += `
+                        <div class="employee-result-card ${roleClass}">
+                            <div class="result-card-header">
+                                <h3>${emp.name}</h3>
+                                <p class="result-card-subtitle">${roleLabel} - סיכום שנתי</p>
+                                <p style="font-size: 14px; color: #666;">חודשים עם נתונים: ${emp.months.length}/12</p>
+                            </div>
+                            <div class="result-line">
+                                <span class="result-label">רכיב רכבים</span>
+                                <span class="result-value">₪${emp.vehiclesComponent.toLocaleString()}</span>
+                            </div>
+                            <div class="result-line">
+                                <span class="result-label">טרייד אין</span>
+                                <span class="result-value">₪${emp.tradeInComponent.toLocaleString()}</span>
+                            </div>
+                            <div class="result-line">
+                                <span class="result-label">מימון</span>
+                                <span class="result-value">₪${emp.financeComponent.toLocaleString()}</span>
+                            </div>
+                            <div class="result-line total-line">
+                                <span class="result-label"><strong>סה"כ שנתי</strong></span>
+                                <span class="result-value total-value"><strong>₪${emp.total.toLocaleString()}</strong></span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            summaryContent.innerHTML = html;
+            console.log('✅ Summary displayed successfully');
+        }
+
+        // הרצת הבדיקה
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => runTest(), 500);
+        });
+    </script>
+</body>
+</html>

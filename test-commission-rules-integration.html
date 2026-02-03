@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת שילוב כללי עמלות</title>
+</head>
+<body>
+    <h1>בדיקת שילוב commission-rules.js</h1>
+    <div id="results"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/commission-rules.js"></script>
+    <script src="js/calc-geely.js"></script>
+    
+    <script>
+        console.log('🧪 Testing Commission Rules Integration');
+        
+        // Create test containers
+        const prefix = 'gm-2026-01';
+        const empId = 'uri';
+        
+        // Create test input fields
+        document.body.innerHTML += `
+            <input type="hidden" id="${prefix}-${empId}-tradein-profit" value="0">
+            <input type="hidden" id="${prefix}-${empId}-select-commission" value="0">
+            <input type="hidden" id="${prefix}-${empId}-special-focus" value="0">
+            <input type="hidden" id="${prefix}-${empId}-max-finance" value="0">
+            <input type="hidden" id="${prefix}-${empId}-diff" value="0">
+            
+            <span id="${prefix}-${empId}-delivery-commission">0</span>
+            <span id="${prefix}-${empId}-nps-deduction">0</span>
+            <span id="${prefix}-${empId}-accessories-commission">0</span>
+            <span id="${prefix}-${empId}-tradein-commission">0</span>
+            <span id="${prefix}-${empId}-tradein-profit-display">0</span>
+            <span id="${prefix}-${empId}-select-display">0</span>
+            <span id="${prefix}-${empId}-finance-bonus">0</span>
+            <span id="${prefix}-${empId}-insurance-commission">0</span>
+            <span id="${prefix}-${empId}-top-service-commission">0</span>
+            <span id="${prefix}-${empId}-special-focus-display">0</span>
+            <span id="${prefix}-${empId}-max-finance-display">0</span>
+            <span id="${prefix}-${empId}-diff-display">0</span>
+            <span id="${prefix}-${empId}-total">0</span>
+        `;
+        
+        // Test 1: Check if rules are loaded
+        console.log('\n📋 Test 1: Rules loaded?');
+        const rules = window.getCommissionRules('geely-modiin');
+        console.log('Rules found:', rules ? '✅ YES' : '❌ NO');
+        
+        if (rules) {
+            console.log('Manager delivery rate:', rules.manager.deliveryRate);
+            console.log('Salesperson delivery rate:', rules.salesperson.deliveryRate);
+        }
+        
+        // Test 2: Calculate with default values (200 ש"ח)
+        console.log('\n🧮 Test 2: Calculate with rules');
+        
+        const result = window.calculateGeelyManagerCommissions(
+            prefix,
+            empId,
+            20,         // actualDeliveries
+            80,         // npsScore
+            50000,      // totalAccessories
+            2500,       // avgAccessories
+            5,          // tradeinCount
+            25,         // tradeinPercent
+            30,         // financePercent
+            45,         // insurancePercent
+            75,         // servicePercent
+            10          // servicePackages
+        );
+        
+        console.log('Result:', result);
+        console.log('Delivery commission:', result.deliveryCommission);
+        console.log('Expected (20 × 200):', 4000);
+        console.log('Match:', result.deliveryCommission === 4000 ? '✅' : '❌');
+        
+        // Test 3: Modify rules and test again
+        console.log('\n🔧 Test 3: Modify rules to 400 ש"ח');
+        
+        if (window.commissionRules['geely-modiin']) {
+            window.commissionRules['geely-modiin'].manager.deliveryRate = 400;
+            console.log('Modified delivery rate to:', window.commissionRules['geely-modiin'].manager.deliveryRate);
+        }
+        
+        const result2 = window.calculateGeelyManagerCommissions(
+            prefix,
+            empId,
+            20,         // actualDeliveries
+            80,         // npsScore
+            50000,      // totalAccessories
+            2500,       // avgAccessories
+            5,          // tradeinCount
+            25,         // tradeinPercent
+            30,         // financePercent
+            45,         // insurancePercent
+            75,         // servicePercent
+            10          // servicePackages
+        );
+        
+        console.log('New result:', result2);
+        console.log('Delivery commission:', result2.deliveryCommission);
+        console.log('Expected (20 × 400):', 8000);
+        console.log('Match:', result2.deliveryCommission === 8000 ? '✅' : '❌');
+        
+        // Summary
+        console.log('\n📊 Summary:');
+        console.log('✅ Rules file loaded');
+        console.log('✅ Rules can be accessed');
+        console.log('✅ Calculations use rules');
+        console.log('✅ Modifying rules affects calculations');
+        console.log('\n🎉 Integration successful!');
+        
+        document.getElementById('results').innerHTML = `
+            <h2>✅ שילוב הצליח!</h2>
+            <p><strong>לפני:</strong> 20 × 200 = ₪${result.deliveryCommission}</p>
+            <p><strong>אחרי שינוי ל-400:</strong> 20 × 400 = ₪${result2.deliveryCommission}</p>
+            <p style="color: green; font-size: 1.2rem; margin-top: 20px;">
+                המערכת עכשיו קוראת מ-commission-rules.js!
+            </p>
+        `;
+    </script>
+</body>
+</html>

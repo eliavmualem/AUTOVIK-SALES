@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Top Service Commission</title>
+</head>
+<body>
+    <h1>בדיקת עמלת טופ סרוויס למנהלי ג'ילי</h1>
+    <div id="results"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/calc-geely.js"></script>
+    
+    <script>
+        console.log('🧪 Testing Top Service Commission for Geely Managers');
+        
+        // Create test containers
+        const prefix = 'gm-2026-01';
+        const empId = 'uri';
+        
+        // Create test input fields
+        document.body.innerHTML += `
+            <!-- Test inputs for Manager Uri -->
+            <input type="hidden" id="${prefix}-${empId}-tradein-profit" value="0">
+            <input type="hidden" id="${prefix}-${empId}-select-commission" value="0">
+            <input type="hidden" id="${prefix}-${empId}-special-focus" value="0">
+            <input type="hidden" id="${prefix}-${empId}-max-finance" value="0">
+            <input type="hidden" id="${prefix}-${empId}-diff" value="0">
+            
+            <!-- Display spans -->
+            <span id="${prefix}-${empId}-delivery-commission">0</span>
+            <span id="${prefix}-${empId}-nps-deduction">0</span>
+            <span id="${prefix}-${empId}-accessories-commission">0</span>
+            <span id="${prefix}-${empId}-tradein-commission">0</span>
+            <span id="${prefix}-${empId}-tradein-profit-display">0</span>
+            <span id="${prefix}-${empId}-select-display">0</span>
+            <span id="${prefix}-${empId}-finance-bonus">0</span>
+            <span id="${prefix}-${empId}-insurance-commission">0</span>
+            <span id="${prefix}-${empId}-top-service-commission">0</span>
+            <span id="${prefix}-${empId}-special-focus-display">0</span>
+            <span id="${prefix}-${empId}-max-finance-display">0</span>
+            <span id="${prefix}-${empId}-diff-display">0</span>
+            <span id="${prefix}-${empId}-total">0</span>
+        `;
+        
+        // Test scenarios
+        const scenarios = [
+            {
+                name: 'תרחיש 1: מתחת לסף - 4 חבילות, 85%',
+                actualDeliveries: 20,
+                npsScore: 80,
+                totalAccessories: 50000,
+                avgAccessories: 2500,
+                tradeinCount: 5,
+                tradeinPercent: 25,
+                financePercent: 30,
+                insurancePercent: 45,
+                servicePercent: 85,
+                servicePackages: 4,
+                expectedTopService: 0  // מתחת לסף של 5 חבילות
+            },
+            {
+                name: 'תרחיש 2: 5 חבילות, 55% - אין תגמול',
+                actualDeliveries: 20,
+                npsScore: 80,
+                totalAccessories: 50000,
+                avgAccessories: 2500,
+                tradeinCount: 5,
+                tradeinPercent: 25,
+                financePercent: 30,
+                insurancePercent: 45,
+                servicePercent: 55,
+                servicePackages: 5,
+                expectedTopService: 0  // מתחת ל-60%
+            },
+            {
+                name: 'תרחיש 3: 8 חבילות, 65% - 500₪',
+                actualDeliveries: 20,
+                npsScore: 80,
+                totalAccessories: 50000,
+                avgAccessories: 2500,
+                tradeinCount: 5,
+                tradeinPercent: 25,
+                financePercent: 30,
+                insurancePercent: 45,
+                servicePercent: 65,
+                servicePackages: 8,
+                expectedTopService: 500  // 60-69.9%
+            },
+            {
+                name: 'תרחיש 4: 10 חבילות, 75% - 750₪',
+                actualDeliveries: 20,
+                npsScore: 80,
+                totalAccessories: 50000,
+                avgAccessories: 2500,
+                tradeinCount: 5,
+                tradeinPercent: 25,
+                financePercent: 30,
+                insurancePercent: 45,
+                servicePercent: 75,
+                servicePackages: 10,
+                expectedTopService: 750  // 70-79.9%
+            },
+            {
+                name: 'תרחיש 5: 12 חבילות, 85% - 1250₪',
+                actualDeliveries: 20,
+                npsScore: 80,
+                totalAccessories: 50000,
+                avgAccessories: 2500,
+                tradeinCount: 5,
+                tradeinPercent: 25,
+                financePercent: 30,
+                insurancePercent: 45,
+                servicePercent: 85,
+                servicePackages: 12,
+                expectedTopService: 1250  // 80%+
+            }
+        ];
+        
+        let resultsHTML = '<h2>תוצאות בדיקה:</h2>';
+        let allPassed = true;
+        
+        scenarios.forEach((scenario, index) => {
+            console.log(`\n--- ${scenario.name} ---`);
+            
+            const result = window.calculateGeelyManagerCommissions(
+                prefix,
+                empId,
+                scenario.actualDeliveries,
+                scenario.npsScore,
+                scenario.totalAccessories,
+                scenario.avgAccessories,
+                scenario.tradeinCount,
+                scenario.tradeinPercent,
+                scenario.financePercent,
+                scenario.insurancePercent,
+                scenario.servicePercent,
+                scenario.servicePackages
+            );
+            
+            const passed = result.topServiceCommission === scenario.expectedTopService;
+            allPassed = allPassed && passed;
+            
+            resultsHTML += `
+                <div style="border: 2px solid ${passed ? 'green' : 'red'}; padding: 15px; margin: 10px 0; border-radius: 8px;">
+                    <h3>${passed ? '✅' : '❌'} ${scenario.name}</h3>
+                    <p><strong>פרטים:</strong> ${scenario.servicePackages} חבילות, ${scenario.servicePercent}% ביצוע</p>
+                    <p><strong>צפוי:</strong> ₪${scenario.expectedTopService}</p>
+                    <p><strong>התקבל:</strong> ₪${result.topServiceCommission}</p>
+                    <p><strong>סה"כ עמלות:</strong> ₪${result.total}</p>
+                </div>
+            `;
+            
+            console.log(`חבילות: ${scenario.servicePackages}, אחוז: ${scenario.servicePercent}%`);
+            console.log(`עמלת טופ סרוויס: ₪${result.topServiceCommission} (צפוי: ₪${scenario.expectedTopService})`);
+            console.log(`סה"כ: ₪${result.total}`);
+            console.log(`✓ ${passed ? 'עבר' : 'נכשל'}`);
+        });
+        
+        if (allPassed) {
+            resultsHTML += '<h2 style="color: green;">🎉 כל הבדיקות עברו בהצלחה!</h2>';
+            console.log('\n🎉 כל הבדיקות עברו בהצלחה!');
+        } else {
+            resultsHTML += '<h2 style="color: red;">❌ חלק מהבדיקות נכשלו</h2>';
+            console.log('\n❌ חלק מהבדיקות נכשלו');
+        }
+        
+        document.getElementById('results').innerHTML = resultsHTML;
+    </script>
+</body>
+</html>

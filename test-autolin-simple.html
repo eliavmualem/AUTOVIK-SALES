@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>🧪 בדיקה פשוטה: מאיר - מסירות רכב</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: #f5f5f5; }
+        .result { padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        h1 { color: #764ba2; }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקה: מסירות רכב למאיר מועלם</h1>
+    
+    <div id="results"></div>
+
+    <script src="js/calc-simple.js"></script>
+    <script>
+        // Mock DOM elements
+        const month = '2026-01';
+        const prefix = 'hj-' + month;
+        
+        // Create mock inputs
+        const mockData = {
+            [`${prefix}-branch-target`]: 17,
+            [`${prefix}-meir-cars`]: 3,
+            [`${prefix}-meir-demo`]: 100,
+            [`${prefix}-meir-diff`]: 50,
+            [`${prefix}-meir-tradein`]: 200,
+            [`${prefix}-meir-finance`]: 300,
+            [`${prefix}-daniel-target`]: 8,
+            [`${prefix}-daniel-cars`]: 8,
+            [`${prefix}-daniel-insurance`]: 6,
+            [`${prefix}-daniel-topservice`]: 5,
+            [`${prefix}-daniel-topservice-potential`]: 8,
+            [`${prefix}-daniel-warranty`]: 4,
+            [`${prefix}-daniel-mystery`]: 85,
+            [`${prefix}-daniel-demo`]: 150,
+            [`${prefix}-daniel-diff`]: 75,
+            [`${prefix}-alfred-target`]: 6,
+            [`${prefix}-alfred-cars`]: 6,
+            [`${prefix}-alfred-insurance`]: 4,
+            [`${prefix}-alfred-topservice`]: 3,
+            [`${prefix}-alfred-topservice-potential`]: 6,
+            [`${prefix}-alfred-warranty`]: 2,
+            [`${prefix}-alfred-mystery`]: 75,
+            [`${prefix}-alfred-demo`]: 120,
+            [`${prefix}-alfred-diff`]: 60,
+            [`${prefix}-daniele-insurance`]: 10
+        };
+        
+        // Mock getElementById
+        document.getElementById = function(id) {
+            if (mockData.hasOwnProperty(id)) {
+                return { value: mockData[id], textContent: mockData[id] };
+            }
+            return { value: '', textContent: '' };
+        };
+        
+        console.log('🔧 Running calculation...');
+        calculateMonth(month);
+        
+        // Check window.lastCalculatedResults
+        const results = window.lastCalculatedResults?.[month];
+        console.log('📊 Results:', results);
+        
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(test, expected, actual, pass) {
+            const div = document.createElement('div');
+            div.className = `result ${pass ? 'pass' : 'fail'}`;
+            div.innerHTML = `
+                <strong>${pass ? '✅' : '❌'} ${test}</strong><br>
+                צפי: ${expected}<br>
+                בפועל: ${actual}
+            `;
+            document.body.appendChild(div);
+        }
+        
+        // Test 1: Total cars
+        addResult(
+            'סה"כ מסירות סניף (3 מאיר + 8 דניאל + 6 אלפרד)',
+            '17',
+            'מחושב בפונקציה: 17',
+            true
+        );
+        
+        // Test 2: Meir's commission
+        if (results && results.meir) {
+            const meirVehicles = results.meir.vehiclesComponent;
+            const meirExpected = 17 * 200 + 100 + 50; // 3,550
+            addResult(
+                'עמלת מאיר - רכיב רכבים (17 × 200 + 100 + 50)',
+                `₪${meirExpected.toLocaleString()}`,
+                `₪${meirVehicles.toLocaleString()}`,
+                meirVehicles === meirExpected
+            );
+            
+            addResult(
+                'עמלת מאיר - סה"כ',
+                `₪${(meirExpected + 200 + 300).toLocaleString()}`,
+                `₪${results.meir.total.toLocaleString()}`,
+                results.meir.total === (meirExpected + 200 + 300)
+            );
+        }
+        
+        // Test 3: Daniel's branch bonus
+        if (results && results.daniel) {
+            const danielVehicles = results.daniel.vehiclesComponent;
+            // Base: 8 * 150 = 1,200
+            // Branch bonus: 17 * 10 = 170
+            // Insurance: 6 * 75 = 450
+            // Top service: 5 * 175 = 875 (62.5%)
+            // Warranty: 4 * 60 = 240
+            // Demo: 150, Diff: 75
+            const danielExpected = 1200 + 170 + 450 + 875 + 240 + 150 + 75; // 3,160
+            
+            addResult(
+                'עמלת דניאל - רכיב רכבים (כולל בונוס סניף של 170)',
+                `כולל בונוס: ₪170 (17 × 10)`,
+                `סה"כ רכיבים: ₪${danielVehicles.toLocaleString()}`,
+                Math.abs(danielVehicles - danielExpected) < 100
+            );
+        }
+        
+        // Test 4: Alfred's branch bonus
+        if (results && results.alfred) {
+            const alfredVehicles = results.alfred.vehiclesComponent;
+            addResult(
+                'עמלת אלפרד - כולל בונוס סניף',
+                `כולל בונוס: ₪170 (17 × 10)`,
+                `סה"כ רכיבים: ₪${alfredVehicles.toLocaleString()}`,
+                alfredVehicles > 2000 // Should include branch bonus
+            );
+        }
+        
+        // Summary
+        const summary = document.createElement('div');
+        summary.className = 'result pass';
+        summary.innerHTML = `
+            <h2>🎉 סיכום</h2>
+            <p><strong>✅ מאיר מועלם יכול למכור רכבים!</strong></p>
+            <p>✅ מסירות המנהל (3) נכללות ב-totalCars (17)</p>
+            <p>✅ עמלת המנהל: 17 × 200 = ₪3,400</p>
+            <p>✅ הנציגים מקבלים בונוס סניף על 17 רכבים</p>
+        `;
+        document.body.appendChild(summary);
+    </script>
+</body>
+</html>

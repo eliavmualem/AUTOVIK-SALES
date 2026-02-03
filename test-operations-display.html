@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - אשר עמר</title>
+</head>
+<body>
+    <h1>בדיקת תצוגת עמלות - אשר עמר</h1>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        // Mock setDisplay
+        const displayValues = {};
+        window.setDisplay = function(id, value) {
+            displayValues[id] = value;
+            console.log(`  ${id} = ${value}`);
+        };
+
+        console.log('✓ Modules loaded\n');
+
+        // Test: אשר עמר - אומודה
+        console.log('=== בדיקה: אשר עמר - אומודה ===');
+        const prefix = 'om-2026-01';
+        
+        // Total branch stats
+        const totalTopService = 19;
+        const totalTopServicePot = 25;
+        const branchMetTarget = true;
+        
+        // Asher's personal data
+        const asherData = {
+            insurance: 8
+        };
+        
+        console.log(`Total Top Service: ${totalTopService}/${totalTopServicePot} = ${Math.round((totalTopService/totalTopServicePot)*100)}%`);
+        
+        const result = calculateOperationsCommissions(prefix, 'asher', asherData, totalTopService, branchMetTarget, totalTopServicePot);
+        
+        console.log('\n📊 תוצאות:');
+        console.log(`טופ סרוויס: ${displayValues[prefix + '-asher-topservice-display']} (צריך להיות מלא)`);
+        console.log(`ביטוח: ${displayValues[prefix + '-asher-insurance-display']} (צריך להיות מלא)`);
+        console.log(`רכיב רכבים: ${displayValues[prefix + '-asher-vehicles-display']} (צריך להיות מלא)`);
+        console.log(`סה"כ: ${displayValues[prefix + '-asher-total-display']}`);
+        
+        console.log('\n🧮 חישוב צפוי:');
+        console.log(`טופ סרוויס: 19 × 80 = ₪1,520 (76% ≥ 70%)`);
+        console.log(`ביטוח: 8 × 75 = ₪600`);
+        console.log(`רכיב רכבים: 1,520 + 600 = ₪2,120`);
+        console.log(`סה"כ: ₪2,120`);
+        
+        console.log('\n✅ כל השדות צריכים להיות מלאים!');
+    </script>
+</body>
+</html>

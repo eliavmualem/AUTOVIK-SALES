@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Direct Call</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+</head>
+<body>
+    <h1>Testing Direct Call</h1>
+    
+    <div id="geely-modiin" class="showroom-section">
+        <h2>ג'ילי מודיעין</h2>
+        <nav class="month-tabs">
+            <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+        </nav>
+        <div class="month-content-wrapper"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        console.log('=== MANUAL TEST ===');
+        console.log('Calling initializeGeelyShowroom directly...');
+        
+        try {
+            initializeGeelyShowroom('geely-modiin');
+            console.log('✅ Function called successfully!');
+        } catch (e) {
+            console.error('❌ Error calling function:', e);
+        }
+    </script>
+</body>
+</html>

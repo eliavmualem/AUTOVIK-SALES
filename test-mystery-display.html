@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - פירוט עמלות ולקוח סמוי</title>
+    <style>
+        body { font-family: Arial; padding: 20px; direction: rtl; }
+        .test-section { margin: 20px 0; padding: 20px; border: 2px solid #ccc; border-radius: 8px; }
+        .test-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .result { margin: 5px 0; padding: 10px; background: #f0f0f0; border-radius: 4px; }
+        .pass { background: #d4edda; }
+        .fail { background: #f8d7da; }
+        .info { background: #d1ecf1; }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקה: פירוט עמלות ולקוח סמוי</h1>
+    
+    <div class="test-section">
+        <div class="test-title">בדיקה 1: אומודה - שיר (נציג)</div>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">בדיקה 2: אומודה - שיר עם לקוח סמוי 95</div>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">בדיקה 3: אומודה - שיר עם לקוח סמוי 70</div>
+        <div id="test3-result"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('✓ Modules loaded');
+
+        function runTest1() {
+            console.log('\n=== Test 1: שיר - עמידה ביעד 100% ===');
+            const prefix = 'om-2026-01';
+            const totalCars = 20;
+            const branchMetTarget = true;
+            
+            const shirData = {
+                cars: 8,
+                target: 8,
+                insurance: 6,
+                topService: 8,
+                topServicePot: 10,
+                warranty: 4,
+                mystery: 0,  // No mystery
+                demo: 100,
+                diff: 50,
+                finance: 0,
+                tradeIn: 0
+            };
+            
+            const result = calculateSalespersonCommissions(prefix, 'shir', shirData, totalCars, branchMetTarget);
+            
+            // Check vehicle breakdown
+            const breakdownElement = document.getElementById(`${prefix}-shir-vehicles-breakdown`);
+            const breakdown = breakdownElement ? breakdownElement.textContent : 'NOT FOUND';
+            
+            document.getElementById('test1-result').innerHTML = `
+                <div class="result info">מסירות: 8, יעד: 8 (100%)</div>
+                <div class="result">פירוט עמלות מסירה: ${breakdown}</div>
+                <div class="result">רכיב רכבים כולל: ₪${result.vehiclesComponent.toLocaleString()}</div>
+                <div class="result">סה"כ: ₪${result.total.toLocaleString()}</div>
+                <div class="result ${breakdown.includes('בסיס') ? 'pass' : 'fail'}">
+                    ${breakdown.includes('בסיס') ? '✓' : '✗'} יש פירוט בסיס
+                </div>
+                <div class="result ${breakdown.includes('בונוס סניף') ? 'pass' : 'fail'}">
+                    ${breakdown.includes('בונוס סניף') ? '✓' : '✗'} יש פירוט בונוס סניף
+                </div>
+                <div class="result ${breakdown.includes('100%') ? 'pass' : 'fail'}">
+                    ${breakdown.includes('100%') ? '✓' : '✗'} יש פירוט בונוס 100%
+                </div>
+            `;
+        }
+
+        function runTest2() {
+            console.log('\n=== Test 2: שיר - לקוח סמוי 95 ===');
+            const prefix = 'om-2026-02';
+            const totalCars = 20;
+            const branchMetTarget = true;
+            
+            const shirData = {
+                cars: 8,
+                target: 8,
+                insurance: 6,
+                topService: 8,
+                topServicePot: 10,
+                warranty: 4,
+                mystery: 95,  // HIGH mystery
+                demo: 100,
+                diff: 50,
+                finance: 0,
+                tradeIn: 0
+            };
+            
+            const result = calculateSalespersonCommissions(prefix, 'shir', shirData, totalCars, branchMetTarget);
+            
+            const mysteryElement = document.getElementById(`${prefix}-shir-mystery-display`);
+            const mysteryAdj = mysteryElement ? parseFloat(mysteryElement.textContent.replace(/[^\d.-]/g, '')) : 0;
+            
+            // Expected: 8×150 + 20×10 + 8×20 = 1200 + 200 + 160 = 1560
+            // Mystery +20% of 1560 = +312
+            const expectedMystery = Math.round(1560 * 0.2);
+            
+            document.getElementById('test2-result').innerHTML = `
+                <div class="result info">ציון לקוח סמוי: 95</div>
+                <div class="result">התאמה: ₪${mysteryAdj.toLocaleString()}</div>
+                <div class="result">צפוי: ₪${expectedMystery.toLocaleString()}</div>
+                <div class="result ${Math.abs(mysteryAdj - expectedMystery) < 10 ? 'pass' : 'fail'}">
+                    ${Math.abs(mysteryAdj - expectedMystery) < 10 ? '✓' : '✗'} חישוב נכון (20% מכל עמלות המסירה כולל בונוסים)
+                </div>
+            `;
+        }
+
+        function runTest3() {
+            console.log('\n=== Test 3: שיר - לקוח סמוי 70 ===');
+            const prefix = 'om-2026-03';
+            const totalCars = 20;
+            const branchMetTarget = true;
+            
+            const shirData = {
+                cars: 8,
+                target: 8,
+                insurance: 6,
+                topService: 8,
+                topServicePot: 10,
+                warranty: 4,
+                mystery: 70,  // LOW mystery
+                demo: 100,
+                diff: 50,
+                finance: 0,
+                tradeIn: 0
+            };
+            
+            const result = calculateSalespersonCommissions(prefix, 'shir', shirData, totalCars, branchMetTarget);
+            
+            const mysteryElement = document.getElementById(`${prefix}-shir-mystery-display`);
+            const mysteryAdj = mysteryElement ? parseFloat(mysteryElement.textContent.replace(/[^\d.-]/g, '')) : 0;
+            
+            // Expected: -20% of 1560 = -312
+            const expectedMystery = Math.round(-1560 * 0.2);
+            
+            document.getElementById('test3-result').innerHTML = `
+                <div class="result info">ציון לקוח סמוי: 70</div>
+                <div class="result">התאמה: ₪${mysteryAdj.toLocaleString()}</div>
+                <div class="result">צפוי: ₪${expectedMystery.toLocaleString()}</div>
+                <div class="result ${Math.abs(mysteryAdj - expectedMystery) < 10 ? 'pass' : 'fail'}">
+                    ${Math.abs(mysteryAdj - expectedMystery) < 10 ? '✓' : '✗'} חישוב נכון (-20% מכל עמלות המסירה כולל בונוסים)
+                </div>
+            `;
+        }
+
+        // Run all tests
+        setTimeout(() => {
+            runTest1();
+            runTest2();
+            runTest3();
+            console.log('\n✓ All tests completed');
+        }, 500);
+    </script>
+</body>
+</html>

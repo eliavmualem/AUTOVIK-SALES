@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - כל 7 האולמות במערכת הכללים</title>
+    <style>
+        body {
+            font-family: 'Heebo', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            direction: rtl;
+        }
+        .test-section {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .success { color: #38ef7d; font-weight: bold; }
+        .error { color: #f5576c; font-weight: bold; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        .check { color: green; }
+        .cross { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקה - כל 7 האולמות במערכת הכללים</h1>
+    <div id="results"></div>
+
+    <script src="js/commission-rules.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        const allShowrooms = [
+            { id: 'hyundai-jerusalem', name: 'יונדאי אוטולין ירושלים' },
+            { id: 'hyundai-modiin', name: 'יונדאי מודיעין' },
+            { id: 'mitsubishi-modiin', name: 'מיצובישי מודיעין' },
+            { id: 'omoda-modiin', name: 'אומודה ג\'אקו מודיעין' },
+            { id: 'kalmobil-modiin', name: 'כלמוביל טרייד אין מודיעין' },
+            { id: 'geely-modiin', name: 'ג\'ילי מודיעין' },
+            { id: 'geely-jerusalem', name: 'ג\'ילי ירושלים' }
+        ];
+        
+        let html = '<div class="test-section">';
+        html += '<h2>📊 סיכום בדיקה</h2>';
+        html += '<table>';
+        html += '<thead><tr><th>#</th><th>אולם</th><th>Config קיים?</th><th>Rules קיימים?</th><th>סטטוס</th></tr></thead>';
+        html += '<tbody>';
+        
+        let successCount = 0;
+        
+        allShowrooms.forEach((showroom, idx) => {
+            const config = window.getShowroomConfig(showroom.id);
+            const rules = window.getCommissionRules(showroom.id);
+            
+            const hasConfig = !!config;
+            const hasRules = !!rules;
+            const success = hasConfig && hasRules;
+            
+            if (success) successCount++;
+            
+            html += `<tr>`;
+            html += `<td>${idx + 1}</td>`;
+            html += `<td><strong>${showroom.name}</strong></td>`;
+            html += `<td>${hasConfig ? '<span class="check">✅ כן</span>' : '<span class="cross">❌ לא</span>'}</td>`;
+            html += `<td>${hasRules ? '<span class="check">✅ כן</span>' : '<span class="cross">❌ לא</span>'}</td>`;
+            html += `<td class="${success ? 'success' : 'error'}">${success ? '✓ מוכן' : '✗ חסר'}</td>`;
+            html += `</tr>`;
+            
+            // More detailed info
+            if (success) {
+                console.log(`✓ ${showroom.name}:`, {
+                    config,
+                    rules
+                });
+            }
+        });
+        
+        html += '</tbody></table>';
+        html += `<h3>סיכום: ${successCount} מתוך ${allShowrooms.length} אולמות מוכנים</h3>`;
+        html += '</div>';
+        
+        // Detailed check for specific rules
+        html += '<div class="test-section">';
+        html += '<h2>🔍 בדיקת כללים ספציפיים</h2>';
+        
+        // Geely Modiin
+        const geelyRules = window.getCommissionRules('geely-modiin');
+        html += '<h3>ג\'ילי מודיעין</h3>';
+        html += '<ul>';
+        html += `<li>עמלת מסירות מנהל: <strong>${geelyRules.manager.deliveryRate} ש"ח</strong></li>`;
+        html += `<li>עמלת מסירות נציג: <strong>${geelyRules.salesperson.deliveryRate} ש"ח</strong></li>`;
+        html += `<li>סף NPS מנהל: <strong>${geelyRules.manager.nps.threshold}</strong></li>`;
+        html += `<li>מדרגות אביזרים מנהל: <strong>${geelyRules.manager.accessoriesTiers.length} מדרגות</strong></li>`;
+        html += `<li>מדרגות טופ סרוויס: <strong>${geelyRules.manager.topService.tiers.length} מדרגות</strong></li>`;
+        html += `<li>תנאי סף חבילות: <strong>${geelyRules.manager.topService.minPackages}</strong></li>`;
+        html += '</ul>';
+        
+        // Kalmobil
+        const kalmobilRules = window.getCommissionRules('kalmobil-modiin');
+        html += '<h3>כלמוביל</h3>';
+        html += '<ul>';
+        html += `<li>מדרגות מנהל (totalCars): <strong>${kalmobilRules.manager.deliveryTiers.length} מדרגות</strong></li>`;
+        html += `<li>בונוס מימון: <strong>${kalmobilRules.manager.financeBonus.bonus} ש"ח</strong> (מעל ${kalmobilRules.manager.financeBonus.threshold}%)</li>`;
+        html += `<li>בונוס מלאי: <strong>${kalmobilRules.manager.inventoryBonus.bonus} ש"ח</strong> (מעל ${kalmobilRules.manager.inventoryBonus.threshold}%)</li>`;
+        html += `<li>מדרגות נציג (רטרו): <strong>${kalmobilRules.salesperson.deliveryTiers.length} מדרגות</strong></li>`;
+        html += '</ul>';
+        
+        // Hyundai Jerusalem
+        const hyundaiJRules = window.getCommissionRules('hyundai-jerusalem');
+        html += '<h3>יונדאי אוטולין ירושלים</h3>';
+        html += '<ul>';
+        html += `<li>עמלת מסירות מנהל: <strong>${hyundaiJRules.manager.deliveryRate} ש"ח</strong></li>`;
+        html += `<li>עמלת מסירות נציג: <strong>${hyundaiJRules.salesperson.deliveryRate} ש"ח</strong></li>`;
+        html += `<li>טופ סרוויס נציג: <strong>${hyundaiJRules.salesperson.topService.rate * 100}%</strong></li>`;
+        html += `<li>מדרגות תפעול: <strong>${hyundaiJRules.operations.topServiceTiers.length} מדרגות</strong></li>`;
+        html += '</ul>';
+        
+        html += '</div>';
+        
+        // Summary
+        html += '<div class="test-section">';
+        html += '<h2>📝 סיכום</h2>';
+        if (successCount === allShowrooms.length) {
+            html += '<p class="success">✅ כל 7 האולמות מוגדרים במלואם!</p>';
+            html += '<p>המערכת מוכנה לעדכונים עצמאיים דרך:</p>';
+            html += '<ul>';
+            html += '<li><strong>commission-manager.html</strong> - ממשק ויזואלי לכל 7 האולמות</li>';
+            html += '<li><strong>js/commission-rules.js</strong> - עריכה ישירה של הכללים</li>';
+            html += '</ul>';
+        } else {
+            html += `<p class="error">⚠️ ${allShowrooms.length - successCount} אולמות חסרים</p>`;
+        }
+        html += '</div>';
+        
+        resultsDiv.innerHTML = html;
+        
+        console.log('========================================');
+        console.log('📊 בדיקת כל האולמות הושלמה');
+        console.log('========================================');
+        console.log(`✓ מוכנים: ${successCount}/${allShowrooms.length}`);
+        console.log('========================================');
+    </script>
+</body>
+</html>

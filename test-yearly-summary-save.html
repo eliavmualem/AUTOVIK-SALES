@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Yearly Summary - Save & Display</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧪 בדיקה: שמירה וסיכום שנתי</h1>
+        
+        <div id="test-area"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+            <h3>📊 תוצאות בדיקה:</h3>
+            <div id="test-results" style="font-family: monospace; white-space: pre-wrap;"></div>
+        </div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    
+    <script>
+        console.log('🧪 Starting test: Save & Yearly Summary');
+        
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        const prefix = 'hm-2026-01';
+        
+        const layout = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-area').innerHTML = layout;
+        
+        setTimeout(() => {
+            // Fill test data
+            document.getElementById('hm-2026-01-guy-cars').value = 5;
+            document.getElementById('hm-2026-01-dario-cars').value = 20;
+            document.getElementById('hm-2026-01-dario-topservice').value = 15;
+            document.getElementById('hm-2026-01-dario-topservice-potential').value = 20;
+            document.getElementById('hm-2026-01-dario-target').value = 20;
+            document.getElementById('hm-2026-01-dario-insurance').value = 8;
+            document.getElementById('hm-2026-01-dario-finance').value = 100;
+            document.getElementById('hm-2026-01-dario-tradein').value = 200;
+            document.getElementById('hm-2026-01-asher-insurance').value = 10;
+            document.getElementById('hm-2026-01-branch-target').value = 25;
+            
+            console.log('✅ Test data filled');
+            
+            // Calculate
+            window.calculateGenericMonth(showroomId, month);
+            
+            setTimeout(() => {
+                console.log('📊 lastCalculatedResults:', window.lastCalculatedResults);
+                
+                // Save
+                if (typeof window.saveGenericMonth === 'function') {
+                    window.saveGenericMonth(showroomId, month);
+                    console.log('✅ Data saved');
+                } else {
+                    console.error('❌ saveGenericMonth not found');
+                }
+                
+                setTimeout(() => {
+                    // Read from localStorage
+                    const allData = JSON.parse(localStorage.getItem('commissionData') || '{}');
+                    console.log('💾 All localStorage data:', allData);
+                    console.log(`💾 ${showroomId} data:`, allData[showroomId]);
+                    console.log(`💾 ${month} data:`, allData[showroomId]?.[month]);
+                    console.log(`💾 calculatedResults:`, allData[showroomId]?.[month]?.calculatedResults);
+                    
+                    const savedResults = allData[showroomId]?.[month]?.calculatedResults;
+                    
+                    const results = `
+📊 Test Results:
+═══════════════════════════════════════════
+
+1️⃣ Calculation Output:
+-----------------------
+window.lastCalculatedResults[${month}]:
+${JSON.stringify(window.lastCalculatedResults?.[month], null, 2)}
+
+2️⃣ Saved to localStorage:
+--------------------------
+Data exists: ${allData[showroomId]?.[month] ? 'YES' : 'NO'}
+calculatedResults exists: ${savedResults ? 'YES' : 'NO'}
+
+${savedResults ? `
+Structure:
+${JSON.stringify(savedResults, null, 2)}
+
+Has 'employees' key: ${savedResults.employees ? 'YES' : 'NO'}
+` : '❌ No calculatedResults saved!'}
+
+3️⃣ Expected Format for Yearly Summary:
+----------------------------------------
+Should have per-employee structure like:
+{
+  guy: { vehiclesComponent: 3000, tradeInComponent: 0, financeComponent: 0, total: 3000 },
+  dario: { vehiclesComponent: X, tradeInComponent: 200, financeComponent: 100, total: Y }
+}
+
+═══════════════════════════════════════════
+                    `;
+                    
+                    document.getElementById('test-results').textContent = results;
+                    console.log(results);
+                    
+                }, 1000);
+                
+            }, 500);
+            
+        }, 300);
+        
+    </script>
+</body>
+</html>

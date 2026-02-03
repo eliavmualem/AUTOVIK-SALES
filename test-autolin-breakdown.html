@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - אוטולין פירוט</title>
+</head>
+<body>
+    <h1>בדיקת פירוט עמלות - אוטולין ירושלים</h1>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/new-layout-generator.js"></script>
+    <script src="js/calc-simple.js"></script>
+    
+    <script>
+        // Mock getValue
+        const inputValues = {};
+        window.getValue = function(id) {
+            return inputValues[id] || 0;
+        };
+
+        // Mock setDisplay
+        const displayValues = {};
+        window.setDisplay = function(id, value) {
+            displayValues[id] = value;
+            console.log(`  ${id} = ${value}`);
+        };
+
+        console.log('✓ Modules loaded\n');
+
+        // Test: דניאל נגר - 100% target + mystery 95
+        console.log('=== בדיקה: דניאל נגר - אוטולין ירושלים ===');
+        const month = '2026-01';
+        const prefix = 'hj-2026-01';
+        
+        // Set input values
+        inputValues[prefix + '-branch-target'] = 17;
+        inputValues[prefix + '-daniel-target'] = 8;
+        inputValues[prefix + '-daniel-cars'] = 8;
+        inputValues[prefix + '-daniel-insurance'] = 6;
+        inputValues[prefix + '-daniel-topservice'] = 8;
+        inputValues[prefix + '-daniel-topservicepot'] = 10;
+        inputValues[prefix + '-daniel-warranty'] = 4;
+        inputValues[prefix + '-daniel-mystery'] = 95;  // High score
+        inputValues[prefix + '-daniel-demo'] = 100;
+        inputValues[prefix + '-daniel-diff'] = 50;
+        inputValues[prefix + '-daniel-finance'] = 0;
+        inputValues[prefix + '-daniel-tradein'] = 0;
+        
+        inputValues[prefix + '-alfred-target'] = 9;
+        inputValues[prefix + '-alfred-cars'] = 6;
+        inputValues[prefix + '-alfred-insurance'] = 5;
+        inputValues[prefix + '-alfred-topservice'] = 5;
+        inputValues[prefix + '-alfred-topservicepot'] = 8;
+        inputValues[prefix + '-alfred-warranty'] = 3;
+        inputValues[prefix + '-alfred-mystery'] = 70;  // Low score
+        inputValues[prefix + '-alfred-demo'] = 50;
+        inputValues[prefix + '-alfred-diff'] = 0;
+        inputValues[prefix + '-alfred-finance'] = 0;
+        inputValues[prefix + '-alfred-tradein'] = 0;
+        
+        inputValues[prefix + '-meir-cars'] = 3;
+        inputValues[prefix + '-meir-demo'] = 0;
+        inputValues[prefix + '-meir-diff'] = 0;
+        inputValues[prefix + '-meir-finance'] = 0;
+        inputValues[prefix + '-meir-tradein'] = 0;
+        
+        // Run calculation
+        calculateMonth(month);
+        
+        console.log('\n📊 תוצאות דניאל:');
+        console.log(`פירוט עמלות מסירה: ${displayValues[prefix + '-daniel-vehicles-breakdown']}`);
+        console.log(`עמלות מסירה (סכום): ₪${displayValues[prefix + '-daniel-base-commission']}`);
+        console.log(`התאמת לקוח סמוי: ₪${displayValues[prefix + '-daniel-mystery-display']}`);
+        console.log(`סה"כ רכיב רכבים: ₪${displayValues[prefix + '-daniel-vehicles-display']}`);
+        
+        console.log('\n🧮 חישוב צפוי לדניאל:');
+        console.log(`בסיס: 8 × 150 = ₪1,200`);
+        console.log(`בונוס סניף: 17 × 10 = ₪170 (עמד ביעד)`);
+        console.log(`בונוס 100%: 8 × 20 = ₪160`);
+        console.log(`סה"כ עמלות מסירה: ₪1,530`);
+        console.log(`לקוח סמוי (95 ≥ 90): +20% × 1,530 = +₪306`);
+        
+        console.log('\n📊 תוצאות אלפרד:');
+        console.log(`פירוט עמלות מסירה: ${displayValues[prefix + '-alfred-vehicles-breakdown']}`);
+        console.log(`התאמת לקוח סמוי: ₪${displayValues[prefix + '-alfred-mystery-display']}`);
+        
+        console.log('\n🧮 חישוב צפוי לאלפרד:');
+        console.log(`בסיס: 6 × 150 = ₪900`);
+        console.log(`בונוס סניף: 17 × 10 = ₪170 (עמד ביעד)`);
+        console.log(`סה"כ עמלות מסירה: ₪1,070 (לא עמד ב-100%)`);
+        console.log(`לקוח סמוי (70 < 80): -20% × 1,070 = -₪214`);
+        
+        console.log('\n✅ בדיקה הושלמה!');
+    </script>
+</body>
+</html>

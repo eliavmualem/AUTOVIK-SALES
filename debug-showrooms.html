@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>🔍 Debug - בדיקת שמות עובדים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 3px solid #764ba2;
+        }
+        h4 {
+            background: yellow !important;
+            padding: 15px !important;
+            margin: 10px 0 !important;
+            border: 3px solid red !important;
+            font-size: 1.5rem !important;
+            display: block !important;
+            visibility: visible !important;
+        }
+        .employee-card-title {
+            background: lime !important;
+            color: black !important;
+            padding: 20px !important;
+            font-size: 2rem !important;
+            border: 5px solid blue !important;
+        }
+        .name-found {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+        .name-not-found {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; background: #764ba2; color: white; padding: 20px; border-radius: 10px;">
+        🔍 בדיקת שמות עובדים - Debug
+    </h1>
+    
+    <div class="debug-section">
+        <h2>📊 סיכום מהיר</h2>
+        <div id="quick-summary"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>1️⃣ יונדאי מודיעין</h2>
+        <div id="hm-container"></div>
+        <div id="hm-results"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2️⃣ מיצובישי מודיעין</h2>
+        <div id="mm-container"></div>
+        <div id="mm-results"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3️⃣ אומודה ג'אקו מודיעין</h2>
+        <div id="om-container"></div>
+        <div id="om-results"></div>
+    </div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script>
+        console.log('🔍 === DEBUG: Checking Employee Names ===');
+        
+        const showrooms = [
+            { id: 'hyundai-modiin', container: 'hm-container', results: 'hm-results', expected: 4 },
+            { id: 'mitsubishi-modiin', container: 'mm-container', results: 'mm-results', expected: 1 },
+            { id: 'omoda-modiin', container: 'om-container', results: 'om-results', expected: 4 }
+        ];
+        
+        let totalFound = 0;
+        let totalExpected = 0;
+        
+        showrooms.forEach(showroom => {
+            console.log(`\n📍 Testing: ${showroom.id}`);
+            
+            // Get config
+            const config = window.getShowroomConfig(showroom.id);
+            console.log('Config:', config);
+            
+            if (!config) {
+                document.getElementById(showroom.results).innerHTML = '<div class="name-not-found">❌ תצורה לא נמצאה!</div>';
+                return;
+            }
+            
+            // Create layout
+            const html = window.createGenericMonthLayout(showroom.id, '2026-01');
+            document.getElementById(showroom.container).innerHTML = html;
+            
+            // Find all h4 elements
+            const container = document.getElementById(showroom.container);
+            const h4s = container.querySelectorAll('h4');
+            const titles = container.querySelectorAll('.employee-card-title');
+            
+            console.log(`Found ${h4s.length} h4 elements`);
+            console.log(`Found ${titles.length} .employee-card-title elements`);
+            
+            let resultsHTML = '';
+            
+            if (h4s.length === 0) {
+                resultsHTML = '<div class="name-not-found">❌ לא נמצאו כותרות H4!</div>';
+            } else {
+                resultsHTML = `<div class="name-found">✅ נמצאו ${h4s.length} שמות (ציפינו ל-${showroom.expected})</div>`;
+                resultsHTML += '<ul style="font-size: 1.2rem; line-height: 2;">';
+                h4s.forEach((h4, i) => {
+                    const text = h4.textContent || h4.innerText;
+                    console.log(`  Name ${i + 1}: ${text}`);
+                    resultsHTML += `<li><strong>${i + 1}. ${text}</strong></li>`;
+                });
+                resultsHTML += '</ul>';
+            }
+            
+            document.getElementById(showroom.results).innerHTML = resultsHTML;
+            
+            totalFound += h4s.length;
+            totalExpected += showroom.expected;
+        });
+        
+        // Summary
+        const summaryHTML = `
+            <div style="font-size: 1.5rem; padding: 20px; background: ${totalFound === totalExpected ? '#4CAF50' : '#ff9800'}; color: white; border-radius: 10px; text-align: center;">
+                <strong>סה"כ: ${totalFound} שמות נמצאו מתוך ${totalExpected} צפויים</strong><br>
+                ${totalFound === totalExpected ? '✅ הכל תקין!' : '⚠️ יש בעיה!'}
+            </div>
+        `;
+        document.getElementById('quick-summary').innerHTML = summaryHTML;
+        
+        console.log(`\n📊 Summary: ${totalFound}/${totalExpected} names found`);
+        console.log('🔍 === DEBUG Complete ===');
+    </script>
+</body>
+</html>

@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 המחשבון שלי - חישוב עמלות</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .calculator-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .selection-group {
+            margin-bottom: 25px;
+        }
+        
+        .selection-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .selection-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Heebo', sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .selection-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .input-section.active {
+            display: block;
+        }
+        
+        .input-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Heebo', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .results-section.active {
+            display: block;
+        }
+        
+        .results-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 500;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .total-row {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .simulator-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ffc107;
+            display: none;
+        }
+        
+        .simulator-section.active {
+            display: block;
+        }
+        
+        .simulator-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .simulator-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .simulator-input input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .simulator-result {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #856404;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Heebo', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-reset {
+            background: #f1f3f5;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #e9ecef;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid #2196f3;
+            margin-bottom: 20px;
+        }
+        
+        .info-box p {
+            color: #0d47a1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 600px) {
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-calculate {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>🧮 המחשבון שלי</h1>
+            <p>חשב את העמלות שלך בזמן אמת</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <p>💡 <strong>שים לב:</strong> מחשבון זה מיועד לשימוש אישי בלבד. הנתונים שתזין כאן לא ישפיעו על הנתונים הרשמיים במערכת.</p>
+            </div>
+            
+            <!-- בחירת אולם ועובד -->
+            <div class="selection-group">
+                <label for="showroom-select">בחר אולם תצוגה:</label>
+                <select id="showroom-select">
+                    <option value="">-- בחר אולם --</option>
+                </select>
+            </div>
+            
+            <div class="selection-group">
+                <label for="employee-select">בחר עובד:</label>
+                <select id="employee-select" disabled>
+                    <option value="">-- בחר עובד --</option>
+                </select>
+            </div>
+            
+            <!-- שדות הזנה -->
+            <div id="input-section" class="input-section">
+                <h3>📊 הזן נתונים</h3>
+                <div id="input-fields"></div>
+                
+                <button class="btn btn-calculate" onclick="calculateCommission()">
+                    🧮 חשב עמלות
+                </button>
+            </div>
+            
+            <!-- תוצאות -->
+            <div id="results-section" class="results-section">
+                <h3>💰 תחזית עמלות</h3>
+                <div id="results-content"></div>
+            </div>
+            
+            <!-- סימולטור "מה אם" -->
+            <div id="simulator-section" class="simulator-section">
+                <h3>🎯 מה אם?</h3>
+                <div class="simulator-input">
+                    <span>אם אמכור עוד</span>
+                    <input type="number" id="extra-deliveries" value="0" min="0" max="50">
+                    <span id="simulator-item-label">פריטים</span>
+                </div>
+                <div class="simulator-result" id="simulator-result">
+                    הזן מספר פריטים נוסף
+                </div>
+            </div>
+            
+            <!-- כפתורי פעולה -->
+            <div class="action-buttons">
+                <button class="btn btn-reset" onclick="resetCalculator()">
+                    🔄 איפוס
+                </button>
+                <button class="btn btn-back" onclick="window.location.href='index.html'">
+                    ← חזור למערכת
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/calc-geely.js"></script>
+    <script src="js/calc-simple.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('🧮 Personal Calculator loaded');
+        
+        // Check for URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const preselectedShowroom = urlParams.get('showroom');
+        const preselectedEmployee = urlParams.get('employee');
+        
+        console.log('URL params:', { showroom: preselectedShowroom, employee: preselectedEmployee });
+        
+        // Load showrooms
+        window.addEventListener('DOMContentLoaded', function() {
+            loadShowrooms();
+            
+            // Auto-load if URL params exist
+            if (preselectedShowroom && preselectedEmployee) {
+                setTimeout(() => {
+                    autoLoadEmployee(preselectedShowroom, preselectedEmployee);
+                }, 100);
+            }
+        });
+        
+        function autoLoadEmployee(showroomId, employeeId) {
+            const showroomSelect = document.getElementById('showroom-select');
+            const employeeSelect = document.getElementById('employee-select');
+            
+            // Set showroom
+            showroomSelect.value = showroomId;
+            showroomSelect.disabled = true; // Lock selection
+            
+            // Load employees for this showroom
+            loadEmployees(showroomId);
+            
+            // Wait for employees to load, then select the employee
+            setTimeout(() => {
+                employeeSelect.value = employeeId;
+                employeeSelect.disabled = true; // Lock selection
+                
+                const selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    loadInputFields(showroomId, employeeId, selectedOption.dataset.type);
+                    
+                    // Update header to show employee name
+                    const headerSubtitle = document.querySelector('.header p');
+                    const config = window.getShowroomConfig(showroomId);
+                    if (config) {
+                        headerSubtitle.innerHTML = `👤 <strong>${selectedOption.textContent}</strong>`;
+                        headerSubtitle.style.fontSize = '1.3rem';
+                        
+                        // Add a note about locked mode
+                        const note = document.createElement('div');
+                        note.style.marginTop = '10px';
+                        note.style.fontSize = '0.9rem';
+                        note.style.opacity = '0.8';
+                        note.textContent = '🔒 מחשבון אישי - נעול עבורך';
+                        headerSubtitle.appendChild(note);
+                    }
+                } else {
+                    console.error('Employee not found:', employeeId);
+                }
+            }, 200);
+        }
+        
+        function loadShowrooms() {
+            const showroomSelect = document.getElementById('showroom-select');
+            
+            // Get all showroom configs
+            const showrooms = [
+                { id: 'hyundai-jerusalem', name: 'יונדאי אוטולין ירושלים' },
+                { id: 'hyundai-modiin', name: 'יונדאי מודיעין' },
+                { id: 'mitsubishi-modiin', name: 'מיצובישי מודיעין' },
+                { id: 'omoda-modiin', name: 'אומודה ג\'אקו מודיעין' },
+                { id: 'kalmobil-modiin', name: 'כלמוביל טרייד אין מודיעין' },
+                { id: 'geely-modiin', name: 'ג\'ילי מודיעין' },
+                { id: 'geely-jerusalem', name: 'ג\'ילי ירושלים' }
+            ];
+            
+            showrooms.forEach(showroom => {
+                const option = document.createElement('option');
+                option.value = showroom.id;
+                option.textContent = showroom.name;
+                showroomSelect.appendChild(option);
+            });
+            
+            // Event listener for showroom change
+            showroomSelect.addEventListener('change', function() {
+                loadEmployees(this.value);
+            });
+        }
+        
+        function loadEmployees(showroomId) {
+            const employeeSelect = document.getElementById('employee-select');
+            const inputSection = document.getElementById('input-section');
+            
+            // Clear previous
+            employeeSelect.innerHTML = '<option value="">-- בחר עובד --</option>';
+            employeeSelect.disabled = true;
+            inputSection.classList.remove('active');
+            
+            if (!showroomId) return;
+            
+            const config = window.getShowroomConfig(showroomId);
+            if (!config) return;
+            
+            const employees = [];
+            
+            // Add manager
+            if (config.employees.manager) {
+                employees.push({
+                    id: config.employees.manager.id,
+                    name: config.employees.manager.name,
+                    role: config.employees.manager.role,
+                    type: config.employees.manager.type
+                });
+            }
+            
+            // Add salespeople
+            if (config.employees.salespeople) {
+                config.employees.salespeople.forEach(sp => {
+                    employees.push({
+                        id: sp.id,
+                        name: sp.name,
+                        role: sp.role,
+                        type: sp.type
+                    });
+                });
+            }
+            
+            // Add operations
+            if (config.employees.operations) {
+                employees.push({
+                    id: config.employees.operations.id,
+                    name: config.employees.operations.name,
+                    role: config.employees.operations.role,
+                    type: config.employees.operations.type
+                });
+            }
+            
+            // Populate select
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = `${emp.name} (${emp.role})`;
+                option.dataset.type = emp.type;
+                employeeSelect.appendChild(option);
+            });
+            
+            employeeSelect.disabled = false;
+            
+            // Event listener for employee change
+            employeeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.value) {
+                    loadInputFields(showroomId, selectedOption.value, selectedOption.dataset.type);
+                }
+            });
+        }
+        
+        function loadInputFields(showroomId, employeeId, employeeType) {
+            const inputSection = document.getElementById('input-section');
+            const inputFields = document.getElementById('input-fields');
+            
+            inputSection.classList.add('active');
+            inputFields.innerHTML = '';
+            
+            // Build input fields based on employee type
+            let fields = getFieldsForEmployeeType(employeeType);
+            
+            fields.forEach(field => {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+                
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `calc-${field.id}`;
+                input.placeholder = field.placeholder || '0';
+                input.min = field.min || '0';
+                input.max = field.max || '';
+                input.step = field.step || '1';
+                
+                // Add simulation listeners
+                if (field.simulation) {
+                    input.addEventListener('input', () => updateCalculatorSimulation());
+                }
+                
+                inputGroup.appendChild(label);
+                inputGroup.appendChild(input);
+                
+                // Add simulation box after certain fields
+                if (field.id === 'deliveries') {
+                    const simBox = document.createElement('div');
+                    simBox.id = 'sim-target-status';
+                    simBox.className = 'simulation-box';
+                    simBox.style.cssText = 'margin-top: 10px; padding: 12px; background: #f0f8ff; border-radius: 8px; font-size: 0.9rem;';
+                    simBox.innerHTML = '<div style="color: #999;">הזן יעד ומסירות לראות סטטוס</div>';
+                    inputGroup.appendChild(simBox);
+                }
+                
+                if (field.id === 'mystery') {
+                    const simBox = document.createElement('div');
+                    simBox.id = 'sim-mystery-status';
+                    simBox.className = 'simulation-box';
+                    simBox.style.cssText = 'margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 8px; font-size: 0.85rem; text-align: center;';
+                    simBox.innerHTML = '<span style="color: #999;">הזן ציון 0-100</span>';
+                    inputGroup.appendChild(simBox);
+                }
+                
+                if (field.id === 'total-branch-cars') {
+                    const simBox = document.createElement('div');
+                    simBox.id = 'sim-branch-status';
+                    simBox.className = 'simulation-box';
+                    simBox.style.cssText = 'margin-top: 10px; padding: 12px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; font-size: 0.9rem;';
+                    simBox.innerHTML = `
+                        <div style="font-weight: 600; color: #856404; margin-bottom: 5px;">💡 בונוס עמידה ביעד סניף:</div>
+                        <div id="sim-branch-bonus-text" style="color: #856404; font-size: 0.85rem;">
+                            אם הסניף עומד ביעד, תקבל בונוס של <strong>10 ש"ח × כל רכבי הסניף</strong>
+                        </div>
+                    `;
+                    inputGroup.appendChild(simBox);
+                }
+                
+                // Operations: Top Service simulation box
+                if (field.id === 'topservice-potential' && employeeType === 'operations') {
+                    const simBox = document.createElement('div');
+                    simBox.id = 'sim-topservice-status';
+                    simBox.className = 'simulation-box';
+                    simBox.style.cssText = 'margin-top: 10px; padding: 12px; background: #e8f5e9; border: 2px solid #4caf50; border-radius: 8px; font-size: 0.9rem;';
+                    simBox.innerHTML = `
+                        <div style="font-weight: 600; color: #2e7d32; margin-bottom: 8px;">📊 מדרגות טופ סרוויס:</div>
+                        <div style="color: #2e7d32; font-size: 0.85rem; line-height: 1.6;">
+                            <div>• <strong>פחות מ-60%</strong>: 50 ש"ח לחבילה</div>
+                            <div>• <strong>60%-69%</strong>: 70 ש"ח לחבילה</div>
+                            <div>• <strong>70%+</strong>: 80 ש"ח לחבילה</div>
+                            <div id="sim-topservice-current" style="margin-top: 8px; padding: 8px; background: white; border-radius: 4px; font-weight: 600;">
+                                הזן נתונים לראות מיקום נוכחי
+                            </div>
+                        </div>
+                    `;
+                    inputGroup.appendChild(simBox);
+                }
+                
+                inputFields.appendChild(inputGroup);
+            });
+        }
+        
+        function getFieldsForEmployeeType(type) {
+            // Hyundai manager fields (מאיר מועלם)
+            if (type === 'manager') {
+                return [
+                    { id: 'deliveries', label: '🚗 מסירות רכב', placeholder: '0', info: 'עמלה: 200 ש"ח לרכב' },
+                    { id: 'demo', label: '🚙 רכבי הדגמה (₪)', placeholder: '0' },
+                    { id: 'diff', label: '💰 הפרשי עמלות (₪)', placeholder: '0' },
+                    { id: 'finance', label: '💳 מימון (₪)', placeholder: '0' },
+                    { id: 'tradein', label: '🔄 טרייד אין (₪)', placeholder: '0' }
+                ];
+            }
+            
+            // Hyundai salesperson fields (דניאל, אלפרד)
+            if (type === 'salesperson') {
+                return [
+                    { id: 'personal-target', label: '🎯 יעד אישי (מסירות)', placeholder: '0', simulation: true },
+                    { id: 'deliveries', label: 'מסירות רכב בפועל', placeholder: '0', simulation: true },
+                    { id: 'branch-target', label: '🏆 יעד הסניף (מסירות)', placeholder: '0', info: true },
+                    { id: 'total-branch-cars', label: '📊 סה"כ רכבי הסניף', placeholder: '0', info: true },
+                    { id: 'mystery', label: '🕵️ ציון Mystery Shopper', placeholder: '0-100', max: '100', min: '0', simulation: true },
+                    { id: 'insurance', label: '🛡️ ביטוח', placeholder: '0' },
+                    { id: 'topservice', label: '🔧 טופ סרוויס', placeholder: '0' },
+                    { id: 'topservice-potential', label: '📈 פוטנציאל טופ סרוויס', placeholder: '0' },
+                    { id: 'warranty', label: '📋 הרחבת אחריות', placeholder: '0' },
+                    { id: 'demo', label: '🚗 רכבי הדגמה (₪)', placeholder: '0' },
+                    { id: 'diff', label: '💰 הפרשי עמלות (₪)', placeholder: '0' },
+                    { id: 'finance', label: '💳 מימון (₪)', placeholder: '0' },
+                    { id: 'tradein', label: '🔄 טרייד אין (₪)', placeholder: '0' }
+                ];
+            }
+            
+            // Hyundai operations fields (דניאל אליה)
+            if (type === 'operations') {
+                return [
+                    { id: 'topservice', label: '🔧 טופ סרוויס (מכירות בפועל)', placeholder: '0', simulation: true },
+                    { id: 'topservice-potential', label: '📈 פוטנציאל טופ סרוויס (מהנציגים)', placeholder: '0', simulation: true },
+                    { id: 'insurance', label: '🛡️ ביטוח', placeholder: '0' }
+                ];
+            }
+            
+            // Common fields for most types
+            const commonFields = [
+                { id: 'deliveries', label: 'מסירות רכב', placeholder: '0' },
+                { id: 'accessories', label: 'סה"כ אביזרים (₪)', placeholder: '0' },
+                { id: 'insurance', label: 'ביטוח', placeholder: '0' },
+                { id: 'topservice', label: 'טופ סרוויס', placeholder: '0' },
+                { id: 'warranty', label: 'הרחבת אחריות', placeholder: '0' },
+                { id: 'tradein', label: 'טרייד אין', placeholder: '0' },
+                { id: 'finance', label: 'מימון (₪)', placeholder: '0' }
+            ];
+            
+            if (type === 'geely-salesperson' || type === 'geely-manager') {
+                return [
+                    { id: 'deliveries', label: 'מסירות רכב', placeholder: '0' },
+                    { id: 'nps', label: 'ציון NPS', placeholder: '0-100', max: '100' },
+                    { id: 'accessories', label: 'סה"כ אביזרים (₪)', placeholder: '0' },
+                    { id: 'warranty', label: 'הרחבת אחריות', placeholder: '0' },
+                    { id: 'insurance', label: 'ביטוח', placeholder: '0' },
+                    { id: 'tradein', label: 'טרייד אין', placeholder: '0' },
+                    { id: 'service', label: 'חבילות שירות', placeholder: '0' },
+                    { id: 'delivery-meetings', label: 'פגישות מסירה', placeholder: '0' }
+                ];
+            }
+            
+            return commonFields;
+        }
+        
+        function updateCalculatorSimulation() {
+            const target = parseFloat(document.getElementById('calc-personal-target')?.value) || 0;
+            const cars = parseFloat(document.getElementById('calc-deliveries')?.value) || 0;
+            const mystery = parseFloat(document.getElementById('calc-mystery')?.value) || 0;
+            const branchTarget = parseFloat(document.getElementById('calc-branch-target')?.value) || 0;
+            const totalBranchCars = parseFloat(document.getElementById('calc-total-branch-cars')?.value) || 0;
+            
+            // Update personal target status
+            const targetStatusEl = document.getElementById('sim-target-status');
+            if (targetStatusEl) {
+                if (target === 0) {
+                    targetStatusEl.innerHTML = '<div style="color: #999;">הזן יעד ומסירות לראות סטטוס</div>';
+                } else {
+                    const percent = (cars / target) * 100;
+                    let html = '';
+                    let color = '';
+                    
+                    if (percent >= 110) {
+                        color = '#28a745';
+                        html = `
+                            <div style="color: ${color}; font-weight: 600; margin-bottom: 8px;">
+                                ✅ ${Math.round(percent)}% מהיעד (${cars}/${target})
+                            </div>
+                            <div style="background: #e8f8e8; padding: 8px; border-radius: 6px; margin-top: 5px;">
+                                <div style="color: ${color}; font-size: 0.9rem; margin-bottom: 3px;">
+                                    🎉 בונוס 100%: +${(cars * 20).toLocaleString('he-IL')} ש"ח
+                                </div>
+                                <div style="color: ${color}; font-size: 0.9rem; margin-bottom: 3px;">
+                                    🎉 בונוס 110%: +${(cars * 10).toLocaleString('he-IL')} ש"ח
+                                </div>
+                                <div style="color: ${color}; font-weight: 600; font-size: 1rem; border-top: 1px solid #28a745; padding-top: 5px; margin-top: 5px;">
+                                    💰 סה"כ בונוס יעד: +${(cars * 30).toLocaleString('he-IL')} ש"ח
+                                </div>
+                            </div>
+                        `;
+                    } else if (percent >= 100) {
+                        color = '#20c997';
+                        html = `
+                            <div style="color: ${color}; font-weight: 600; margin-bottom: 8px;">
+                                ✅ ${Math.round(percent)}% מהיעד (${cars}/${target})
+                            </div>
+                            <div style="background: #e8f4f8; padding: 8px; border-radius: 6px;">
+                                <div style="color: ${color}; font-size: 0.9rem;">
+                                    🎉 בונוס 100%: +${(cars * 20).toLocaleString('he-IL')} ש"ח
+                                </div>
+                                <div style="color: #666; font-size: 0.85rem; margin-top: 5px;">
+                                    💡 עוד ${Math.ceil(target * 1.1 - cars)} רכבים לבונוס 110%
+                                </div>
+                            </div>
+                        `;
+                    } else if (percent >= 80) {
+                        color = '#ffc107';
+                        html = `
+                            <div style="color: ${color}; font-weight: 600; margin-bottom: 8px;">
+                                ⚠️ ${Math.round(percent)}% מהיעד (${cars}/${target})
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem;">
+                                עוד ${Math.ceil(target - cars)} רכבים לבונוס 100% (+${(Math.ceil(target - cars) * 20 + cars * 20).toLocaleString('he-IL')} ש"ח)
+                            </div>
+                        `;
+                    } else {
+                        color = '#dc3545';
+                        html = `
+                            <div style="color: ${color}; font-weight: 600; margin-bottom: 8px;">
+                                ❌ ${Math.round(percent)}% מהיעד (${cars}/${target})
+                            </div>
+                            <div style="color: #666; font-size: 0.9rem;">
+                                עוד ${Math.ceil(target - cars)} רכבים לבונוס 100%
+                            </div>
+                        `;
+                    }
+                    
+                    targetStatusEl.innerHTML = html;
+                }
+            }
+            
+            // Update mystery shopper status
+            const mysteryStatusEl = document.getElementById('sim-mystery-status');
+            if (mysteryStatusEl) {
+                if (mystery === 0) {
+                    mysteryStatusEl.innerHTML = '<span style="color: #999;">הזן ציון 0-100</span>';
+                    mysteryStatusEl.style.background = '#f5f5f5';
+                } else {
+                    let html = '';
+                    let bgColor = '';
+                    let textColor = '';
+                    
+                    if (mystery < 80) {
+                        bgColor = '#ffe5e5';
+                        textColor = '#dc3545';
+                        html = `
+                            <div style="color: ${textColor}; font-weight: 600;">
+                                ⚠️ קיזוז 20% מעמלת הרכבים
+                            </div>
+                            <div style="margin-top: 3px; font-size: 0.85rem;">
+                                ציון ${mystery} מתחת ל-80
+                            </div>
+                        `;
+                    } else if (mystery < 90) {
+                        bgColor = '#e8f4f8';
+                        textColor = '#17a2b8';
+                        html = `
+                            <div style="color: ${textColor}; font-weight: 600;">
+                                ✅ ללא שינוי בעמלות
+                            </div>
+                            <div style="margin-top: 3px; font-size: 0.85rem;">
+                                ציון ${mystery} (80-89)
+                            </div>
+                        `;
+                    } else {
+                        bgColor = '#e8f8e8';
+                        textColor = '#28a745';
+                        html = `
+                            <div style="color: ${textColor}; font-weight: 600;">
+                                🎉 בונוס 20% על עמלת הרכבים!
+                            </div>
+                            <div style="margin-top: 3px; font-size: 0.85rem;">
+                                ציון ${mystery} מעל 90
+                            </div>
+                        `;
+                    }
+                    
+                    mysteryStatusEl.innerHTML = html;
+                    mysteryStatusEl.style.background = bgColor;
+                }
+            }
+            
+            // Update branch status
+            const branchBonusTextEl = document.getElementById('sim-branch-bonus-text');
+            if (branchBonusTextEl && branchTarget > 0 && totalBranchCars > 0) {
+                if (totalBranchCars >= branchTarget) {
+                    const branchBonus = totalBranchCars * 10;
+                    branchBonusTextEl.innerHTML = `
+                        ✅ <strong style="color: #28a745;">הסניף עמד ביעד!</strong><br>
+                        תקבל בונוס סניף: <strong>${branchBonus.toLocaleString('he-IL')} ש"ח</strong> (${totalBranchCars} רכבים × 10 ש"ח)
+                    `;
+                } else {
+                    branchBonusTextEl.innerHTML = `
+                        ⚠️ <strong style="color: #dc3545;">הסניף טרם עמד ביעד</strong><br>
+                        לא יתקבל בונוס סניף (${totalBranchCars}/${branchTarget} רכבים)
+                    `;
+                }
+            }
+            
+            // Update Top Service status (for operations)
+            const topservice = parseFloat(document.getElementById('calc-topservice')?.value) || 0;
+            const topservicePotential = parseFloat(document.getElementById('calc-topservice-potential')?.value) || 0;
+            const topServiceCurrentEl = document.getElementById('sim-topservice-current');
+            
+            if (topServiceCurrentEl) {
+                if (topservice === 0 || topservicePotential === 0) {
+                    topServiceCurrentEl.innerHTML = 'הזן נתונים לראות מיקום נוכחי';
+                    topServiceCurrentEl.style.background = 'white';
+                    topServiceCurrentEl.style.color = '#999';
+                } else {
+                    const topServicePct = (topservice / topservicePotential) * 100;
+                    let rate = 50;
+                    let tierName = 'פחות מ-60%';
+                    let bgColor = '#fff3cd';
+                    let textColor = '#856404';
+                    
+                    if (topServicePct >= 70) {
+                        rate = 80;
+                        tierName = '70%+';
+                        bgColor = '#d4edda';
+                        textColor = '#155724';
+                    } else if (topServicePct >= 60) {
+                        rate = 70;
+                        tierName = '60%-69%';
+                        bgColor = '#d1ecf1';
+                        textColor = '#0c5460';
+                    }
+                    
+                    const commission = topservice * rate;
+                    
+                    topServiceCurrentEl.innerHTML = `
+                        <div style="color: ${textColor}; font-weight: 600; margin-bottom: 5px;">
+                            📊 ${topServicePct.toFixed(1)}% (${topservice}/${topservicePotential})
+                        </div>
+                        <div style="color: ${textColor}; font-size: 0.9rem; margin-bottom: 3px;">
+                            מדרגה: <strong>${tierName}</strong>
+                        </div>
+                        <div style="color: ${textColor}; font-size: 0.9rem;">
+                            תעריף: <strong>${rate} ש"ח</strong> לחבילה
+                        </div>
+                        <div style="color: ${textColor}; font-size: 1rem; font-weight: 600; margin-top: 5px; padding-top: 5px; border-top: 1px solid ${textColor};">
+                            💰 עמלה: ${commission.toLocaleString('he-IL')} ש"ח
+                        </div>
+                    `;
+                    topServiceCurrentEl.style.background = bgColor;
+                    topServiceCurrentEl.style.color = textColor;
+                }
+            }
+        }
+        
+        function calculateCommission() {
+            const showroomId = document.getElementById('showroom-select').value;
+            const employeeId = document.getElementById('employee-select').value;
+            const employeeOption = document.getElementById('employee-select').options[document.getElementById('employee-select').selectedIndex];
+            const employeeType = employeeOption.dataset.type;
+            
+            if (!showroomId || !employeeId) {
+                alert('נא לבחור אולם ועובד');
+                return;
+            }
+            
+            // Collect input values
+            const data = {};
+            const inputs = document.querySelectorAll('#input-fields input');
+            inputs.forEach(input => {
+                const fieldId = input.id.replace('calc-', '');
+                data[fieldId] = parseFloat(input.value) || 0;
+            });
+            
+            console.log('Calculating for:', { showroomId, employeeId, employeeType, data });
+            
+            // Calculate based on type
+            let results = {};
+            
+            if (employeeType === 'geely-salesperson') {
+                results = calculateGeelyCommission(data);
+            } else {
+                results = calculateGenericCommission(data, employeeType);
+            }
+            
+            displayResults(results);
+            
+            // Pass the correct "current value" based on employee type
+            const currentValue = employeeType === 'operations' ? data.topservice : data.deliveries;
+            updateSimulator(currentValue, results.total, results, employeeType, data);
+        }
+        
+        function calculateGeelyCommission(data) {
+            // Simple Geely calculation
+            const deliveryCommission = data.deliveries * 100;
+            
+            let npsAdjustment = 0;
+            if (data.deliveries > 0) {
+                if (data.nps < 75 && data.nps > 0) {
+                    npsAdjustment = -deliveryCommission * 0.1;
+                } else if (data.nps > 84) {
+                    npsAdjustment = ((data['delivery-meetings'] || 0) * 20) + (data.deliveries * 20);
+                }
+            }
+            
+            const accessoriesCommission = data.accessories * 0.06; // Simplified 6%
+            const warrantyCommission = data.warranty * 40;
+            const insuranceCommission = data.insurance * 60; // Simplified 60
+            const tradeinCommission = data.tradein * 120;
+            const serviceCommission = data.service * 80;
+            
+            const total = deliveryCommission + npsAdjustment + accessoriesCommission + 
+                         warrantyCommission + insuranceCommission + tradeinCommission + serviceCommission;
+            
+            return {
+                deliveryCommission,
+                npsAdjustment,
+                accessoriesCommission,
+                warrantyCommission,
+                insuranceCommission,
+                tradeinCommission,
+                serviceCommission,
+                total
+            };
+        }
+        
+        function calculateGenericCommission(data, type) {
+            // Check if it's Hyundai manager
+            if (type === 'manager') {
+                return calculateHyundaiManager(data);
+            }
+            
+            // Check if it's Hyundai salesperson
+            if (type === 'salesperson') {
+                return calculateHyundaiSalesperson(data);
+            }
+            
+            // Check if it's Hyundai operations
+            if (type === 'operations') {
+                return calculateHyundaiOperations(data);
+            }
+            
+            // Generic calculation (simplified)
+            const deliveryCommission = data.deliveries * 150; // Average
+            const accessoriesCommission = data.accessories * 0.05;
+            const insuranceCommission = data.insurance * 50;
+            const topserviceCommission = data.topservice * 70;
+            const warrantyCommission = data.warranty * 30;
+            const tradeinCommission = data.tradein * 100;
+            const financeCommission = data.finance || 0;
+            
+            const total = deliveryCommission + accessoriesCommission + insuranceCommission + 
+                         topserviceCommission + warrantyCommission + tradeinCommission + financeCommission;
+            
+            return {
+                deliveryCommission,
+                accessoriesCommission,
+                insuranceCommission,
+                topserviceCommission,
+                warrantyCommission,
+                tradeinCommission,
+                financeCommission,
+                total
+            };
+        }
+        
+        function calculateHyundaiSalesperson(data) {
+            // Base commission
+            const baseCarsComm = data.deliveries * 150;
+            
+            // Branch bonus
+            const branchTarget = data['branch-target'] || 0;
+            const totalBranchCars = data['total-branch-cars'] || 0;
+            const branchMetTarget = branchTarget > 0 && totalBranchCars >= branchTarget;
+            const branchBonus = branchMetTarget ? totalBranchCars * 10 : 0;
+            
+            // Personal target bonuses
+            const personalTarget = data['personal-target'] || 0;
+            const targetPct = personalTarget > 0 ? (data.deliveries / personalTarget) * 100 : 0;
+            const targetBonus100 = targetPct >= 100 ? data.deliveries * 20 : 0;
+            const targetBonus110 = targetPct >= 110 ? data.deliveries * 10 : 0;
+            
+            // Vehicle commission total
+            const vehicleComm = baseCarsComm + branchBonus + targetBonus100 + targetBonus110;
+            
+            // Insurance
+            const insuranceComm = data.insurance * 75;
+            
+            // Top service
+            const topBase = data['topservice-potential'] > 0 ? data['topservice-potential'] : data.deliveries;
+            const topPct = topBase > 0 ? (data.topservice / topBase) * 100 : 0;
+            const topRate = topPct >= 60 ? 175 : 150;
+            const topserviceComm = data.topservice * topRate;
+            
+            // Warranty
+            const warrantyComm = data.warranty * 60;
+            
+            // Mystery shopper adjustment
+            let mysteryAdj = 0;
+            const mystery = data.mystery || 0;
+            if (mystery > 0 && mystery < 80) {
+                mysteryAdj = -(vehicleComm * 0.2);
+            } else if (mystery >= 90) {
+                mysteryAdj = vehicleComm * 0.2;
+            }
+            
+            // Demo, diff, finance, tradein
+            const demo = data.demo || 0;
+            const diff = data.diff || 0;
+            const finance = data.finance || 0;
+            const tradein = data.tradein || 0;
+            
+            // Vehicles total
+            const vehiclesTotal = vehicleComm + insuranceComm + topserviceComm + warrantyComm + mysteryAdj + demo + diff;
+            
+            // Grand total
+            const total = vehiclesTotal + finance + tradein;
+            
+            return {
+                baseCarsComm,
+                branchBonus,
+                targetBonus100,
+                targetBonus110,
+                vehicleCommission: vehicleComm,
+                insuranceCommission: insuranceComm,
+                topserviceCommission: topserviceComm,
+                warrantyCommission: warrantyComm,
+                mysteryAdjustment: mysteryAdj,
+                demoCommission: demo,
+                diffCommission: diff,
+                vehiclesTotal,
+                financeCommission: finance,
+                tradeinCommission: tradein,
+                total
+            };
+        }
+        
+        function calculateHyundaiManager(data) {
+            // Meir Moalem - Manager
+            // Simple calculation: 200 ILS per delivery + manual entries
+            
+            const deliveryCommission = data.deliveries * 200;
+            const demo = data.demo || 0;
+            const diff = data.diff || 0;
+            const finance = data.finance || 0;
+            const tradein = data.tradein || 0;
+            
+            // Vehicles component
+            const vehiclesTotal = deliveryCommission + demo + diff;
+            
+            // Total
+            const total = vehiclesTotal + finance + tradein;
+            
+            return {
+                deliveryCommission,
+                demoCommission: demo,
+                diffCommission: diff,
+                vehiclesTotal,
+                financeCommission: finance,
+                tradeinCommission: tradein,
+                total
+            };
+        }
+        
+        function calculateHyundaiOperations(data) {
+            // Daniel Eliya - Operations
+            // Top Service (tiered rates based on percentage) + Insurance
+            
+            const topservice = data.topservice || 0;
+            const topservicePotential = data['topservice-potential'] || 0;
+            const insurance = data.insurance || 0;
+            
+            // Calculate Top Service percentage based on POTENTIAL (from salespeople)
+            const topServicePct = topservicePotential > 0 ? (topservice / topservicePotential) * 100 : 0;
+            
+            // Tiered rates based on Top Service achievement
+            let topServiceRate = 50;  // < 60%
+            if (topServicePct >= 70) {
+                topServiceRate = 80;       // 70%+
+            } else if (topServicePct >= 60) {
+                topServiceRate = 70;  // 60-69%
+            }
+            
+            const topserviceCommission = topservice * topServiceRate;
+            const insuranceCommission = insurance * 75;
+            const total = topserviceCommission + insuranceCommission;
+            
+            return {
+                topserviceCommission,
+                topServiceRate,
+                topServicePct: topServicePct.toFixed(1),
+                insuranceCommission,
+                total
+            };
+        }
+        
+        function displayResults(results) {
+            const resultsSection = document.getElementById('results-section');
+            const resultsContent = document.getElementById('results-content');
+            
+            resultsSection.classList.add('active');
+            resultsContent.innerHTML = '';
+            
+            // Display each component
+            for (const [key, value] of Object.entries(results)) {
+                if (key === 'total') continue;
+                
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                
+                const label = document.createElement('span');
+                label.className = 'result-label';
+                label.textContent = getHebrewLabel(key);
+                
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'result-value';
+                
+                // Special formatting for percentages and rates
+                if (key === 'topServicePct') {
+                    valueSpan.textContent = `${value}%`;
+                } else if (key === 'topServiceRate') {
+                    valueSpan.textContent = `${value} ש"ח`;
+                } else {
+                    valueSpan.textContent = `₪${Math.round(value).toLocaleString('he-IL')}`;
+                }
+                
+                item.appendChild(label);
+                item.appendChild(valueSpan);
+                resultsContent.appendChild(item);
+            }
+            
+            // Total
+            const totalRow = document.createElement('div');
+            totalRow.className = 'result-item total-row';
+            
+            const totalLabel = document.createElement('span');
+            totalLabel.className = 'result-label';
+            totalLabel.textContent = 'סה"כ עמלות';
+            
+            const totalValue = document.createElement('span');
+            totalValue.className = 'result-value';
+            totalValue.textContent = `₪${Math.round(results.total).toLocaleString('he-IL')}`;
+            
+            totalRow.appendChild(totalLabel);
+            totalRow.appendChild(totalValue);
+            resultsContent.appendChild(totalRow);
+        }
+        
+        function getHebrewLabel(key) {
+            const labels = {
+                deliveryCommission: '🚗 עמלת מסירות (200 ש"ח × רכבים)',
+                baseCarsComm: '💰 בסיס (150 ש"ח × רכבים)',
+                branchBonus: '🏆 בונוס סניף (10 ש"ח × סה"כ רכבי הסניף)',
+                targetBonus100: '🎯 בונוס יעד 100% (20 ש"ח × רכבים)',
+                targetBonus110: '🎯 בונוס יעד 110% (10 ש"ח × רכבים)',
+                vehicleCommission: '🚗 סה"כ עמלת רכבים',
+                insuranceCommission: '🛡️ עמלת ביטוח',
+                topserviceCommission: '🔧 עמלת טופ סרוויס',
+                topServiceRate: '📊 תעריף טופ סרוויס (₪ לחבילה)',
+                topServicePct: '📈 אחוז טופ סרוויס (מול פוטנציאל)',
+                warrantyCommission: '📋 עמלת אחריות',
+                mysteryAdjustment: '🕵️ התאמת Mystery Shopper',
+                demoCommission: '🚙 רכבי הדגמה',
+                diffCommission: '💰 הפרשי עמלות',
+                vehiclesTotal: '🎯 סה"כ רכיב רכבים',
+                financeCommission: '💳 רכיב מימון',
+                tradeinCommission: '🔄 רכיב טרייד אין',
+                npsAdjustment: 'התאמת NPS',
+                accessoriesCommission: 'עמלת אביזרים',
+                serviceCommission: 'עמלת חבילות שירות'
+            };
+            return labels[key] || key;
+        }
+        
+        function updateSimulator(currentValue, currentTotal, currentResults, employeeType, fullData) {
+            const simulatorSection = document.getElementById('simulator-section');
+            const extraDeliveriesInput = document.getElementById('extra-deliveries');
+            const simulatorResult = document.getElementById('simulator-result');
+            
+            simulatorSection.classList.add('active');
+            
+            // Update label based on employee type
+            // Update the item label (רכבים/טופים)
+            const simulatorItemLabel = document.getElementById('simulator-item-label');
+            if (employeeType === 'operations') {
+                simulatorItemLabel.textContent = 'חבילות טופ סרוויס';
+                extraDeliveriesInput.placeholder = 'הזן מספר';
+            } else {
+                simulatorItemLabel.textContent = 'רכבים';
+                extraDeliveriesInput.placeholder = 'הזן מספר';
+            }
+            
+            // Set initial message
+            if (employeeType === 'operations') {
+                simulatorResult.textContent = 'הזן מספר חבילות נוסף';
+            } else {
+                simulatorResult.textContent = 'הזן מספר רכבים נוסף';
+            }
+            
+            extraDeliveriesInput.addEventListener('input', function() {
+                const extra = parseInt(this.value) || 0;
+                if (extra === 0) {
+                    if (employeeType === 'operations') {
+                        simulatorResult.textContent = 'הזן מספר חבילות נוסף';
+                    } else {
+                        simulatorResult.textContent = 'הזן מספר רכבים נוסף';
+                    }
+                    return;
+                }
+                
+                // Calculate realistic additional commission based on employee type
+                let additionalCommission = 0;
+                
+                if (employeeType === 'manager') {
+                    // Hyundai manager - simple 200 per car
+                    additionalCommission = extra * 200;
+                    
+                } else if (employeeType === 'salesperson') {
+                    // Hyundai salesperson - complex calculation
+                    const currentDeliveries = currentValue; // Use the passed value
+                    const newDeliveries = currentDeliveries + extra;
+                    
+                    // Get current data
+                    const personalTarget = parseFloat(document.getElementById('calc-personal-target')?.value) || 0;
+                    const branchTarget = parseFloat(document.getElementById('calc-branch-target')?.value) || 0;
+                    const totalBranchCars = parseFloat(document.getElementById('calc-total-branch-cars')?.value) || 0;
+                    const mystery = parseFloat(document.getElementById('calc-mystery')?.value) || 0;
+                    
+                    // Calculate new percentages
+                    const currentTargetPct = personalTarget > 0 ? (currentDeliveries / personalTarget) * 100 : 0;
+                    const newTargetPct = personalTarget > 0 ? (newDeliveries / personalTarget) * 100 : 0;
+                    
+                    // Base commission for extra cars
+                    let extraBase = extra * 150;
+                    
+                    // Branch bonus (if branch met target)
+                    const branchMetTarget = branchTarget > 0 && totalBranchCars >= branchTarget;
+                    let extraBranchBonus = 0;
+                    if (branchMetTarget) {
+                        // Each extra car adds to total, so bonus increases
+                        extraBranchBonus = extra * 10;
+                    }
+                    
+                    // Personal target bonuses
+                    let extraTargetBonus = 0;
+                    
+                    // 100% bonus
+                    if (newTargetPct >= 100 && currentTargetPct < 100) {
+                        // Crossed 100% threshold - all cars get bonus
+                        extraTargetBonus += newDeliveries * 20;
+                    } else if (newTargetPct >= 100 && currentTargetPct >= 100) {
+                        // Already above 100% - only new cars
+                        extraTargetBonus += extra * 20;
+                    }
+                    
+                    // 110% bonus
+                    if (newTargetPct >= 110 && currentTargetPct < 110) {
+                        // Crossed 110% threshold - all cars get bonus
+                        extraTargetBonus += newDeliveries * 10;
+                    } else if (newTargetPct >= 110 && currentTargetPct >= 110) {
+                        // Already above 110% - only new cars
+                        extraTargetBonus += extra * 10;
+                    }
+                    
+                    // Vehicle commission before mystery
+                    let extraVehicleComm = extraBase + extraBranchBonus + extraTargetBonus;
+                    
+                    // Mystery shopper adjustment on the INCREASE
+                    let extraMysteryAdj = 0;
+                    if (mystery > 0 && mystery < 80) {
+                        extraMysteryAdj = -(extraVehicleComm * 0.2);
+                    } else if (mystery >= 90) {
+                        extraMysteryAdj = extraVehicleComm * 0.2;
+                    }
+                    
+                    additionalCommission = extraVehicleComm + extraMysteryAdj;
+                    
+                } else if (employeeType === 'operations') {
+                    // Operations (Daniel Eliya) - Top Service tiered rates
+                    const currentTopService = currentValue; // Use the passed value
+                    const topservicePotential = fullData['topservice-potential'] || 0;
+                    
+                    const newTopService = currentTopService + extra;
+                    const currentTopServicePct = topservicePotential > 0 ? (currentTopService / topservicePotential) * 100 : 0;
+                    const newTopServicePct = topservicePotential > 0 ? (newTopService / topservicePotential) * 100 : 0;
+                    
+                    // Determine current rate
+                    let currentRate = 50;
+                    if (currentTopServicePct >= 70) {
+                        currentRate = 80;
+                    } else if (currentTopServicePct >= 60) {
+                        currentRate = 70;
+                    }
+                    
+                    // Determine new rate
+                    let newRate = 50;
+                    if (newTopServicePct >= 70) {
+                        newRate = 80;
+                    } else if (newTopServicePct >= 60) {
+                        newRate = 70;
+                    }
+                    
+                    // Calculate additional commission
+                    // If rate changed, recalculate everything
+                    if (newRate !== currentRate) {
+                        // Recalculate all at new rate
+                        additionalCommission = (newTopService * newRate) - (currentTopService * currentRate);
+                    } else {
+                        // Same rate - just add extra at current rate
+                        additionalCommission = extra * currentRate;
+                    }
+                    
+                } else if (employeeType === 'geely-salesperson') {
+                    // Geely calculation
+                    additionalCommission = extra * 100; // Base
+                    // Could add NPS logic here too
+                } else {
+                    // Generic - simplified
+                    additionalCommission = extra * 100;
+                }
+                
+                const newTotal = currentTotal + additionalCommission;
+                const increase = additionalCommission;
+                
+                const itemLabel = employeeType === 'operations' ? 'חבילות טופ סרוויס' : 'רכבים';
+                
+                // Special message for operations if tier changed
+                let tierMessage = '';
+                if (employeeType === 'operations') {
+                    const currentTopService = currentValue;
+                    const topservicePotential = fullData['topservice-potential'] || 0;
+                    const currentPct = topservicePotential > 0 ? (currentTopService / topservicePotential) * 100 : 0;
+                    const newPct = topservicePotential > 0 ? ((currentTopService + extra) / topservicePotential) * 100 : 0;
+                    
+                    let currentRate = 50;
+                    if (currentPct >= 70) currentRate = 80;
+                    else if (currentPct >= 60) currentRate = 70;
+                    
+                    let newRate = 50;
+                    if (newPct >= 70) newRate = 80;
+                    else if (newPct >= 60) newRate = 70;
+                    
+                    if (newRate !== currentRate) {
+                        tierMessage = `
+                            <div style="background: #d4edda; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 2px solid #28a745;">
+                                <div style="color: #155724; font-weight: 600; font-size: 0.95rem;">
+                                    ✅ חצית מדרגה! ${currentRate} ש"ח → ${newRate} ש"ח
+                                </div>
+                                <div style="color: #155724; font-size: 0.85rem; margin-top: 3px;">
+                                    כל ${currentTopService + extra} החבילות מחושבות ב-${newRate} ש"ח!
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                simulatorResult.innerHTML = `
+                    <div style="font-size: 1.1rem; margin-bottom: 10px;">
+                        אם תמכור עוד <strong style="color: #667eea;">${extra}</strong> ${itemLabel}:
+                    </div>
+                    ${tierMessage}
+                    <div style="background: #f0f8ff; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <div style="color: #28a745; font-weight: 600; font-size: 1.2rem;">
+                            +₪${Math.round(increase).toLocaleString('he-IL')} נוספים!
+                        </div>
+                    </div>
+                    <div style="font-size: 0.95rem; color: #666;">
+                        סה"כ חדש: <strong style="color: #764ba2;">₪${Math.round(newTotal).toLocaleString('he-IL')}</strong>
+                    </div>
+                `;
+            });
+        }
+        
+        function resetCalculator() {
+            const inputs = document.querySelectorAll('#input-fields input');
+            inputs.forEach(input => input.value = '');
+            
+            document.getElementById('results-section').classList.remove('active');
+            document.getElementById('simulator-section').classList.remove('active');
+            document.getElementById('extra-deliveries').value = '0';
+        }
+    </script>
+</body>
+</html>

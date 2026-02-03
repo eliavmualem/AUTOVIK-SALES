@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקת מעבר בין אולמות</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <style>
+        h4.employee-card-title {
+            background: #ffeb3b !important;
+            padding: 15px !important;
+            margin: 10px 0 !important;
+            border: 3px solid #ff0000 !important;
+            font-size: 1.5rem !important;
+        }
+        .employee-input-card {
+            border: 2px solid #0000ff !important;
+            padding: 20px !important;
+            margin: 15px !important;
+        }
+    </style>
+</head>
+<body style="padding: 20px; background: #f5f5f5;">
+    <h1 style="text-align: center;">בדיקת שמות - יונדאי מודיעין</h1>
+    <button onclick="showAllH4s()" style="padding: 15px 30px; background: #764ba2; color: white; border: none; border-radius: 5px; font-size: 1.2rem; cursor: pointer; margin: 20px auto; display: block;">🔍 הצג את כל שמות העובדים</button>
+    
+    <div id="result" style="background: white; padding: 20px; margin: 20px; border-radius: 10px;"></div>
+    
+    <div id="container"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    
+    <script>
+        console.log('Creating Hyundai Modiin layout...');
+        
+        const html = window.createGenericMonthLayout('hyundai-modiin', '2026-01');
+        document.getElementById('container').innerHTML = html;
+        
+        console.log('Layout created!');
+        
+        function showAllH4s() {
+            const h4s = document.querySelectorAll('h4');
+            let resultHTML = '<h2>שמות שנמצאו:</h2><ul>';
+            
+            console.log(`Found ${h4s.length} h4 elements`);
+            
+            if (h4s.length === 0) {
+                resultHTML += '<li style="color: red; font-size: 1.5rem;">❌ לא נמצאו שמות!</li>';
+            } else {
+                h4s.forEach((h4, i) => {
+                    const text = h4.textContent;
+                    console.log(`H4 ${i + 1}: ${text}`);
+                    resultHTML += `<li style="font-size: 1.3rem; padding: 10px; margin: 5px 0; background: #e3f2fd; border-radius: 5px;"><strong>${i + 1}. ${text}</strong></li>`;
+                });
+            }
+            
+            resultHTML += '</ul>';
+            
+            // Also check employee-card-title class
+            const titles = document.querySelectorAll('.employee-card-title');
+            resultHTML += `<h2>נמצאו ${titles.length} כרטיסים עם class="employee-card-title"</h2><ul>`;
+            
+            titles.forEach((title, i) => {
+                resultHTML += `<li style="font-size: 1.2rem; padding: 8px;">${i + 1}. ${title.textContent}</li>`;
+            });
+            
+            resultHTML += '</ul>';
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+        
+        // Auto-show on load
+        setTimeout(showAllH4s, 500);
+    </script>
+</body>
+</html>

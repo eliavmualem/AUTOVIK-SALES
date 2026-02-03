@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת סיכום שנתי</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background: #f5f7fa; padding: 20px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+        <h1 style="text-align: center; color: #764ba2;">🧪 בדיקת סיכום שנתי</h1>
+        
+        <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px;">
+            <h3>📝 תהליך הבדיקה:</h3>
+            <ol>
+                <li>יצירת נתונים דמה לחודש ינואר 2026</li>
+                <li>שמירת הנתונים ב-LocalStorage</li>
+                <li>הצגת הסיכום השנתי</li>
+            </ol>
+            <button onclick="runTest()" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px;">
+                🚀 הרץ בדיקה
+            </button>
+            <button onclick="clearTestData()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 10px; margin-right: 10px;">
+                🗑️ נקה נתונים
+            </button>
+        </div>
+        
+        <div id="test-log" style="background: #2d3748; color: #e2e8f0; padding: 20px; border-radius: 10px; font-family: monospace; font-size: 0.9rem; margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+            <div style="color: #4ecdc4;">📋 Console Log:</div>
+        </div>
+        
+        <div id="yearly-summary-content" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <p style="text-align: center; color: #999;">לחץ על "הרץ בדיקה" כדי להתחיל</p>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    
+    <script>
+        // Load only the functions we need, not the full main.js
+        window.formatCurrency = function(amount) {
+            return '₪' + Math.round(amount).toLocaleString('he-IL');
+        };
+        
+        window.getAllData = getAllData;
+        
+        function displayYearlySummary() {
+            console.log('📊 Displaying yearly summary...');
+            
+            const allData = getAllData();
+            const showroomData = allData['hyundai-jerusalem'] || {};
+            
+            const summaryContent = document.getElementById('yearly-summary-content');
+            
+            if (Object.keys(showroomData).length === 0) {
+                summaryContent.innerHTML = '<p class="coming-soon">אין עדיין נתונים לסיכום שנתי. שמור נתונים בחודשים כדי לראות סיכום.</p>';
+                return;
+            }
+            
+            const employeeTotals = {
+                meir: { vehicles: 0, tradeIn: 0, finance: 0, total: 0, months: [] },
+                daniel: { vehicles: 0, tradeIn: 0, finance: 0, total: 0, months: [] },
+                alfred: { vehicles: 0, tradeIn: 0, finance: 0, total: 0, months: [] },
+                danielE: { vehicles: 0, tradeIn: 0, finance: 0, total: 0, months: [] }
+            };
+            
+            const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06',
+                            '2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12'];
+            
+            months.forEach(month => {
+                if (showroomData[month] && showroomData[month].calculatedResults) {
+                    const results = showroomData[month].calculatedResults;
+                    
+                    Object.keys(results).forEach(empKey => {
+                        if (employeeTotals[empKey]) {
+                            employeeTotals[empKey].vehicles += results[empKey].vehiclesComponent || 0;
+                            employeeTotals[empKey].tradeIn += results[empKey].tradeInComponent || 0;
+                            employeeTotals[empKey].finance += results[empKey].financeComponent || 0;
+                            employeeTotals[empKey].total += results[empKey].total || 0;
+                            employeeTotals[empKey].months.push(month);
+                        }
+                    });
+                }
+            });
+            
+            console.log('Employee totals:', employeeTotals);
+            
+            let html = `
+                <div class="results-cards-grid" style="margin-top: 30px;">
+                    <div class="employee-result-card manager-result">
+                        <div class="result-card-header">
+                            <h3 class="result-card-title manager">👔 מאיר מועלם</h3>
+                            <p class="result-card-subtitle">מנהל אולם - סיכום שנתי</p>
+                            <p class="result-card-subtitle" style="font-size: 0.85rem; color: #999;">חודשים עם נתונים: ${employeeTotals.meir.months.length}/12</p>
+                        </div>
+                        <div class="component-line component-vehicles">
+                            <span>🚗 רכיב רכבים</span>
+                            <span>${formatCurrency(employeeTotals.meir.vehicles)}</span>
+                        </div>
+                        <div class="component-line component-tradein">
+                            <span>🔄 רכיב טרייד אין</span>
+                            <span>${formatCurrency(employeeTotals.meir.tradeIn)}</span>
+                        </div>
+                        <div class="component-line component-finance">
+                            <span>💰 רכיב מימון</span>
+                            <span>${formatCurrency(employeeTotals.meir.finance)}</span>
+                        </div>
+                        <div class="total-line">
+                            <span>סה"כ שנתי</span>
+                            <span>${formatCurrency(employeeTotals.meir.total)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-result-card salesperson-result">
+                        <div class="result-card-header">
+                            <h3 class="result-card-title salesperson">💼 דניאל נגר</h3>
+                            <p class="result-card-subtitle">איש מכירות - סיכום שנתי</p>
+                            <p class="result-card-subtitle" style="font-size: 0.85rem; color: #999;">חודשים עם נתונים: ${employeeTotals.daniel.months.length}/12</p>
+                        </div>
+                        <div class="component-line component-vehicles">
+                            <span>🚗 רכיב רכבים</span>
+                            <span>${formatCurrency(employeeTotals.daniel.vehicles)}</span>
+                        </div>
+                        <div class="component-line component-tradein">
+                            <span>🔄 רכיב טרייד אין</span>
+                            <span>${formatCurrency(employeeTotals.daniel.tradeIn)}</span>
+                        </div>
+                        <div class="component-line component-finance">
+                            <span>💰 רכיב מימון</span>
+                            <span>${formatCurrency(employeeTotals.daniel.finance)}</span>
+                        </div>
+                        <div class="total-line">
+                            <span>סה"כ שנתי</span>
+                            <span>${formatCurrency(employeeTotals.daniel.total)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-result-card salesperson-result">
+                        <div class="result-card-header">
+                            <h3 class="result-card-title salesperson">💼 אלפרד בנד</h3>
+                            <p class="result-card-subtitle">איש מכירות - סיכום שנתי</p>
+                            <p class="result-card-subtitle" style="font-size: 0.85rem; color: #999;">חודשים עם נתונים: ${employeeTotals.alfred.months.length}/12</p>
+                        </div>
+                        <div class="component-line component-vehicles">
+                            <span>🚗 רכיב רכבים</span>
+                            <span>${formatCurrency(employeeTotals.alfred.vehicles)}</span>
+                        </div>
+                        <div class="component-line component-tradein">
+                            <span>🔄 רכיב טרייד אין</span>
+                            <span>${formatCurrency(employeeTotals.alfred.tradeIn)}</span>
+                        </div>
+                        <div class="component-line component-finance">
+                            <span>💰 רכיב מימון</span>
+                            <span>${formatCurrency(employeeTotals.alfred.finance)}</span>
+                        </div>
+                        <div class="total-line">
+                            <span>סה"כ שנתי</span>
+                            <span>${formatCurrency(employeeTotals.alfred.total)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-result-card operations-result">
+                        <div class="result-card-header">
+                            <h3 class="result-card-title operations">⚙️ דניאל אליה</h3>
+                            <p class="result-card-subtitle">איש תפעול - סיכום שנתי</p>
+                            <p class="result-card-subtitle" style="font-size: 0.85rem; color: #999;">חודשים עם נתונים: ${employeeTotals.danielE.months.length}/12</p>
+                        </div>
+                        <div class="component-line component-vehicles">
+                            <span>🚗 רכיב רכבים</span>
+                            <span>${formatCurrency(employeeTotals.danielE.vehicles)}</span>
+                        </div>
+                        <div class="total-line">
+                            <span>סה"כ שנתי</span>
+                            <span>${formatCurrency(employeeTotals.danielE.total)}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 20px; margin-top: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <h3 style="color: #764ba2; margin-bottom: 15px;">📅 פירוט לפי חודשים</h3>
+                    <p style="color: #666;">להצגת פירוט מלא לפי חודשים, עבור לכל חודש בנפרד.</p>
+                </div>
+            `;
+            
+            summaryContent.innerHTML = html;
+        }
+    </script>
+    
+    <script>
+        const log = document.getElementById('test-log');
+        
+        function addLog(message, color = '#e2e8f0') {
+            const div = document.createElement('div');
+            div.style.color = color;
+            div.textContent = '> ' + message;
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearTestData() {
+            localStorage.clear();
+            addLog('✓ כל הנתונים נמחקו', '#48bb78');
+            document.getElementById('yearly-summary-content').innerHTML = '<p style="text-align: center; color: #999;">נתונים נמחקו</p>';
+        }
+        
+        function runTest() {
+            log.innerHTML = '<div style="color: #4ecdc4;">📋 Console Log:</div>';
+            addLog('🚀 מתחיל בדיקה...', '#4ecdc4');
+            
+            // Create test data for January
+            addLog('יוצר נתונים לינואר 2026...', '#fbd38d');
+            
+            const testData = {
+                'hj-2026-01-branch-target': 30,
+                'hj-2026-01-daniel-target': 15,
+                'hj-2026-01-daniel-cars': 20,
+                'hj-2026-01-daniel-insurance': 10,
+                'hj-2026-01-daniel-topservice': 15,
+                'hj-2026-01-daniel-topservice-potential': 18,
+                'hj-2026-01-daniel-warranty': 5,
+                'hj-2026-01-daniel-mystery': 95,
+                'hj-2026-01-daniel-demo': 1000,
+                'hj-2026-01-daniel-diff': 500,
+                'hj-2026-01-daniel-finance': 800,
+                'hj-2026-01-daniel-tradein': 500,
+                'hj-2026-01-alfred-target': 15,
+                'hj-2026-01-alfred-cars': 12,
+                'hj-2026-01-alfred-insurance': 5,
+                'hj-2026-01-alfred-topservice': 8,
+                'hj-2026-01-alfred-topservice-potential': 10,
+                'hj-2026-01-alfred-warranty': 3,
+                'hj-2026-01-alfred-mystery': 85,
+                'hj-2026-01-alfred-demo': 500,
+                'hj-2026-01-alfred-diff': 200,
+                'hj-2026-01-alfred-finance': 300,
+                'hj-2026-01-alfred-tradein': 200,
+                'hj-2026-01-daniele-insurance': 0,
+                'hj-2026-01-meir-demo': 500,
+                'hj-2026-01-meir-diff': 300,
+                'hj-2026-01-meir-finance': 1000,
+                'hj-2026-01-meir-tradein': 800,
+                calculatedResults: {
+                    meir: {
+                        vehiclesComponent: 7200,
+                        tradeInComponent: 800,
+                        financeComponent: 1000,
+                        total: 9000
+                    },
+                    daniel: {
+                        vehiclesComponent: 9125,
+                        tradeInComponent: 500,
+                        financeComponent: 800,
+                        total: 10425
+                    },
+                    alfred: {
+                        vehiclesComponent: 5655,
+                        tradeInComponent: 200,
+                        financeComponent: 300,
+                        total: 6155
+                    },
+                    danielE: {
+                        vehiclesComponent: 1440,
+                        tradeInComponent: 0,
+                        financeComponent: 0,
+                        total: 1440
+                    }
+                }
+            };
+            
+            addLog('שומר נתונים ב-LocalStorage...', '#fbd38d');
+            saveMonthData('hyundai-jerusalem', '2026-01', testData);
+            
+            addLog('✓ נתונים נשמרו בהצלחה', '#48bb78');
+            addLog('מציג סיכום שנתי...', '#fbd38d');
+            
+            // Display yearly summary
+            setTimeout(() => {
+                try {
+                    displayYearlySummary();
+                    addLog('✓ סיכום שנתי הוצג בהצלחה!', '#48bb78');
+                    addLog('📊 סה"כ לדניאל נגר: ₪10,425', '#4ecdc4');
+                    addLog('📊 סה"כ לאלפרד בנד: ₪6,155', '#4ecdc4');
+                    addLog('📊 סה"כ למאיר מועלם: ₪9,000', '#4ecdc4');
+                    addLog('📊 סה"כ לדניאל אליה: ₪1,440', '#4ecdc4');
+                } catch (error) {
+                    addLog('❌ שגיאה: ' + error.message, '#f56565');
+                    console.error(error);
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>

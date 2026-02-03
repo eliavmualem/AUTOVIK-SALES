@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug: Yearly Summary</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 2px solid #ccc; border-radius: 8px; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 בדיקת סיכום שנתי - יונדאי מודיעין</h1>
+    
+    <div class="step">
+        <h2>שלב 1: בדיקת קבצים</h2>
+        <button onclick="checkFiles()">🔍 בדוק קבצים</button>
+        <div id="files-result"></div>
+    </div>
+    
+    <div class="step">
+        <h2>שלב 2: שמירת נתונים</h2>
+        <button onclick="saveTestData()">💾 שמור נתוני בדיקה</button>
+        <div id="save-result"></div>
+    </div>
+    
+    <div class="step">
+        <h2>שלב 3: בדיקת localStorage</h2>
+        <button onclick="checkLocalStorage()">📦 בדוק localStorage</button>
+        <div id="storage-result"></div>
+    </div>
+    
+    <div class="step">
+        <h2>שלב 4: הצגת סיכום שנתי</h2>
+        <button onclick="testYearlySummary()">📊 הצג סיכום</button>
+        <div id="yearly-result"></div>
+        <div id="hyundai-modiin-yearly-summary-content" style="margin-top: 20px; padding: 20px; background: white; border: 1px solid #ccc; border-radius: 5px;"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        window.currentShowroom = showroomId;
+        
+        function checkFiles() {
+            const result = document.getElementById('files-result');
+            let html = '<h3>בדיקת קבצים:</h3><ul>';
+            
+            html += `<li>window.getShowroomConfig: ${typeof window.getShowroomConfig === 'function' ? '✅' : '❌'}</li>`;
+            html += `<li>window.calculateGenericMonth: ${typeof window.calculateGenericMonth === 'function' ? '✅' : '❌'}</li>`;
+            html += `<li>window.saveGenericMonth: ${typeof window.saveGenericMonth === 'function' ? '✅' : '❌'}</li>`;
+            html += `<li>window.displayYearlySummary: ${typeof window.displayYearlySummary === 'function' ? '✅' : '❌'}</li>`;
+            
+            const config = window.getShowroomConfig ? window.getShowroomConfig(showroomId) : null;
+            html += `<li>Config exists: ${config ? '✅' : '❌'}</li>`;
+            if (config) {
+                html += `<li>Config name: ${config.name}</li>`;
+                html += `<li>Config prefix: ${config.prefix}</li>`;
+            }
+            
+            html += '</ul>';
+            result.innerHTML = html;
+        }
+        
+        function saveTestData() {
+            const result = document.getElementById('save-result');
+            
+            try {
+                // Manually create test data
+                const testData = {
+                    showroomId: showroomId,
+                    prefix: 'hm-2026-01',
+                    branchTarget: 25,
+                    totalCars: 25,
+                    totalTopService: 15,
+                    totalTopServicePot: 20,
+                    totalInsurance: 18,
+                    employees: {
+                        guy: { type: 'manager', cars: 5, finance: 0, tradeIn: 0, demo: 0, diff: 0 },
+                        dario: { type: 'salesperson', target: 20, cars: 20, insurance: 8, topService: 15, topServicePot: 20, warranty: 0, mystery: 0, demo: 0, diff: 0, finance: 100, tradeIn: 200 },
+                        sales2: { type: 'salesperson', target: 0, cars: 0, insurance: 0, topService: 0, topServicePot: 0, warranty: 0, mystery: 0, demo: 0, diff: 0, finance: 0, tradeIn: 0 },
+                        asher: { type: 'operations', insurance: 10 }
+                    },
+                    employeeResults: {
+                        guy: { vehiclesComponent: 5000, tradeInComponent: 0, financeComponent: 0, total: 5000 },
+                        dario: { vehiclesComponent: 3500, tradeInComponent: 200, financeComponent: 100, total: 3800 },
+                        sales2: { vehiclesComponent: 0, tradeInComponent: 0, financeComponent: 0, total: 0 },
+                        asher: { vehiclesComponent: 1950, tradeInComponent: 0, financeComponent: 0, total: 1950 }
+                    }
+                };
+                
+                // Save to localStorage
+                const allData = JSON.parse(localStorage.getItem('commissionData') || '{}');
+                if (!allData[showroomId]) allData[showroomId] = {};
+                allData[showroomId][month] = {
+                    'test-field': 'test-value',
+                    calculatedResults: testData,
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('commissionData', JSON.stringify(allData));
+                
+                result.innerHTML = `<p style="color: green;">✅ נתוני בדיקה נשמרו!</p>
+                    <pre>${JSON.stringify(testData.employeeResults, null, 2)}</pre>`;
+                    
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">❌ שגיאה: ${error.message}</p>`;
+            }
+        }
+        
+        function checkLocalStorage() {
+            const result = document.getElementById('storage-result');
+            
+            const allData = JSON.parse(localStorage.getItem('commissionData') || '{}');
+            const showroomData = allData[showroomId] || {};
+            const monthData = showroomData[month];
+            
+            let html = '<h3>תוכן localStorage:</h3>';
+            html += `<p>יש נתונים ל-${showroomId}: ${showroomData ? '✅' : '❌'}</p>`;
+            html += `<p>יש נתונים ל-${month}: ${monthData ? '✅' : '❌'}</p>`;
+            
+            if (monthData) {
+                html += `<p>יש calculatedResults: ${monthData.calculatedResults ? '✅' : '❌'}</p>`;
+                if (monthData.calculatedResults) {
+                    html += `<p>יש employeeResults: ${monthData.calculatedResults.employeeResults ? '✅' : '❌'}</p>`;
+                    if (monthData.calculatedResults.employeeResults) {
+                        const empResults = monthData.calculatedResults.employeeResults;
+                        html += `<p>מספר עובדים: ${Object.keys(empResults).length}</p>`;
+                        html += '<pre>' + JSON.stringify(empResults, null, 2) + '</pre>';
+                    }
+                }
+            }
+            
+            result.innerHTML = html;
+        }
+        
+        function testYearlySummary() {
+            const result = document.getElementById('yearly-result');
+            
+            try {
+                result.innerHTML = '<p>🔄 מריץ displayYearlySummary...</p>';
+                
+                if (typeof window.displayYearlySummary !== 'function') {
+                    result.innerHTML = '<p style="color: red;">❌ הפונקציה displayYearlySummary לא קיימת!</p>';
+                    return;
+                }
+                
+                // Run the function
+                window.displayYearlySummary();
+                
+                // Check result
+                const summaryEl = document.getElementById('hyundai-modiin-yearly-summary-content');
+                const content = summaryEl ? summaryEl.innerHTML : 'אלמנט לא נמצא';
+                
+                let status = '';
+                if (content.includes('טוען')) {
+                    status = '⚠️ עדיין מציג "טוען..." - הפונקציה לא התעדכנה!';
+                } else if (content.includes('אין עדיין נתונים')) {
+                    status = '⚠️ מציג "אין נתונים" - לא מצא נתונים שמורים!';
+                } else if (content.includes('גיא הררי') || content.includes('דריו')) {
+                    status = '✅ הסיכום הוצג בהצלחה!';
+                } else {
+                    status = '❓ לא ברור מה התוכן';
+                }
+                
+                result.innerHTML = `<p><strong>${status}</strong></p>`;
+                
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">❌ שגיאה: ${error.message}</p><pre>${error.stack}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>

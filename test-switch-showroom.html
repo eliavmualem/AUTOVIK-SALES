@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקת מעבר אולמות</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body style="padding: 20px; background: #f5f5f5;">
+    <h1 style="text-align: center;">בדיקת מעבר בין אולמות</h1>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <button onclick="testShowroom('hyundai-modiin')" style="padding: 15px 30px; margin: 10px; background: #764ba2; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer;">
+            יונדאי מודיעין
+        </button>
+        <button onclick="testShowroom('mitsubishi-modiin')" style="padding: 15px 30px; margin: 10px; background: #764ba2; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer;">
+            מיצובישי מודיעין
+        </button>
+        <button onclick="testShowroom('omoda-modiin')" style="padding: 15px 30px; margin: 10px; background: #764ba2; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer;">
+            אומודה ג'אקו
+        </button>
+    </div>
+    
+    <div id="result" style="background: white; padding: 30px; border-radius: 10px; min-height: 400px;"></div>
+    
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        function testShowroom(showroomId) {
+            console.log(`Testing showroom: ${showroomId}`);
+            
+            const config = window.getShowroomConfig(showroomId);
+            if (!config) {
+                document.getElementById('result').innerHTML = '<h2 style="color: red;">❌ תצורה לא נמצאה!</h2>';
+                return;
+            }
+            
+            // Create the month content
+            const monthContent = window.createGenericMonthLayout(showroomId, '2026-01');
+            
+            document.getElementById('result').innerHTML = `
+                <h2 style="color: #764ba2; margin-bottom: 20px;">${config.name}</h2>
+                ${monthContent}
+            `;
+            
+            // Count names
+            const h4s = document.querySelectorAll('#result h4');
+            console.log(`Found ${h4s.length} employee names`);
+            
+            h4s.forEach((h4, i) => {
+                console.log(`  ${i + 1}. ${h4.textContent}`);
+            });
+            
+            // Add visual highlight
+            h4s.forEach(h4 => {
+                h4.style.background = 'yellow';
+                h4.style.padding = '15px';
+                h4.style.margin = '10px 0';
+                h4.style.border = '3px solid #764ba2';
+            });
+        }
+        
+        // Auto-test first showroom
+        setTimeout(() => testShowroom('hyundai-modiin'), 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת ג'ילי עם טופ סרוויס</title>
+</head>
+<body>
+    <h1>בדיקת ג'ילי מודיעין - כולל עמלת טופ סרוויס</h1>
+    <div id="test-container"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    
+    <script>
+        console.log('🧪 Testing Geely Modiin with Top Service Commission');
+        
+        const config = window.getShowroomConfig('geely-modiin');
+        console.log('Config:', config);
+        
+        // Create month content
+        const monthContent = window.createGeelyMonthLayout('geely-modiin', '2026-01');
+        document.getElementById('test-container').innerHTML = monthContent;
+        
+        console.log('Layout rendered');
+        
+        // Fill sample data for Manager Uri
+        const prefix = 'gm-2026-01';
+        const uriId = 'uri';
+        
+        // Set Manager data
+        document.getElementById(`${prefix}-target-deliveries`).value = 25;
+        document.getElementById(`${prefix}-actual-deliveries`).value = 22;
+        document.getElementById(`${prefix}-satisfaction-score`).value = 85;
+        document.getElementById(`${prefix}-nps-score`).value = 80;
+        document.getElementById(`${prefix}-total-accessories`).value = 60000;
+        document.getElementById(`${prefix}-test-drive-percent`).value = 25;
+        document.getElementById(`${prefix}-tradein-count`).value = 6;
+        document.getElementById(`${prefix}-service-packages`).value = 12;  // חבילות שירות
+        document.getElementById(`${prefix}-finance-percent`).value = 28;
+        document.getElementById(`${prefix}-insurance-sales`).value = 10;
+        document.getElementById(`${prefix}-mobility-count`).value = 3;
+        
+        // Potentials
+        document.getElementById(`${prefix}-potential-accessories`).value = 22;
+        document.getElementById(`${prefix}-potential-service`).value = 14;  // פוטנציאל חבילות
+        document.getElementById(`${prefix}-potential-insurance`).value = 22;
+        
+        console.log('Sample data filled for Uri');
+        console.log('חבילות: 12, פוטנציאל: 14 → אחוז: ~85.7%');
+        console.log('צפוי: עמלת טופ סרוויס ₪1,250');
+        
+        // Calculate
+        setTimeout(() => {
+            window.calculateGeelyMonth('geely-modiin', '2026-01');
+            
+            // Check results
+            setTimeout(() => {
+                const topServiceElement = document.getElementById(`${prefix}-${uriId}-top-service-commission`);
+                const totalElement = document.getElementById(`${prefix}-${uriId}-total`);
+                
+                if (topServiceElement && totalElement) {
+                    console.log('\n✅ תוצאות:');
+                    console.log('עמלת טופ סרוויס:', topServiceElement.textContent);
+                    console.log('סה"כ עמלות:', totalElement.textContent);
+                    
+                    // Verify
+                    const topServiceText = topServiceElement.textContent;
+                    if (topServiceText.includes('1,250') || topServiceText.includes('1250')) {
+                        console.log('✅ עמלת טופ סרוויס חושבה נכון!');
+                    } else {
+                        console.error('❌ עמלת טופ סרוויס לא נכונה');
+                    }
+                } else {
+                    console.error('❌ לא נמצאו אלמנטי התוצאות');
+                }
+            }, 500);
+        }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Geely Real-time</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+</head>
+<body>
+    <h1>🧪 בדיקת חישוב בזמן אמת - ג'ילי</h1>
+    
+    <div id="geely-modiin" class="showroom-section">
+        <h2>ג'ילי מודיעין</h2>
+        <nav class="month-tabs">
+            <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+        </nav>
+        <div class="month-content-wrapper"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        console.log('=== Testing Real-time Calculation ===');
+        
+        // Initialize
+        initializeGeelyShowroom('geely-modiin');
+        
+        // Wait a bit then test filling fields
+        setTimeout(() => {
+            console.log('Filling test data...');
+            
+            const targetField = document.getElementById('gm-2026-01-target-deliveries');
+            const actualField = document.getElementById('gm-2026-01-actual-deliveries');
+            
+            if (targetField && actualField) {
+                console.log('✅ Fields found!');
+                
+                // Fill data
+                targetField.value = 20;
+                actualField.value = 18;
+                
+                // Trigger input event manually to simulate user typing
+                targetField.dispatchEvent(new Event('input', { bubbles: true }));
+                actualField.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                console.log('Data filled and events triggered!');
+                
+                // Check if percentage updated
+                setTimeout(() => {
+                    const percentEl = document.getElementById('gm-2026-01-delivery-percent');
+                    if (percentEl) {
+                        console.log('Delivery Percent:', percentEl.textContent);
+                        
+                        if (percentEl.textContent === '90%') {
+                            console.log('✅ Real-time calculation WORKS!');
+                        } else {
+                            console.log('❌ Real-time calculation NOT working');
+                        }
+                    }
+                }, 200);
+                
+            } else {
+                console.error('❌ Fields not found!');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

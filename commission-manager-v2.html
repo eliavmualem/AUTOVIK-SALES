@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚙️ ניהול כללי עמלות - גרסה 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .showroom-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .showroom-tab {
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .showroom-tab:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .showroom-tab.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+        
+        .showroom-content {
+            display: none;
+        }
+        
+        .showroom-content.active {
+            display: block;
+        }
+        
+        .employee-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .employee-card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .employee-icon {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            color: #11998e;
+            font-size: 1.3rem;
+            margin: 25px 0 15px 0;
+            padding: 10px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            border-radius: 8px;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: 250px 1fr 150px;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group:hover {
+            background: #e8eef5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .input-group .description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Heebo', sans-serif;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .tier-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .tier-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tier-table input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 500;
+        }
+        
+        .tier-table input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Heebo', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.5);
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 50%;
+            transform: translateX(50%);
+            background: #28a745;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border: 2px solid #0c5460;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #0c5460;
+        }
+        
+        .info-box strong {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ ניהול כללי עמלות</h1>
+            <p>ערוך מדרגות עמלות לכל עובד בנפרד - גרסה מפורטת</p>
+        </div>
+        
+        <div class="showroom-tabs">
+            <button class="showroom-tab active" data-showroom="hyundai-jerusalem">יונדאי אוטולין ירושלים</button>
+            <button class="showroom-tab" data-showroom="hyundai-modiin">יונדאי מודיעין</button>
+            <button class="showroom-tab" data-showroom="mitsubishi-modiin">מיצובישי מודיעין</button>
+            <button class="showroom-tab" data-showroom="omoda-modiin">אומודה ג'אקו מודיעין</button>
+            <button class="showroom-tab" data-showroom="kalmobil-modiin">כלמוביל טרייד אין</button>
+            <button class="showroom-tab" data-showroom="geely-modiin">ג'ילי מודיעין</button>
+            <button class="showroom-tab" data-showroom="geely-jerusalem">ג'ילי ירושלים</button>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="index.html" class="back-link">← חזרה למערכת הראשית</a>
+        </div>
+        
+        <div id="content-container"></div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="saveChanges()">💾 שמור והעתק קוד</button>
+            <button class="btn btn-download" onclick="downloadAsFile()">📥 הורד כקובץ</button>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script src="js/commission-rules.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script>
+        let currentShowroom = 'hyundai-jerusalem';
+        
+        // Tab switching
+        document.querySelectorAll('.showroom-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const showroomId = this.dataset.showroom;
+                
+                document.querySelectorAll('.showroom-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentShowroom = showroomId;
+                renderShowroom(showroomId);
+            });
+        });
+        
+        function renderShowroom(showroomId) {
+            const container = document.getElementById('content-container');
+            
+            // כרגע רק יונדאי אוטולין ירושלים
+            if (showroomId === 'hyundai-jerusalem') {
+                container.innerHTML = renderHyundaiJerusalem();
+            } else {
+                container.innerHTML = `
+                    <div class="employee-card">
+                        <div class="info-box">
+                            <strong>⏳ בהמתנה</strong>
+                            <p>אולם זה יוגדר בשלב הבא</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            attachInputListeners();
+        }
+        
+        function renderHyundaiJerusalem() {
+            const config = window.getShowroomConfig('hyundai-jerusalem');
+            const rules = window.getCommissionRules('hyundai-jerusalem');
+            
+            let html = `
+                <div class="employee-card">
+                    <div class="info-box">
+                        <strong>📝 הוראות:</strong> שנה את המספרים בשדות, לחץ "שמור והעתק קוד" למטה, והדבק את הקוד בקובץ js/commission-rules.js
+                    </div>
+                </div>
+            `;
+            
+            // מאיר מועלם - מנהל אולם
+            html += `
+                <div class="employee-card">
+                    <h2>
+                        <span class="employee-icon">${config.employees.manager.icon}</span>
+                        ${config.employees.manager.name} - ${config.employees.manager.role}
+                    </h2>
+                    
+                    <div class="input-group">
+                        <label>עמלת מסירות</label>
+                        <div class="description">כמה ש"ח לכל מכירת רכב (סה"כ הסניף)?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.manager.deliveryRate" 
+                               value="${rules.manager.deliveryRate}" />
+                    </div>
+                </div>
+            `;
+            
+            // דניאל נגר - איש מכירות
+            const daniel = config.employees.salespeople[0];
+            html += `
+                <div class="employee-card">
+                    <h2>
+                        <span class="employee-icon">${daniel.icon}</span>
+                        ${daniel.name} - ${daniel.role}
+                    </h2>
+                    
+                    <div class="input-group">
+                        <label>עמלת מסירות</label>
+                        <div class="description">כמה ש"ח לכל מכירת רכב?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.daniel.deliveryRate" 
+                               value="${rules.salesperson.deliveryRate}" />
+                    </div>
+                    
+                    <div class="section-title">🔧 טופ סרוויס</div>
+                    <div class="input-group">
+                        <label>אחוז עמלה</label>
+                        <div class="description">כמה אחוז מתגמול הטופ סרוויס? (0.20 = 20%)</div>
+                        <input type="number" 
+                               step="0.01"
+                               data-path="hyundai-jerusalem.salespeople.daniel.topService.rate" 
+                               value="${rules.salesperson.topService.rate}" />
+                    </div>
+                    
+                    <div class="section-title">🛡️ ביטוח</div>
+                    <div class="input-group">
+                        <label>עמלה לפוליסה</label>
+                        <div class="description">כמה ש"ח לכל פוליסת ביטוח?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.daniel.insurance.rate" 
+                               value="${rules.salesperson.insurance.rate}" />
+                    </div>
+                    
+                    <div class="section-title">🚘 טרייד אין</div>
+                    <div class="input-group">
+                        <label>עמלה לעסקה</label>
+                        <div class="description">כמה ש"ח לכל עסקת טרייד אין?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.daniel.tradein.rate" 
+                               value="${rules.salesperson.tradein.rate}" />
+                    </div>
+                    
+                    <div class="section-title">💰 מימון</div>
+                    <div class="input-group">
+                        <label>עמלה לעסקה</label>
+                        <div class="description">כמה ש"ח לכל עסקת מימון?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.daniel.finance.rate" 
+                               value="${rules.salesperson.finance.rate}" />
+                    </div>
+                </div>
+            `;
+            
+            // אלפרד בנד - איש מכירות
+            const alfred = config.employees.salespeople[1];
+            html += `
+                <div class="employee-card">
+                    <h2>
+                        <span class="employee-icon">${alfred.icon}</span>
+                        ${alfred.name} - ${alfred.role}
+                    </h2>
+                    
+                    <div class="input-group">
+                        <label>עמלת מסירות</label>
+                        <div class="description">כמה ש"ח לכל מכירת רכב?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.alfred.deliveryRate" 
+                               value="${rules.salesperson.deliveryRate}" />
+                    </div>
+                    
+                    <div class="section-title">🔧 טופ סרוויס</div>
+                    <div class="input-group">
+                        <label>אחוז עמלה</label>
+                        <div class="description">כמה אחוז מתגמול הטופ סרוויס? (0.20 = 20%)</div>
+                        <input type="number" 
+                               step="0.01"
+                               data-path="hyundai-jerusalem.salespeople.alfred.topService.rate" 
+                               value="${rules.salesperson.topService.rate}" />
+                    </div>
+                    
+                    <div class="section-title">🛡️ ביטוח</div>
+                    <div class="input-group">
+                        <label>עמלה לפוליסה</label>
+                        <div class="description">כמה ש"ח לכל פוליסת ביטוח?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.alfred.insurance.rate" 
+                               value="${rules.salesperson.insurance.rate}" />
+                    </div>
+                    
+                    <div class="section-title">🚘 טרייד אין</div>
+                    <div class="input-group">
+                        <label>עמלה לעסקה</label>
+                        <div class="description">כמה ש"ח לכל עסקת טרייד אין?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.alfred.tradein.rate" 
+                               value="${rules.salesperson.tradein.rate}" />
+                    </div>
+                    
+                    <div class="section-title">💰 מימון</div>
+                    <div class="input-group">
+                        <label>עמלה לעסקה</label>
+                        <div class="description">כמה ש"ח לכל עסקת מימון?</div>
+                        <input type="number" 
+                               data-path="hyundai-jerusalem.salespeople.alfred.finance.rate" 
+                               value="${rules.salesperson.finance.rate}" />
+                    </div>
+                </div>
+            `;
+            
+            // דניאל אליה - איש תפעול
+            html += `
+                <div class="employee-card">
+                    <h2>
+                        <span class="employee-icon">${config.employees.operations.icon}</span>
+                        ${config.employees.operations.name} - ${config.employees.operations.role}
+                    </h2>
+                    
+                    <div class="section-title">🔧 מדרגות טופ סרוויס</div>
+                    <table class="tier-table">
+                        <thead>
+                            <tr>
+                                <th>אחוז מינימום</th>
+                                <th>אחוז מקסימום</th>
+                                <th>סכום לחבילה (₪)</th>
+                                <th>תיאור</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rules.operations.topServiceTiers.map((tier, idx) => `
+                                <tr>
+                                    <td><input type="number" data-path="hyundai-jerusalem.operations.topServiceTiers.${idx}.min" value="${tier.min}" /></td>
+                                    <td><input type="number" data-path="hyundai-jerusalem.operations.topServiceTiers.${idx}.max" value="${tier.max}" /></td>
+                                    <td><input type="number" data-path="hyundai-jerusalem.operations.topServiceTiers.${idx}.rate" value="${tier.rate}" /></td>
+                                    <td>${tier.description}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function attachInputListeners() {
+            document.querySelectorAll('input[data-path]').forEach(input => {
+                input.addEventListener('change', function() {
+                    updateRule(this.dataset.path, this.value);
+                });
+            });
+        }
+        
+        function updateRule(path, value) {
+            const parts = path.split('.');
+            let obj = window.commissionRules;
+            
+            for (let i = 0; i < parts.length - 1; i++) {
+                // אם salespeople - צריך ליצור מבנה
+                if (parts[i] === 'salespeople' && !obj[parts[i]]) {
+                    obj[parts[i]] = {};
+                }
+                if (!obj[parts[i]]) {
+                    obj[parts[i]] = {};
+                }
+                obj = obj[parts[i]];
+            }
+            
+            const lastKey = parts[parts.length - 1];
+            const numValue = parseFloat(value);
+            obj[lastKey] = isNaN(numValue) ? value : numValue;
+        }
+        
+        function saveChanges() {
+            const code = generateCode();
+            
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('הקוד הועתק ללוח! הדבק אותו בקובץ js/commission-rules.js');
+                console.log('='.repeat(60));
+                console.log('📋 העתק את הקוד הבא והדבק בקובץ js/commission-rules.js');
+                console.log('='.repeat(60));
+                console.log(code);
+                console.log('='.repeat(60));
+            });
+        }
+        
+        function downloadAsFile() {
+            const code = generateCode();
+            const blob = new Blob([code], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'commission-rules-updated.js';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('הקובץ הורד בהצלחה!');
+        }
+        
+        function generateCode() {
+            return `// ========================================
+// 💰 כללי עמלות - מקור אמת מרכזי
+// ========================================
+// עודכן: ${new Date().toLocaleDateString('he-IL')}
+
+window.commissionRules = ${JSON.stringify(window.commissionRules, null, 4)};
+
+// העתקת כללי ג'ילי ירושלים מג'ילי מודיעין
+window.commissionRules['geely-jerusalem'] = JSON.parse(JSON.stringify(window.commissionRules['geely-modiin']));
+
+// פונקציות עזר
+window.getCommissionRules = function(showroomId) {
+    return window.commissionRules[showroomId] || null;
+};
+
+window.getEmployeeCommissionRules = function(showroomId, employeeType) {
+    const rules = window.commissionRules[showroomId];
+    if (!rules) return null;
+    return rules[employeeType] || null;
+};
+
+console.log('✓ Commission rules loaded:', Object.keys(window.commissionRules).length, 'showrooms');`;
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize
+        renderShowroom('hyundai-jerusalem');
+    </script>
+</body>
+</html>

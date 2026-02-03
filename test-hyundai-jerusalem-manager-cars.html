@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Hyundai Jerusalem - Manager Car Sales</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧪 בדיקה: מכירות רכב של מנהל האולם</h1>
+        <h2>יונדאי אוטולין ירושלים - מאיר מועלם</h2>
+        
+        <div id="test-area"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+            <h3>📊 תוצאות בדיקה:</h3>
+            <div id="test-results" style="font-family: monospace; white-space: pre-wrap;"></div>
+        </div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('🧪 Starting test: Manager Car Sales - Hyundai Jerusalem');
+        
+        // Test scenario:
+        // - Manager (Meir): 3 cars
+        // - Salesperson 1 (Daniel): 8 cars
+        // - Salesperson 2 (Alfred): 6 cars
+        // - Total branch cars: 3 + 8 + 6 = 17
+        // - Manager commission: 17 × 200 = ₪3,400 (NOT 3 × 200!)
+        
+        const showroomId = 'hyundai-jerusalem';
+        const month = '2026-01';
+        const prefix = 'hj-2026-01';
+        
+        // Generate UI
+        const config = window.getShowroomConfig(showroomId);
+        if (!config) {
+            document.getElementById('test-area').innerHTML = '<p style="color: red;">❌ Config not found!</p>';
+            throw new Error('Config not found');
+        }
+        
+        console.log('✅ Config loaded:', config);
+        
+        // Generate layout
+        const layout = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-area').innerHTML = layout;
+        
+        console.log('✅ Layout created');
+        
+        // Wait for DOM to be ready
+        setTimeout(() => {
+            // Fill test data
+            // Manager: 3 cars
+            document.getElementById('hj-2026-01-meir-cars').value = 3;
+            
+            // Salesperson 1: 8 cars
+            document.getElementById('hj-2026-01-daniel-cars').value = 8;
+            document.getElementById('hj-2026-01-daniel-target').value = 8;
+            
+            // Salesperson 2: 6 cars
+            document.getElementById('hj-2026-01-alfred-cars').value = 6;
+            document.getElementById('hj-2026-01-alfred-target').value = 6;
+            
+            // Branch target
+            document.getElementById('hj-2026-01-branch-target').value = 17;
+            
+            console.log('✅ Test data filled');
+            
+            // Run calculation
+            if (typeof window.calculateGenericMonth === 'function') {
+                window.calculateGenericMonth(showroomId, month);
+                console.log('✅ Calculation executed');
+            } else {
+                console.error('❌ calculateGenericMonth not found');
+            }
+            
+            // Wait for calculation to complete
+            setTimeout(() => {
+                // Read results
+                const totalCars = document.getElementById('hj-2026-01-total-cars').value;
+                const managerComm = document.getElementById('hj-2026-01-meir-base-display').textContent;
+                const managerTotal = document.getElementById('hj-2026-01-meir-total-display').textContent;
+                const danielTotal = document.getElementById('hj-2026-01-daniel-total-display').textContent;
+                const alfredTotal = document.getElementById('hj-2026-01-alfred-total-display').textContent;
+                
+                const results = `
+📊 Test Results:
+═══════════════════════════════════════════
+
+Input:
+------
+- Manager (מאיר): 3 cars
+- Salesperson 1 (דניאל): 8 cars  
+- Salesperson 2 (אלפרד): 6 cars
+- Branch Target: 17 cars
+
+Output:
+-------
+✓ Total Branch Cars: ${totalCars} (Expected: 17)
+✓ Manager Base Commission: ${managerComm} (Expected: ₪3,400)
+✓ Manager Total: ${managerTotal}
+✓ Daniel Total: ${danielTotal}
+✓ Alfred Total: ${alfredTotal}
+
+Test Status:
+------------
+${totalCars === '17' ? '✅ PASS' : '❌ FAIL'} - Total cars calculation
+${managerComm === '₪3,400' ? '✅ PASS' : '❌ FAIL'} - Manager commission (17 × 200)
+
+═══════════════════════════════════════════
+${totalCars === '17' && managerComm === '₪3,400' ? '✅ ALL TESTS PASSED!' : '❌ SOME TESTS FAILED'}
+                `;
+                
+                document.getElementById('test-results').textContent = results;
+                console.log(results);
+                
+            }, 500);
+            
+        }, 300);
+        
+    </script>
+</body>
+</html>

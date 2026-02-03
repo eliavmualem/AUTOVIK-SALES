@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Operations Commission Model</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧪 בדיקה: מודל עמלות איש תפעול</h1>
+        <h2>יונדאי מודיעין - אשר עמר</h2>
+        
+        <div id="test-area"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+            <h3>📊 תוצאות בדיקה:</h3>
+            <div id="test-results" style="font-family: monospace; white-space: pre-wrap;"></div>
+        </div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('🧪 Starting test: Operations Commission Model');
+        
+        // Test scenarios:
+        // Scenario 1: 80% Top Service achievement
+        // - Total cars: 25
+        // - Top Service: 20 (80%)
+        // - Expected rate: 80 ש"ח per Top Service
+        // - Expected commission: 20 × 80 = ₪1,600
+        
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        const prefix = 'hm-2026-01';
+        
+        // Generate UI
+        const config = window.getShowroomConfig(showroomId);
+        if (!config) {
+            document.getElementById('test-area').innerHTML = '<p style="color: red;">❌ Config not found!</p>';
+            throw new Error('Config not found');
+        }
+        
+        console.log('✅ Config loaded:', config);
+        
+        // Generate layout
+        const layout = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-area').innerHTML = layout;
+        
+        console.log('✅ Layout created');
+        
+        // Wait for DOM to be ready
+        setTimeout(() => {
+            // Fill test data - Scenario 1: 80% achievement
+            // Manager: 5 cars
+            document.getElementById('hm-2026-01-guy-cars').value = 5;
+            
+            // Salesperson: 20 cars, 15 Top Service
+            document.getElementById('hm-2026-01-dario-cars').value = 20;
+            document.getElementById('hm-2026-01-dario-topservice').value = 15;
+            document.getElementById('hm-2026-01-dario-target').value = 20;
+            
+            // Operations: 5 Top Service, 10 Insurance
+            document.getElementById('hm-2026-01-asher-insurance').value = 10;
+            
+            // Branch target
+            document.getElementById('hm-2026-01-branch-target').value = 25;
+            
+            console.log('✅ Test data filled (Scenario 1: 80% Top Service)');
+            
+            // Run calculation
+            if (typeof window.calculateGenericMonth === 'function') {
+                window.calculateGenericMonth(showroomId, month);
+                console.log('✅ Calculation executed');
+            } else {
+                console.error('❌ calculateGenericMonth not found');
+            }
+            
+            // Wait for calculation to complete
+            setTimeout(() => {
+                // Read results
+                const totalCars = document.getElementById('hm-2026-01-total-cars').value;
+                const asherTopComm = document.getElementById('hm-2026-01-asher-topservice-commission')?.textContent || '0';
+                const asherInsComm = document.getElementById('hm-2026-01-asher-insurance-commission')?.textContent || '0';
+                const asherTotal = document.getElementById('hm-2026-01-asher-total-display').textContent;
+                
+                // Calculate expected
+                const totalTopService = 15; // from Dario
+                const topSvcPct = (totalTopService / 25) * 100; // 60%
+                const expectedRate = topSvcPct >= 70 ? 80 : (topSvcPct >= 60 ? 70 : 50);
+                const expectedTopComm = totalTopService * expectedRate;
+                const expectedInsComm = 10 * 75;
+                const expectedTotal = expectedTopComm + expectedInsComm;
+                
+                const results = `
+📊 Test Results - Operations Commission Model:
+═══════════════════════════════════════════
+
+Scenario: 60% Top Service Achievement
+--------------------------------------
+
+Input:
+------
+- Total Branch Cars: ${totalCars}
+- Total Top Service: ${totalTopService}
+- Top Service %: ${topSvcPct.toFixed(1)}%
+- Asher Insurance: 10
+
+Expected Calculation:
+---------------------
+- Top Service Rate: ${expectedRate} ש"ח (60-69% tier)
+- Top Service Comm: ${totalTopService} × ${expectedRate} = ₪${expectedTopComm.toLocaleString()}
+- Insurance Comm: 10 × 75 = ₪${expectedInsComm.toLocaleString()}
+- Total: ₪${expectedTotal.toLocaleString()}
+
+Actual Results:
+---------------
+✓ Top Service Commission: ${asherTopComm}
+✓ Insurance Commission: ${asherInsComm}
+✓ Total Commission: ${asherTotal}
+
+Test Status:
+------------
+${asherTotal === `₪${expectedTotal.toLocaleString()}` ? '✅ PASS' : '❌ FAIL'} - Commission calculation
+
+Expected: ₪${expectedTotal.toLocaleString()}
+Got: ${asherTotal}
+
+═══════════════════════════════════════════
+${asherTotal === `₪${expectedTotal.toLocaleString()}` ? '✅ TEST PASSED!' : '❌ TEST FAILED'}
+                `;
+                
+                document.getElementById('test-results').textContent = results;
+                console.log(results);
+                
+            }, 500);
+            
+        }, 300);
+        
+    </script>
+</body>
+</html>

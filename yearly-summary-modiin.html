@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סיכום שנתי - יונדאי מודיעין</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <div style="text-align: center; margin: 30px 0;">
+            <h1 style="color: #764ba2;">📊 סיכום שנתי 2026</h1>
+            <h2 style="color: #666;">יונדאי מודיעין</h2>
+        </div>
+        
+        <div id="summary-content"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    
+    <script>
+        // Get data from localStorage
+        const allData = JSON.parse(localStorage.getItem('commissionData') || '{}');
+        const showroomData = allData['hyundai-modiin'] || {};
+        
+        // Get employees
+        const config = window.getShowroomConfig('hyundai-modiin');
+        const allEmployees = window.getShowroomEmployees('hyundai-modiin');
+        
+        // Initialize totals
+        const employeeTotals = {};
+        allEmployees.forEach(emp => {
+            employeeTotals[emp.id] = { 
+                name: emp.name, 
+                role: emp.role,
+                icon: emp.icon,
+                vehicles: 0, 
+                tradeIn: 0, 
+                finance: 0, 
+                total: 0, 
+                months: [] 
+            };
+        });
+        
+        // Collect data from all months
+        const months = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06',
+                        '2026-07', '2026-08', '2026-09', '2026-10', '2026-11', '2026-12'];
+        
+        months.forEach(month => {
+            if (showroomData[month] && showroomData[month].calculatedResults) {
+                const results = showroomData[month].calculatedResults;
+                
+                Object.keys(results).forEach(empKey => {
+                    if (employeeTotals[empKey]) {
+                        employeeTotals[empKey].vehicles += results[empKey].vehiclesComponent || 0;
+                        employeeTotals[empKey].tradeIn += results[empKey].tradeInComponent || 0;
+                        employeeTotals[empKey].finance += results[empKey].financeComponent || 0;
+                        employeeTotals[empKey].total += results[empKey].total || 0;
+                        employeeTotals[empKey].months.push(month);
+                    }
+                });
+            }
+        });
+        
+        // Check if we have any data
+        const hasAnyData = Object.values(employeeTotals).some(emp => emp.months.length > 0);
+        
+        const summaryEl = document.getElementById('summary-content');
+        
+        if (!hasAnyData) {
+            summaryEl.innerHTML = `
+                <div style="text-align: center; padding: 50px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <h3 style="color: #764ba2; margin-bottom: 20px;">📊 אין עדיין נתונים לסיכום שנתי</h3>
+                    <p style="color: #666; margin-bottom: 30px;">כדי לראות סיכום שנתי, עליך לשמור נתונים בחודשים.</p>
+                    <div style="background: #f5f7fa; padding: 20px; border-radius: 10px; text-align: right; max-width: 500px; margin: 0 auto;">
+                        <h4 style="color: #764ba2; margin-bottom: 15px;">📝 הוראות:</h4>
+                        <ol style="color: #555; line-height: 2;">
+                            <li>עבור לדף הראשי (index.html)</li>
+                            <li>בחר "יונדאי מודיעין"</li>
+                            <li>בחר חודש (למשל: ינואר 2026)</li>
+                            <li>הזן נתונים בכל השדות</li>
+                            <li>המערכת תחשב אוטומטית</li>
+                            <li><strong>לחץ על "💾 שמור נתונים"</strong></li>
+                            <li>חזור לכאן לסיכום השנתי</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Generate cards for each employee
+            let cardsHTML = '';
+            
+            Object.keys(employeeTotals).forEach(empKey => {
+                const emp = employeeTotals[empKey];
+                if (emp.months.length === 0) return;
+                
+                // Determine card class
+                let cardClass = 'salesperson-result';
+                let titleClass = 'salesperson';
+                const empConfig = allEmployees.find(e => e.id === empKey);
+                if (empConfig) {
+                    if (empConfig.type === 'manager' || empConfig.type === 'selling-manager') {
+                        cardClass = 'manager-result';
+                        titleClass = 'manager';
+                    } else if (empConfig.type === 'operations') {
+                        cardClass = 'operations-result';
+                        titleClass = 'operations';
+                    }
+                }
+                
+                cardsHTML += `
+                    <div class="employee-result-card ${cardClass}">
+                        <div class="result-card-header">
+                            <h3 class="result-card-title ${titleClass}">${emp.icon} ${emp.name}</h3>
+                            <p class="result-card-subtitle">${emp.role} - סיכום שנתי</p>
+                            <p class="result-card-subtitle" style="font-size: 0.85rem; color: #999;">
+                                חודשים עם נתונים: ${emp.months.length}/12
+                            </p>
+                        </div>
+                        
+                        <div class="component-line component-vehicles">
+                            <span>🚗 רכיב רכבים</span>
+                            <span>₪${emp.vehicles.toLocaleString('he-IL')}</span>
+                        </div>
+                        
+                        ${emp.tradeIn > 0 ? `
+                        <div class="component-line component-tradein">
+                            <span>🔄 רכיב טרייד אין</span>
+                            <span>₪${emp.tradeIn.toLocaleString('he-IL')}</span>
+                        </div>
+                        ` : ''}
+                        
+                        ${emp.finance > 0 ? `
+                        <div class="component-line component-finance">
+                            <span>💰 רכיב מימון</span>
+                            <span>₪${emp.finance.toLocaleString('he-IL')}</span>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="total-line">
+                            <span>סה"כ שנתי</span>
+                            <span>₪${emp.total.toLocaleString('he-IL')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            summaryEl.innerHTML = `
+                <div class="results-cards-grid" style="margin-top: 30px;">
+                    ${cardsHTML}
+                </div>
+                
+                <div style="background: white; padding: 20px; margin-top: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
+                    <p style="color: #666;">
+                        💡 <strong>טיפ:</strong> להצגת פירוט מלא לפי חודשים, עבור לכל חודש בנפרד בדף הראשי.
+                    </p>
+                    <a href="index.html" style="display: inline-block; margin-top: 15px; padding: 10px 30px; background: #764ba2; color: white; text-decoration: none; border-radius: 5px;">
+                        ← חזרה לדף הראשי
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

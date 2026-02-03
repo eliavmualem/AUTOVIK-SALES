@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Full Yearly Summary Flow</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧪 בדיקה מלאה: שמירה → סיכום שנתי</h1>
+        
+        <div id="step1" style="margin: 20px; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+            <h2>שלב 1: הזנת נתונים</h2>
+            <div id="test-area"></div>
+            <button onclick="runStep1()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px;">▶️ הזן נתונים וחשב</button>
+        </div>
+        
+        <div id="step2" style="margin: 20px; padding: 20px; background: #fffacd; border-radius: 8px; display: none;">
+            <h2>שלב 2: שמירה</h2>
+            <button onclick="runStep2()" style="padding: 10px 20px; font-size: 16px;">💾 שמור נתונים</button>
+        </div>
+        
+        <div id="step3" style="margin: 20px; padding: 20px; background: #e0ffe0; border-radius: 8px; display: none;">
+            <h2>שלב 3: סיכום שנתי</h2>
+            <div id="yearly-summary-area"></div>
+            <button onclick="runStep3()" style="padding: 10px 20px; font-size: 16px;">📊 הצג סיכום שנתי</button>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+            <h3>📋 לוג:</h3>
+            <div id="log" style="font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        let logContent = '';
+        
+        function log(msg) {
+            logContent += msg + '\n';
+            document.getElementById('log').textContent = logContent;
+            console.log(msg);
+        }
+        
+        // Initialize
+        window.currentShowroom = showroomId;
+        
+        log('🚀 מערכת אותחלה');
+        log(`אולם: ${showroomId}`);
+        log(`חודש: ${month}`);
+        
+        // Generate UI
+        const layout = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-area').innerHTML = layout;
+        log('✅ UI נוצר');
+        
+        function runStep1() {
+            log('\n📝 שלב 1: מזין נתונים...');
+            
+            // Fill data
+            document.getElementById('hm-2026-01-guy-cars').value = 5;
+            document.getElementById('hm-2026-01-dario-cars').value = 20;
+            document.getElementById('hm-2026-01-dario-topservice').value = 15;
+            document.getElementById('hm-2026-01-dario-topservice-potential').value = 20;
+            document.getElementById('hm-2026-01-dario-target').value = 20;
+            document.getElementById('hm-2026-01-dario-insurance').value = 8;
+            document.getElementById('hm-2026-01-dario-finance').value = 100;
+            document.getElementById('hm-2026-01-dario-tradein').value = 200;
+            document.getElementById('hm-2026-01-branch-target').value = 25;
+            
+            log('  - נתונים הוזנו');
+            
+            // Calculate
+            window.calculateGenericMonth(showroomId, month);
+            log('  - חישוב בוצע');
+            log(`  - גיא סה"כ: ${document.getElementById('hm-2026-01-guy-total-display').textContent}`);
+            log(`  - דריו סה"כ: ${document.getElementById('hm-2026-01-dario-total-display').textContent}`);
+            
+            document.getElementById('step2').style.display = 'block';
+        }
+        
+        function runStep2() {
+            log('\n💾 שלב 2: שומר נתונים...');
+            
+            // Save
+            window.saveGenericMonth(showroomId, month);
+            log('  - נתונים נשמרו');
+            
+            // Check localStorage
+            const allData = JSON.parse(localStorage.getItem('commissionData') || '{}');
+            const saved = allData[showroomId]?.[month];
+            log(`  - נמצא ב-localStorage: ${saved ? 'כן ✅' : 'לא ❌'}`);
+            log(`  - יש calculatedResults: ${saved?.calculatedResults ? 'כן ✅' : 'לא ❌'}`);
+            log(`  - יש employeeResults: ${saved?.calculatedResults?.employeeResults ? 'כן ✅' : 'לא ❌'}`);
+            
+            if (saved?.calculatedResults?.employeeResults) {
+                log(`  - מספר עובדים: ${Object.keys(saved.calculatedResults.employeeResults).length}`);
+                Object.keys(saved.calculatedResults.employeeResults).forEach(empId => {
+                    const res = saved.calculatedResults.employeeResults[empId];
+                    log(`    - ${empId}: סה"כ ${res.total}`);
+                });
+            }
+            
+            document.getElementById('step3').style.display = 'block';
+        }
+        
+        function runStep3() {
+            log('\n📊 שלב 3: מציג סיכום שנתי...');
+            
+            // Create yearly summary element
+            const config = window.getShowroomConfig(showroomId);
+            const yearlyDiv = document.createElement('div');
+            yearlyDiv.innerHTML = `
+                <div id="${showroomId}-yearly-summary-content">
+                    <p style="text-align: center; padding: 20px;">⏳ טוען...</p>
+                </div>
+            `;
+            document.getElementById('yearly-summary-area').appendChild(yearlyDiv);
+            
+            log('  - אלמנט yearly summary נוצר');
+            
+            // Call displayYearlySummary
+            setTimeout(() => {
+                log('  - קורא ל-displayYearlySummary...');
+                window.displayYearlySummary();
+                log('  - displayYearlySummary הסתיים');
+                
+                // Check result
+                const content = document.getElementById(`${showroomId}-yearly-summary-content`).innerHTML;
+                if (content.includes('טוען')) {
+                    log('❌ עדיין מציג "טוען..." - לא התעדכן!');
+                } else if (content.includes('אין עדיין נתונים')) {
+                    log('❌ מציג "אין נתונים" - לא מצא נתונים שמורים!');
+                } else {
+                    log('✅ סיכום שנתי הוצג בהצלחה!');
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>

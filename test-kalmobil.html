@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - כלמוביל</title>
+</head>
+<body>
+    <h1>בדיקת כלמוביל טרייד אין מודיעין</h1>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('✓ Modules loaded\n');
+
+        // Test: כלמוביל - 25 רכבים
+        console.log('=== בדיקה: כלמוביל - 25 רכבים ===');
+        const prefix = 'km-2026-01';
+        const totalCars = 25;
+        
+        // דוד עזרא - מנהל
+        console.log('\n👔 דוד עזרא - מנהל אולם:');
+        const davidData = {
+            cars: 5,
+            branchTarget: 20,
+            financePercent: 35,
+            stockPercent: 45,
+            warrantyCommission: 300,
+            topserviceCommission: 200,
+            demo: 100,
+            diff: 50,
+            finance: 500,
+            tradein: 800
+        };
+        
+        const davidResult = calculateKalmobilManagerCommissions(prefix, 'david', davidData, totalCars);
+        console.log('תוצאות דוד:');
+        console.log(`  מסירות רכב (21-25): ₪${davidResult.carsComm || 'N/A'}`);
+        console.log(`  רכיב רכבים: ₪${davidResult.vehiclesComponent}`);
+        console.log(`  רכיב מימון: ₪${davidResult.financeComponent}`);
+        console.log(`  רכיב טרייד אין: ₪${davidResult.tradeInComponent}`);
+        console.log(`  סה"כ: ₪${davidResult.total}`);
+        
+        // אביעד לולאי - נציג
+        console.log('\n💼 אביעד לולאי - איש מכירות:');
+        const aviadData = {
+            cars: 15,
+            branchTarget: 20,
+            financePercent: 35,
+            stockPercent: 45,
+            warrantyCommission: 400,
+            topserviceCommission: 250,
+            demo: 150,
+            diff: 75,
+            finance: 600,
+            tradein: 900
+        };
+        
+        const aviadResult = calculateKalmobilSalespersonCommissions(prefix, 'aviad', aviadData, totalCars);
+        console.log('תוצאות אביעד:');
+        console.log(`  רכיב רכבים: ₪${aviadResult.vehiclesComponent}`);
+        console.log(`  רכיב מימון: ₪${aviadResult.financeComponent}`);
+        console.log(`  רכיב טרייד אין: ₪${aviadResult.tradeInComponent}`);
+        console.log(`  סה"כ: ₪${aviadResult.total}`);
+        
+        // דוד הירשהורן - תפעול
+        console.log('\n⚙️ דוד הירשהורן - איש תפעול:');
+        const davidHData = {
+            warrantyCommission: 200,
+            topserviceCommission: 150,
+            diff: 50,
+            finance: 300,
+            tradein: 400
+        };
+        
+        const davidHResult = calculateKalmobilOperationsCommissions(prefix, 'david-h', davidHData);
+        console.log('תוצאות דוד ה:');
+        console.log(`  רכיב רכבים: ₪${davidHResult.vehiclesComponent}`);
+        console.log(`  רכיב מימון: ₪${davidHResult.financeComponent}`);
+        console.log(`  רכיב טרייד אין: ₪${davidHResult.tradeInComponent}`);
+        console.log(`  סה"כ: ₪${davidHResult.total}`);
+        
+        console.log('\n🎯 סיכום כללי:');
+        console.log(`סה"כ מסירות סניף: ${totalCars}`);
+        console.log(`סה"כ עמלות דוד (מנהל): ₪${davidResult.total.toLocaleString()}`);
+        console.log(`סה"כ עמלות אביעד (נציג): ₪${aviadResult.total.toLocaleString()}`);
+        console.log(`סה"כ עמלות דוד ה' (תפעול): ₪${davidHResult.total.toLocaleString()}`);
+        console.log(`סה"כ כולל: ₪${(davidResult.total + aviadResult.total + davidHResult.total).toLocaleString()}`);
+        
+        console.log('\n✅ בדיקה הושלמה!');
+    </script>
+</body>
+</html>

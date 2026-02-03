@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת חישוב ביטוח</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="background: #f5f7fa; padding: 20px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h1 style="text-align: center; color: #764ba2;">🧪 בדיקת חישוב ביטוח</h1>
+        
+        <div id="test-content"></div>
+        
+        <div style="background: white; padding: 20px; margin-top: 20px; border-radius: 10px;">
+            <h3>📊 תוצאות מצופות:</h3>
+            <ul>
+                <li><strong>מסירות דניאל:</strong> 20 רכבים, ביטוח: 10</li>
+                <li><strong>מסירות אלפרד:</strong> 12 רכבים, ביטוח: 5</li>
+                <li><strong>דניאל אליה:</strong> ביטוח: 0</li>
+                <li><strong>סה"כ מסירות:</strong> 32 רכבים</li>
+                <li><strong>סה"כ ביטוחים:</strong> 15</li>
+                <li><strong>אחוז ביטוח:</strong> 15/32 = 46.875% → 47%</li>
+                <li><strong>צפי:</strong> <span style="color: green; font-weight: bold;">✅ מעולה (ירוק) - מעל 40%</span></li>
+            </ul>
+            
+            <h3 style="margin-top: 30px;">🎨 בטבלת הסיכום צריך להראות:</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <thead>
+                    <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">קטגוריה</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">יעד</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">ביצוע</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">אחוז ביצוע</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">סטטוס</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>ביטוח</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">32</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">15</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">47%</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; background: #d4edda; color: #155724; font-weight: bold;">✅ מעולה</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/new-layout-generator.js"></script>
+    <script src="js/calc-simple.js"></script>
+    
+    <script>
+        const testMonth = '2026-01';
+        document.getElementById('test-content').innerHTML = createNewMonthLayout(testMonth);
+        
+        // Add event listeners
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => calculateMonth(testMonth));
+        });
+        
+        // Auto-fill test data
+        setTimeout(() => {
+            console.log('🤖 מזין נתונים לבדיקת ביטוח...');
+            
+            document.getElementById('hj-2026-01-branch-target').value = 30;
+            
+            // דניאל
+            document.getElementById('hj-2026-01-daniel-target').value = 15;
+            document.getElementById('hj-2026-01-daniel-cars').value = 20;
+            document.getElementById('hj-2026-01-daniel-insurance').value = 10;
+            document.getElementById('hj-2026-01-daniel-topservice').value = 15;
+            document.getElementById('hj-2026-01-daniel-topservice-potential').value = 18;
+            document.getElementById('hj-2026-01-daniel-warranty').value = 5;
+            document.getElementById('hj-2026-01-daniel-mystery').value = 95;
+            
+            // אלפרד
+            document.getElementById('hj-2026-01-alfred-target').value = 15;
+            document.getElementById('hj-2026-01-alfred-cars').value = 12;
+            document.getElementById('hj-2026-01-alfred-insurance').value = 5;
+            document.getElementById('hj-2026-01-alfred-topservice').value = 8;
+            document.getElementById('hj-2026-01-alfred-topservice-potential').value = 10;
+            document.getElementById('hj-2026-01-alfred-warranty').value = 3;
+            document.getElementById('hj-2026-01-alfred-mystery').value = 85;
+            
+            // דניאל אליה
+            document.getElementById('hj-2026-01-daniele-insurance').value = 0;
+            
+            console.log('✓ נתונים הוזנו!');
+            console.log('מחשב...');
+            calculateMonth('2026-01');
+            
+            // Check results
+            setTimeout(() => {
+                const insTarget = document.getElementById('hj-2026-01-perf-insurance-target');
+                const insActual = document.getElementById('hj-2026-01-perf-insurance-actual');
+                const insPercent = document.getElementById('hj-2026-01-perf-insurance-percent');
+                const insStatus = document.getElementById('hj-2026-01-perf-insurance-status');
+                
+                console.log('📊 תוצאות ביטוח:');
+                console.log('  יעד:', insTarget ? insTarget.textContent : 'N/A');
+                console.log('  ביצוע:', insActual ? insActual.textContent : 'N/A');
+                console.log('  אחוז:', insPercent ? insPercent.textContent : 'N/A');
+                console.log('  סטטוס:', insStatus ? insStatus.textContent : 'N/A');
+                
+                if (insTarget && insTarget.textContent === '32' &&
+                    insActual && insActual.textContent === '15' &&
+                    insPercent && insPercent.textContent === '47%' &&
+                    insStatus && insStatus.textContent.includes('מעולה')) {
+                    console.log('✅ הבדיקה עברה בהצלחה!');
+                } else {
+                    console.log('❌ הבדיקה נכשלה!');
+                }
+            }, 500);
+        }, 1000);
+    </script>
+</body>
+</html>

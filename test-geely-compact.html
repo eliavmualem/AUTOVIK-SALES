@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת עיצוב ג'ילי קומפקטי</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div id="test-content"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+
+    <script>
+        console.log('🎨 Testing Geely Compact Design');
+        
+        const config = window.getShowroomConfig('geely-modiin');
+        const content = window.createGeelyMonthLayout('geely-modiin', '2026-01');
+        
+        document.getElementById('test-content').innerHTML = content;
+        
+        console.log('✅ Layout rendered');
+        
+        // Fill sample data after a short delay
+        setTimeout(() => {
+            const prefix = 'gm-2026-01';
+            
+            // Manager data
+            document.getElementById(`${prefix}-target-deliveries`).value = 20;
+            document.getElementById(`${prefix}-actual-deliveries`).value = 18;
+            document.getElementById(`${prefix}-nps-score`).value = 78;
+            document.getElementById(`${prefix}-total-accessories`).value = 50000;
+            document.getElementById(`${prefix}-potential-accessories`).value = 18;
+            
+            // Salesperson 1 data
+            document.getElementById(`${prefix}-daniel-deliveries`).value = 10;
+            document.getElementById(`${prefix}-daniel-accessories-total`).value = 18000;
+            document.getElementById(`${prefix}-daniel-potential-accessories`).value = 10;
+            
+            console.log('✅ Sample data filled');
+            
+            // Trigger calculation
+            window.calculateGeelyMonth('geely-modiin', '2026-01');
+        }, 500);
+    </script>
+</body>
+</html>

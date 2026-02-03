@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה: יונדאי מודיעין בלבד</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <style>
+        .test-result {
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            background: white;
+            border: 3px solid #2196F3;
+        }
+        .pass { border-color: #4CAF50; background: #E8F5E9; }
+        .fail { border-color: #f44336; background: #FFEBEE; }
+    </style>
+</head>
+<body style="padding: 20px; background: #f5f5f5;">
+    <h1 style="text-align: center; background: #2196F3; color: white; padding: 20px; border-radius: 10px;">
+        🧪 בדיקה: יונדאי מודיעין
+    </h1>
+    
+    <div id="tests-summary" style="margin: 20px; padding: 20px; background: white; border-radius: 10px;"></div>
+    
+    <h2 style="text-align: center; margin-top: 30px;">הממשק:</h2>
+    <div id="interface" style="background: white; padding: 20px; border-radius: 10px;"></div>
+    
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    
+    <script>
+        console.log('=== Testing Hyundai Modiin ===');
+        
+        const results = [];
+        
+        // Test 1: Configuration
+        console.log('\n--- Test 1: Configuration ---');
+        const config = window.getShowroomConfig('hyundai-modiin');
+        if (config) {
+            console.log('✅ Config found:', config.name);
+            results.push({ name: 'תצורה', pass: true, message: `נמצא: ${config.name}` });
+        } else {
+            console.log('❌ Config not found');
+            results.push({ name: 'תצורה', pass: false, message: 'תצורה לא נמצאה' });
+        }
+        
+        // Test 2: Employees
+        console.log('\n--- Test 2: Employees ---');
+        const employees = window.getShowroomEmployees('hyundai-modiin');
+        console.log('Employees:', employees.length);
+        employees.forEach(emp => {
+            console.log(`  - ${emp.name} (${emp.role}) - placeholder: ${emp.placeholder || 'no'}`);
+        });
+        
+        const sales2 = employees.find(e => e.id === 'sales2');
+        if (sales2 && !sales2.placeholder) {
+            console.log('✅ איש מכירות 2: שדות פתוחים');
+            results.push({ name: 'איש מכירות 2', pass: true, message: 'השדות פתוחים' });
+        } else if (sales2 && sales2.placeholder) {
+            console.log('❌ איש מכירות 2: עדיין נעול!');
+            results.push({ name: 'איש מכירות 2', pass: false, message: 'השדות עדיין נעולים' });
+        }
+        
+        // Test 3: Create UI
+        console.log('\n--- Test 3: Create UI ---');
+        const html = window.createGenericMonthLayout('hyundai-modiin', '2026-01');
+        document.getElementById('interface').innerHTML = html;
+        
+        const inputs = document.querySelectorAll('#interface input');
+        const names = document.querySelectorAll('#interface h4');
+        
+        console.log(`✅ Created ${inputs.length} inputs`);
+        console.log(`✅ Created ${names.length} employee names`);
+        
+        results.push({ 
+            name: 'יצירת ממשק', 
+            pass: inputs.length > 20 && names.length === 4, 
+            message: `${inputs.length} שדות, ${names.length} שמות` 
+        });
+        
+        names.forEach((name, i) => {
+            console.log(`  Name ${i + 1}: ${name.textContent}`);
+        });
+        
+        // Test 4: Calculation
+        console.log('\n--- Test 4: Calculation ---');
+        const prefix = 'hm-2026-01';
+        
+        // Fill test data for Dario
+        document.getElementById(`${prefix}-branch-target`).value = 30;
+        document.getElementById(`${prefix}-dario-target`).value = 15;
+        document.getElementById(`${prefix}-dario-cars`).value = 10;
+        document.getElementById(`${prefix}-dario-insurance`).value = 5;
+        document.getElementById(`${prefix}-dario-topservice`).value = 8;
+        document.getElementById(`${prefix}-dario-topservice-potential`).value = 10;
+        document.getElementById(`${prefix}-dario-warranty`).value = 3;
+        document.getElementById(`${prefix}-dario-mystery`).value = 85;
+        
+        console.log('Test data filled for Dario (10 cars)');
+        
+        // Calculate
+        window.calculateGenericMonth('hyundai-modiin', '2026-01');
+        
+        // Check result
+        const totalEl = document.getElementById(`${prefix}-dario-total-display`);
+        const total = totalEl ? totalEl.textContent : 'NOT FOUND';
+        const totalNum = parseInt(total.replace(/[^\d]/g, ''));
+        
+        console.log('Dario total:', total);
+        console.log('Dario total (number):', totalNum);
+        
+        // Expected: 10 cars * 150 = 1500 base + bonuses
+        const isCorrect = totalNum > 1000 && totalNum < 5000;
+        
+        if (isCorrect) {
+            console.log('✅ Calculation correct! (1,000 - 5,000 range)');
+            results.push({ name: 'חישוב עמלות', pass: true, message: `10 מסירות = ${total} (נכון!)` });
+        } else {
+            console.log(`❌ Calculation wrong! Expected 1,000-5,000, got ${totalNum}`);
+            results.push({ name: 'חישוב עמלות', pass: false, message: `10 מסירות = ${total} (שגוי!)` });
+        }
+        
+        // Display results
+        let summaryHTML = '<h2>תוצאות בדיקה:</h2>';
+        results.forEach(r => {
+            const className = r.pass ? 'test-result pass' : 'test-result fail';
+            const icon = r.pass ? '✅' : '❌';
+            summaryHTML += `
+                <div class="${className}">
+                    <h3>${icon} ${r.name}</h3>
+                    <p>${r.message}</p>
+                </div>
+            `;
+        });
+        
+        const allPass = results.every(r => r.pass);
+        if (allPass) {
+            summaryHTML += '<h2 style="color: #4CAF50; text-align: center;">🎉 כל הבדיקות עברו!</h2>';
+        } else {
+            summaryHTML += '<h2 style="color: #f44336; text-align: center;">⚠️ יש בעיות לתקן</h2>';
+        }
+        
+        document.getElementById('tests-summary').innerHTML = summaryHTML;
+        
+        console.log('\n=== Test Complete ===');
+        console.log('All tests passed:', allPass);
+    </script>
+</body>
+</html>

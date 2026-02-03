@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת כלמוביל - תיקון</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-result { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-right: 4px solid #764ba2; }
+        .success { border-right-color: #28a745; }
+        .error { border-right-color: #dc3545; }
+        h2 { color: #764ba2; }
+        .detail { margin: 5px 0; padding: 5px; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקת תיקוני כלמוביל</h1>
+    <div id="results"></div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(html) {
+            const div = document.createElement('div');
+            div.className = 'test-result';
+            div.innerHTML = html;
+            results.appendChild(div);
+        }
+        
+        // Test 1: Check data reading
+        log('<h2>Test 1: קריאת נתונים</h2><div class="detail">יוצר שדות זמניים לבדיקה...</div>');
+        
+        // Create temporary DOM elements
+        const testContainer = document.createElement('div');
+        testContainer.id = 'test-container';
+        testContainer.style.display = 'none';
+        document.body.appendChild(testContainer);
+        
+        // Create test inputs
+        const testInputs = {
+            'km-2026-01-branch-target': 25,
+            'km-2026-01-finance-percent': 35,
+            'km-2026-01-stock-percent': 42,
+            'km-2026-01-david-cars': 15,
+            'km-2026-01-david-topservice-pot': 15,
+            'km-2026-01-david-warranty-commission': 500,
+            'km-2026-01-david-topservice-commission': 800,
+            'km-2026-01-david-demo': 200,
+            'km-2026-01-david-diff': 150,
+            'km-2026-01-david-finance': 500,
+            'km-2026-01-david-tradein': 800,
+            'km-2026-01-aviad-cars': 10,
+            'km-2026-01-aviad-topservice-pot': 10,
+            'km-2026-01-aviad-warranty-commission': 300,
+            'km-2026-01-aviad-topservice-commission': 600,
+            'km-2026-01-aviad-demo': 100,
+            'km-2026-01-aviad-diff': 75,
+            'km-2026-01-aviad-finance': 600,
+            'km-2026-01-aviad-tradein': 900
+        };
+        
+        for (const [id, value] of Object.entries(testInputs)) {
+            const input = document.createElement('input');
+            input.id = id;
+            input.type = 'number';
+            input.value = value;
+            input.className = 'input-field-compact';
+            testContainer.appendChild(input);
+        }
+        
+        // Create result displays
+        const resultIds = [
+            'km-2026-01-david-cars-commission',
+            'km-2026-01-david-combined-bonus',
+            'km-2026-01-david-stock-bonus',
+            'km-2026-01-david-vehicles',
+            'km-2026-01-david-finance-display',
+            'km-2026-01-david-tradein-display',
+            'km-2026-01-david-total',
+            'km-2026-01-aviad-cars-commission',
+            'km-2026-01-aviad-combined-bonus',
+            'km-2026-01-aviad-stock-bonus',
+            'km-2026-01-aviad-vehicles',
+            'km-2026-01-aviad-total'
+        ];
+        
+        resultIds.forEach(id => {
+            const span = document.createElement('span');
+            span.id = id;
+            testContainer.appendChild(span);
+        });
+        
+        log('<div class="detail success">✅ שדות זמניים נוצרו בהצלחה</div>');
+        
+        // Test 2: Run calculation
+        log('<h2>Test 2: הרצת חישוב</h2>');
+        
+        try {
+            window.calculateGenericMonth('kalmobil-modiin', '2026-01');
+            log('<div class="detail success">✅ החישוב רץ ללא שגיאות</div>');
+        } catch (e) {
+            log(`<div class="detail error">❌ שגיאה בחישוב: ${e.message}</div>`);
+        }
+        
+        // Test 3: Check results
+        log('<h2>Test 3: בדיקת תוצאות</h2>');
+        
+        const davidCarsComm = document.getElementById('km-2026-01-david-cars-commission');
+        const davidCombined = document.getElementById('km-2026-01-david-combined-bonus');
+        const davidStock = document.getElementById('km-2026-01-david-stock-bonus');
+        const davidVehicles = document.getElementById('km-2026-01-david-vehicles');
+        const davidTotal = document.getElementById('km-2026-01-david-total');
+        
+        log(`<div class="detail"><strong>דוד עזרא (מנהל):</strong></div>`);
+        log(`<div class="detail">מסירות רכב (25 רכבים): ${davidCarsComm ? davidCarsComm.textContent : 'לא נמצא'} (צפוי: ₪8,000 - מדרגה 21-30)</div>`);
+        log(`<div class="detail">בונוס משולב (25≥25 + 35%≥32%): ${davidCombined ? davidCombined.textContent : 'לא נמצא'} (צפוי: ₪1,000)</div>`);
+        log(`<div class="detail">בונוס מלאי (42%≥40%): ${davidStock ? davidStock.textContent : 'לא נמצא'} (צפוי: ₪1,000)</div>`);
+        log(`<div class="detail">רכיב רכבים: ${davidVehicles ? davidVehicles.textContent : 'לא נמצא'} (צפוי: ₪11,650 = 8000 + 1000 + 1000 + 500 + 800 + 200 + 150)</div>`);
+        log(`<div class="detail">סה"כ: ${davidTotal ? davidTotal.textContent : 'לא נמצא'} (צפוי: ₪12,950 = 11650 + 500 + 800)</div>`);
+        
+        const aviadCarsComm = document.getElementById('km-2026-01-aviad-cars-commission');
+        const aviadCombined = document.getElementById('km-2026-01-aviad-combined-bonus');
+        const aviadStock = document.getElementById('km-2026-01-aviad-stock-bonus');
+        const aviadVehicles = document.getElementById('km-2026-01-aviad-vehicles');
+        const aviadTotal = document.getElementById('km-2026-01-aviad-total');
+        
+        log(`<div class="detail"><strong>אביעד לולאי (נציג):</strong></div>`);
+        log(`<div class="detail">מסירות רכב (25 רכבים): ${aviadCarsComm ? aviadCarsComm.textContent : 'לא נמצא'} (צפוי: ₪4,750 - רטרו 11-25)</div>`);
+        log(`<div class="detail">בונוס משולב (25≥25 + 35%≥32%): ${aviadCombined ? aviadCombined.textContent : 'לא נמצא'} (צפוי: ₪1,000)</div>`);
+        log(`<div class="detail">בונוס מלאי (42%≥40%): ${aviadStock ? aviadStock.textContent : 'לא נמצא'} (צפוי: ₪1,000)</div>`);
+        log(`<div class="detail">רכיב רכבים: ${aviadVehicles ? aviadVehicles.textContent : 'לא נמצא'} (צפוי: ₪7,825)</div>`);
+        log(`<div class="detail">סה"כ: ${aviadTotal ? aviadTotal.textContent : 'לא נמצא'} (צפוי: ₪9,325)</div>`);
+        
+        // Expected values
+        const expectedDavidCars = 8000; // 21-30 range
+        const expectedDavidCombined = 1000;
+        const expectedDavidStock = 1000;
+        const expectedDavidVehicles = 11650; // 8000 + 1000 + 1000 + 500 + 800 + 200 + 150
+        const expectedDavidTotal = 12950; // 11650 + 500 + 800
+        
+        // Note: Aviad has 10 cars personally, totalCars = 25
+        // 1-10: 10×200 = 2000
+        // Cars commission for 25 total would be different calculation
+        // But the function uses totalCars for combined/stock bonus
+        
+        log('<h2>סיכום</h2>');
+        log('<div class="detail success">✅ כל הבדיקות הושלמו!</div>');
+        log('<div class="detail">בדוק את התוצאות לעיל ווודא שהן תואמות לציפיות</div>');
+    </script>
+</body>
+</html>

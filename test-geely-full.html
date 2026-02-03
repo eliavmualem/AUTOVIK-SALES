@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת ג'ילי מלא</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="main-header">
+            <h1>🧪 בדיקת ג'ילי מלא</h1>
+        </header>
+
+        <section id="geely-modiin" class="showroom-section active">
+            <h2 class="showroom-title">ג'ילי מודיעין</h2>
+            
+            <!-- Secondary tabs (months) -->
+            <div class="secondary-tabs">
+                <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                <button class="month-tab-button" data-month="2026-02">פברואר 2026</button>
+            </div>
+            
+            <div class="month-content-wrapper">
+                <!-- Content will be created by JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+
+    <script>
+        console.log('🧪 Test: Full Geely Setup');
+        
+        // Month navigation (simpleified)
+        function showMonthContent(month) {
+            document.querySelectorAll('.month-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const targetContent = document.querySelector(`[data-month-content="${month}"]`);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+                console.log(`Showing month: ${month}`);
+            }
+        }
+        
+        function initializeMonthNavigation(showroomSection) {
+            const monthButtons = showroomSection.querySelectorAll('.month-tab-button');
+            monthButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    monthButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding month
+                    const month = this.getAttribute('data-month');
+                    showMonthContent(month);
+                });
+            });
+        }
+        
+        // Initialize
+        const showroomId = 'geely-modiin';
+        const config = window.getShowroomConfig(showroomId);
+        const showroomSection = document.getElementById(showroomId);
+        const monthContentWrapper = showroomSection.querySelector('.month-content-wrapper');
+        
+        console.log('📋 Config:', config);
+        
+        // Create only 2 months for testing
+        ['2026-01', '2026-02'].forEach(month => {
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'month-content';
+            monthDiv.setAttribute('data-month-content', month);
+            monthDiv.style.display = 'none';
+            
+            monthDiv.innerHTML = window.createGeelyMonthLayout(showroomId, month);
+            monthContentWrapper.appendChild(monthDiv);
+            
+            // Add event listeners
+            const managerInputs = monthDiv.querySelectorAll('.geely-input');
+            const salespersonInputs = monthDiv.querySelectorAll('.geely-input-mini');
+            
+            console.log(`Month ${month}: ${managerInputs.length} manager inputs + ${salespersonInputs.length} salesperson inputs`);
+            
+            managerInputs.forEach(input => {
+                input.addEventListener('input', () => window.calculateGeelyMonth(showroomId, month));
+            });
+            
+            salespersonInputs.forEach(input => {
+                input.addEventListener('input', () => window.calculateGeelyMonth(showroomId, month));
+            });
+            
+            console.log(`✓ Month ${month} created with event listeners`);
+        });
+        
+        initializeMonthNavigation(showroomSection);
+        showMonthContent('2026-01');
+        
+        console.log('✅ Test initialization complete!');
+    </script>
+</body>
+</html>

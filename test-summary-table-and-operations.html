@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Summary Table & Operations Percentage</title>
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1>🧪 בדיקה כוללת: טבלת סיכום + אחוז טופ סרוויס</h1>
+        <h2>יונדאי מודיעין</h2>
+        
+        <div id="test-area"></div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+            <h3>📊 תוצאות בדיקה:</h3>
+            <div id="test-results" style="font-family: monospace; white-space: pre-wrap;"></div>
+        </div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        console.log('🧪 Starting comprehensive test');
+        
+        // Test scenario:
+        // Guy (manager): 5 cars
+        // Dario (salesperson): 20 cars, 15 Top Service, 20 Potential
+        // Asher (operations): 10 Insurance
+        // Total: 25 cars, 15 Top Service out of 20 Potential = 75%
+        
+        const showroomId = 'hyundai-modiin';
+        const month = '2026-01';
+        const prefix = 'hm-2026-01';
+        
+        const layout = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-area').innerHTML = layout;
+        
+        setTimeout(() => {
+            // Fill test data
+            document.getElementById('hm-2026-01-guy-cars').value = 5;
+            document.getElementById('hm-2026-01-dario-cars').value = 20;
+            document.getElementById('hm-2026-01-dario-topservice').value = 15;
+            document.getElementById('hm-2026-01-dario-topservice-potential').value = 20;
+            document.getElementById('hm-2026-01-dario-target').value = 20;
+            document.getElementById('hm-2026-01-dario-insurance').value = 8;
+            document.getElementById('hm-2026-01-asher-insurance').value = 10;
+            document.getElementById('hm-2026-01-branch-target').value = 25;
+            
+            console.log('✅ Test data filled');
+            
+            window.calculateGenericMonth(showroomId, month);
+            
+            setTimeout(() => {
+                // Read summary table
+                const carsTarget = document.getElementById('hm-2026-01-perf-cars-target')?.textContent;
+                const carsActual = document.getElementById('hm-2026-01-perf-cars-actual')?.textContent;
+                const carsPct = document.getElementById('hm-2026-01-perf-cars-percent')?.textContent;
+                const carsStatus = document.getElementById('hm-2026-01-perf-cars-status')?.textContent;
+                
+                const topTarget = document.getElementById('hm-2026-01-perf-topservice-target')?.textContent;
+                const topActual = document.getElementById('hm-2026-01-perf-topservice-actual')?.textContent;
+                const topPct = document.getElementById('hm-2026-01-perf-topservice-percent')?.textContent;
+                const topStatus = document.getElementById('hm-2026-01-perf-topservice-status')?.textContent;
+                
+                const insTarget = document.getElementById('hm-2026-01-perf-insurance-target')?.textContent;
+                const insActual = document.getElementById('hm-2026-01-perf-insurance-actual')?.textContent;
+                const insPct = document.getElementById('hm-2026-01-perf-insurance-percent')?.textContent;
+                const insStatus = document.getElementById('hm-2026-01-perf-insurance-status')?.textContent;
+                
+                // Read operations commission
+                const asherTotal = document.getElementById('hm-2026-01-asher-total-display')?.textContent;
+                
+                // Expected values
+                const expectedTopPct = Math.round((15 / 20) * 100); // 75%
+                const expectedTopRate = 80; // 70%+ tier
+                const expectedAsherTopComm = 15 * 80;
+                const expectedAsherInsComm = 10 * 75;
+                const expectedAsherTotal = expectedAsherTopComm + expectedAsherInsComm;
+                
+                const results = `
+📊 Test Results - Summary Table & Operations:
+═══════════════════════════════════════════
+
+1️⃣ Summary Table - Cars:
+-------------------------
+✓ Target: ${carsTarget} (Expected: 25)
+✓ Actual: ${carsActual} (Expected: 25)
+✓ Percent: ${carsPct} (Expected: 100%)
+✓ Status: ${carsStatus} (Expected: ✅ מצוין)
+
+${carsTarget === '25' && carsActual === '25' && carsPct === '100%' ? '✅ PASS' : '❌ FAIL'} - Cars row
+
+2️⃣ Summary Table - Top Service:
+--------------------------------
+✓ Target: ${topTarget} (Expected: 20 - potential)
+✓ Actual: ${topActual} (Expected: 15)
+✓ Percent: ${topPct} (Expected: ${expectedTopPct}%)
+✓ Status: ${topStatus} (Expected: ✅ מעולה)
+
+${topTarget === '20' && topActual === '15' && topPct === expectedTopPct + '%' ? '✅ PASS' : '❌ FAIL'} - Top Service row
+
+3️⃣ Summary Table - Insurance:
+------------------------------
+✓ Target: ${insTarget} (Expected: 25 - total cars)
+✓ Actual: ${insActual} (Expected: 18 - 8+10)
+✓ Percent: ${insPct} (Expected: 72%)
+✓ Status: ${insStatus} (Expected: ✅ מעולה)
+
+${insTarget === '25' && insActual === '18' && insPct === '72%' ? '✅ PASS' : '❌ FAIL'} - Insurance row
+
+4️⃣ Operations Commission Calculation:
+--------------------------------------
+Top Service %: ${expectedTopPct}% (15 / 20 potential)
+Expected Rate: ${expectedTopRate} ש"ח (70%+ tier)
+Expected Top Comm: 15 × ${expectedTopRate} = ₪${expectedAsherTopComm.toLocaleString()}
+Expected Ins Comm: 10 × 75 = ₪${expectedAsherInsComm.toLocaleString()}
+Expected Total: ₪${expectedAsherTotal.toLocaleString()}
+
+Actual Total: ${asherTotal}
+
+${asherTotal === `₪${expectedAsherTotal.toLocaleString()}` ? '✅ PASS' : '❌ FAIL'} - Operations commission
+
+═══════════════════════════════════════════
+Summary:
+--------
+${
+    carsTarget === '25' && carsActual === '25' && carsPct === '100%' &&
+    topTarget === '20' && topActual === '15' && topPct === expectedTopPct + '%' &&
+    insTarget === '25' && insActual === '18' && insPct === '72%' &&
+    asherTotal === `₪${expectedAsherTotal.toLocaleString()}`
+    ? '✅ ALL TESTS PASSED! 🎉' 
+    : '❌ SOME TESTS FAILED'
+}
+                `;
+                
+                document.getElementById('test-results').textContent = results;
+                console.log(results);
+                
+            }, 500);
+            
+        }, 300);
+        
+    </script>
+</body>
+</html>

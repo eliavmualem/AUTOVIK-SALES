@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת ג'ילי ירושלים</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקת ג'ילי ירושלים</h1>
+    <div id="test-content"></div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+
+    <script>
+        console.log('🧪 Testing Geely Jerusalem');
+        
+        const config = window.getShowroomConfig('geely-jerusalem');
+        console.log('📋 Config:', config);
+        
+        if (!config) {
+            document.getElementById('test-content').innerHTML = '<h2 style="color: red;">❌ Config not found!</h2>';
+        } else {
+            const content = window.createGeelyMonthLayout('geely-jerusalem', '2026-01');
+            document.getElementById('test-content').innerHTML = content;
+            
+            console.log('✅ Layout rendered');
+            console.log('👤 Manager:', config.employees.manager.name);
+            console.log('💼 Salespeople:', config.employees.salespeople.map(sp => sp.name).join(', '));
+            
+            // Fill sample data after a short delay
+            setTimeout(() => {
+                const prefix = 'gj-2026-01';
+                
+                // Manager data
+                document.getElementById(`${prefix}-target-deliveries`).value = 25;
+                document.getElementById(`${prefix}-actual-deliveries`).value = 22;
+                document.getElementById(`${prefix}-nps-score`).value = 80;
+                document.getElementById(`${prefix}-total-accessories`).value = 60000;
+                document.getElementById(`${prefix}-potential-accessories`).value = 22;
+                
+                // Salesperson data (ישראל לוי)
+                document.getElementById(`${prefix}-israel-deliveries`).value = 12;
+                document.getElementById(`${prefix}-israel-accessories-total`).value = 20000;
+                document.getElementById(`${prefix}-israel-potential-accessories`).value = 12;
+                document.getElementById(`${prefix}-israel-warranty`).value = 5;
+                document.getElementById(`${prefix}-israel-insurance`).value = 8;
+                
+                console.log('✅ Sample data filled');
+                
+                // Trigger calculation
+                window.calculateGeelyMonth('geely-jerusalem', '2026-01');
+            }, 500);
+        }
+    </script>
+</body>
+</html>

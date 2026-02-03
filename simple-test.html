@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת חישוב עמלות - בדיקה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🚗 מערכת חישוב עמלות - בדיקה</h1>
+        </header>
+
+        <nav class="main-tabs">
+            <button class="main-tab-button active" data-showroom="hyundai-modiin">יונדאי מודיעין</button>
+            <button class="main-tab-button" data-showroom="mitsubishi-modiin">מיצובישי מודיעין</button>
+            <button class="main-tab-button" data-showroom="omoda-modiin">אומודה ג'אקו מודיעין</button>
+        </nav>
+
+        <div id="showroom-content">
+            <div id="hyundai-modiin" class="showroom-section active">
+                <h2>יונדאי מודיעין</h2>
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                </nav>
+                <div class="month-content-wrapper"></div>
+            </div>
+
+            <div id="mitsubishi-modiin" class="showroom-section">
+                <h2>מיצובישי מודיעין</h2>
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                </nav>
+                <div class="month-content-wrapper"></div>
+            </div>
+
+            <div id="omoda-modiin" class="showroom-section">
+                <h2>אומודה ג'אקו מודיעין</h2>
+                <nav class="month-tabs">
+                    <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+                </nav>
+                <div class="month-content-wrapper"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script src="js/generic-storage.js"></script>
+    
+    <script>
+        // Simple initialization
+        let currentShowroom = 'hyundai-modiin';
+        let currentMonth = '2026-01';
+
+        console.log('Initializing showrooms...');
+
+        // Initialize each showroom
+        ['hyundai-modiin', 'mitsubishi-modiin', 'omoda-modiin'].forEach(showroomId => {
+            console.log(`Initializing ${showroomId}...`);
+            
+            const config = window.getShowroomConfig(showroomId);
+            const showroomSection = document.getElementById(showroomId);
+            const wrapper = showroomSection.querySelector('.month-content-wrapper');
+            
+            // Create month content
+            const monthDiv = document.createElement('div');
+            monthDiv.className = 'month-content active';
+            monthDiv.setAttribute('data-month-content', '2026-01');
+            monthDiv.style.display = showroomId === currentShowroom ? 'block' : 'none';
+            
+            const html = window.createGenericMonthLayout(showroomId, '2026-01');
+            monthDiv.innerHTML = html;
+            
+            wrapper.appendChild(monthDiv);
+            
+            // Count names
+            const names = monthDiv.querySelectorAll('h4');
+            console.log(`  ✅ ${showroomId}: ${names.length} names created`);
+            names.forEach((name, i) => {
+                console.log(`    ${i + 1}. ${name.textContent}`);
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.main-tab-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const showroomId = this.getAttribute('data-showroom');
+                console.log(`Switching to: ${showroomId}`);
+                
+                // Update tabs
+                document.querySelectorAll('.main-tab-button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update showrooms
+                document.querySelectorAll('.showroom-section').forEach(s => {
+                    s.classList.remove('active');
+                    const content = s.querySelector('.month-content');
+                    if (content) content.style.display = 'none';
+                });
+                
+                const target = document.getElementById(showroomId);
+                target.classList.add('active');
+                const targetContent = target.querySelector('.month-content');
+                if (targetContent) targetContent.style.display = 'block';
+            });
+        });
+
+        console.log('✅ Initialization complete!');
+    </script>
+</body>
+</html>

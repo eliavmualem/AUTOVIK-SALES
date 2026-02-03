@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 בדיקה: מיצובישי מודיעין</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .test-container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; }
+        .test-header { text-align: center; margin-bottom: 30px; color: #764ba2; }
+        .test-info { background: #e3f2fd; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 בדיקה: מיצובישי מודיעין - שחף כהן</h1>
+            <p>בדיקת מודל עמלות מיוחד: 200×totalCars + ביטוח + אחריות + טופ סרוויס מדורג</p>
+        </div>
+
+        <div class="test-info">
+            <h3>📋 תרחיש הבדיקה:</h3>
+            <ul>
+                <li><strong>יעד סניף</strong>: 10 מסירות</li>
+                <li><strong>מסירות בפועל</strong>: 12 (שחף בלבד)</li>
+                <li><strong>ביטוח</strong>: 8 יחידות (8 × 75 = ₪600)</li>
+                <li><strong>הרחבות אחריות</strong>: 6 יחידות (6 × 60 = ₪360)</li>
+                <li><strong>טופ סרוויס</strong>: 7 מתוך 10 פוטנציאליים = 70% (מעל 65% → ₪1,500)</li>
+                <li><strong>רכבי הדגמה</strong>: ₪150</li>
+                <li><strong>הפרשי עמלות</strong>: ₪80</li>
+            </ul>
+            <h4>צפי:</h4>
+            <ul>
+                <li>מסירות: 12 × 200 = ₪2,400</li>
+                <li>ביטוח: 8 × 75 = ₪600</li>
+                <li>אחריות: 6 × 60 = ₪360</li>
+                <li>טופ סרוויס: ₪1,500 (70% ≥ 65%)</li>
+                <li>הדגמה + הפרשים: ₪230</li>
+                <li><strong>סה"כ רכיב רכבים: ₪5,090</strong></li>
+            </ul>
+        </div>
+
+        <div id="layout-container"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script>
+        console.log('✓ All modules loaded');
+
+        const showroomId = 'mitsubishi-modiin';
+        const month = '2026-01';
+        
+        // Create layout
+        const container = document.getElementById('layout-container');
+        container.innerHTML = createGenericMonthLayout(showroomId, month);
+        console.log('✓ Layout created');
+
+        // Fill test data
+        const prefix = 'mm-2026-01';
+        setTimeout(() => {
+            document.getElementById(`${prefix}-branch-target`).value = 10;
+            document.getElementById(`${prefix}-shahaf-cars`).value = 12;
+            document.getElementById(`${prefix}-shahaf-insurance`).value = 8;
+            document.getElementById(`${prefix}-shahaf-warranty`).value = 6;
+            document.getElementById(`${prefix}-shahaf-topservice`).value = 7;
+            document.getElementById(`${prefix}-shahaf-topservice-potential`).value = 10;
+            document.getElementById(`${prefix}-shahaf-demo`).value = 150;
+            document.getElementById(`${prefix}-shahaf-diff`).value = 80;
+            
+            console.log('✓ Test data filled');
+            
+            // Run calculation
+            calculateGenericMonth(showroomId, month);
+            console.log('✓ Calculation completed');
+            
+            // Verify results
+            setTimeout(() => {
+                const baseComm = document.getElementById(`${prefix}-shahaf-base-commission`)?.textContent;
+                const insComm = document.getElementById(`${prefix}-shahaf-insurance-commission`)?.textContent;
+                const warComm = document.getElementById(`${prefix}-shahaf-warranty-commission`)?.textContent;
+                const topComm = document.getElementById(`${prefix}-shahaf-topservice-commission`)?.textContent;
+                const vehiclesTotal = document.getElementById(`${prefix}-shahaf-vehicles-display`)?.textContent;
+                const total = document.getElementById(`${prefix}-shahaf-total-display`)?.textContent;
+                
+                console.log('📊 Results:');
+                console.log('  Base (12×200):', baseComm);
+                console.log('  Insurance (8×75):', insComm);
+                console.log('  Warranty (6×60):', warComm);
+                console.log('  Top Service (70%):', topComm);
+                console.log('  Vehicles Total:', vehiclesTotal);
+                console.log('  Total:', total);
+                
+                // Add results to page
+                const resultsDiv = document.createElement('div');
+                resultsDiv.className = 'test-info';
+                resultsDiv.style.background = '#e8f5e9';
+                resultsDiv.style.borderLeftColor = '#4caf50';
+                resultsDiv.innerHTML = `
+                    <h3>✅ תוצאות בפועל:</h3>
+                    <ul>
+                        <li>מסירות רכב: ${baseComm}</li>
+                        <li>ביטוח: ${insComm}</li>
+                        <li>הרחבות אחריות: ${warComm}</li>
+                        <li>טופ סרוויס: ${topComm}</li>
+                        <li><strong>סה"כ רכיב רכבים: ${vehiclesTotal}</strong></li>
+                        <li><strong>סה"כ כללי: ${total}</strong></li>
+                    </ul>
+                `;
+                document.querySelector('.test-container').appendChild(resultsDiv);
+            }, 500);
+        }, 500);
+    </script>
+</body>
+</html>

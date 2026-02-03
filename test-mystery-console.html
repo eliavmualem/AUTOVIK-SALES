@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקה - Console לקוח סמוי</title>
+</head>
+<body>
+    <h1>בדיקת לקוח סמוי - ראה Console</h1>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    
+    <script>
+        // Mock setDisplay
+        const displayValues = {};
+        window.setDisplay = function(id, value) {
+            displayValues[id] = value;
+            console.log(`  ${id} = ${value}`);
+        };
+
+        console.log('✓ Modules loaded\n');
+
+        // Test 1: שיר - 100% target
+        console.log('=== Test 1: שיר - עמידה ביעד 100%, אין לקוח סמוי ===');
+        const prefix1 = 'om-2026-01';
+        const shirData1 = {
+            cars: 8,
+            target: 8,
+            insurance: 6,
+            topService: 8,
+            topServicePot: 10,
+            warranty: 4,
+            mystery: 0,
+            demo: 100,
+            diff: 50,
+            finance: 0,
+            tradeIn: 0
+        };
+        
+        const result1 = calculateSalespersonCommissions(prefix1, 'shir', shirData1, 20, true);
+        console.log(`Breakdown: ${displayValues[prefix1 + '-shir-vehicles-breakdown']}`);
+        console.log(`Mystery Adjustment: ₪${displayValues[prefix1 + '-shir-mystery-display']}`);
+        console.log(`Total vehicles: ₪${result1.vehiclesComponent}`);
+        console.log(`Total: ₪${result1.total}\n`);
+
+        // Test 2: שיר - mystery 95
+        console.log('=== Test 2: שיר - עמידה ביעד 100%, לקוח סמוי 95 ===');
+        const prefix2 = 'om-2026-02';
+        const shirData2 = {
+            cars: 8,
+            target: 8,
+            insurance: 6,
+            topService: 8,
+            topServicePot: 10,
+            warranty: 4,
+            mystery: 95,
+            demo: 100,
+            diff: 50,
+            finance: 0,
+            tradeIn: 0
+        };
+        
+        const result2 = calculateSalespersonCommissions(prefix2, 'shir', shirData2, 20, true);
+        console.log(`Breakdown: ${displayValues[prefix2 + '-shir-vehicles-breakdown']}`);
+        console.log(`Mystery Adjustment: ₪${displayValues[prefix2 + '-shir-mystery-display']}`);
+        console.log(`Expected Mystery: +₪312 (20% of 1560)`);
+        console.log(`Total vehicles: ₪${result2.vehiclesComponent}`);
+        console.log(`Total: ₪${result2.total}\n`);
+
+        // Test 3: שיר - mystery 70
+        console.log('=== Test 3: שיר - עמידה ביעד 100%, לקוח סמוי 70 ===');
+        const prefix3 = 'om-2026-03';
+        const shirData3 = {
+            cars: 8,
+            target: 8,
+            insurance: 6,
+            topService: 8,
+            topServicePot: 10,
+            warranty: 4,
+            mystery: 70,
+            demo: 100,
+            diff: 50,
+            finance: 0,
+            tradeIn: 0
+        };
+        
+        const result3 = calculateSalespersonCommissions(prefix3, 'shir', shirData3, 20, true);
+        console.log(`Breakdown: ${displayValues[prefix3 + '-shir-vehicles-breakdown']}`);
+        console.log(`Mystery Adjustment: ₪${displayValues[prefix3 + '-shir-mystery-display']}`);
+        console.log(`Expected Mystery: -₪312 (20% of 1560)`);
+        console.log(`Total vehicles: ₪${result3.vehiclesComponent}`);
+        console.log(`Total: ₪${result3.total}\n`);
+
+        console.log('✓ All tests completed');
+    </script>
+</body>
+</html>

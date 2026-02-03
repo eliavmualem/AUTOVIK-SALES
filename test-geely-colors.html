@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Geely Colors</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+</head>
+<body>
+    <h1>🎨 בדיקת צבעים - ג'ילי</h1>
+    
+    <div id="geely-modiin" class="showroom-section">
+        <h2>ג'ילי מודיעין</h2>
+        <nav class="month-tabs">
+            <button class="month-tab-button active" data-month="2026-01">ינואר 2026</button>
+        </nav>
+        <div class="month-content-wrapper"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        console.log('=== Testing Colors ===');
+        
+        // Initialize
+        initializeGeelyShowroom('geely-modiin');
+        
+        // Wait then test with good values (should be green)
+        setTimeout(() => {
+            console.log('Filling GOOD data (should be GREEN)...');
+            
+            // עמידה ביעד מסירות (100%+)
+            document.getElementById('gm-2026-01-target-deliveries').value = 20;
+            document.getElementById('gm-2026-01-actual-deliveries').value = 22;
+            
+            // שביעות רצון (>=80)
+            document.getElementById('gm-2026-01-satisfaction-score').value = 85;
+            
+            // NPS (>=75)
+            document.getElementById('gm-2026-01-nps-score').value = 80;
+            
+            // אביזרים (>=1200 ממוצע)
+            document.getElementById('gm-2026-01-total-accessories').value = 30000;
+            document.getElementById('gm-2026-01-potential-accessories').value = 20;  // 30000/20 = 1500
+            
+            // טרייד אין (>=20%)
+            document.getElementById('gm-2026-01-tradein-count').value = 5;  // 5/22 = 22.7%
+            
+            // חבילות שירות (>=60%)
+            document.getElementById('gm-2026-01-service-packages').value = 14;
+            document.getElementById('gm-2026-01-potential-service').value = 20;  // 14/20 = 70%
+            
+            // ביטוח (>=40%)
+            document.getElementById('gm-2026-01-insurance-sales').value = 10;
+            document.getElementById('gm-2026-01-potential-insurance').value = 20;  // 10/20 = 50%
+            
+            // מימון בהסדר (>=40%)
+            document.getElementById('gm-2026-01-finance-percent').value = 45;
+            
+            // Trigger calculation
+            document.getElementById('gm-2026-01-target-deliveries').dispatchEvent(new Event('input'));
+            
+            console.log('✅ Good data filled - check colors (should be GREEN)');
+            
+            // Test with bad values (should be orange/yellow) after 2 seconds
+            setTimeout(() => {
+                console.log('Filling BAD data (should be ORANGE/YELLOW)...');
+                
+                document.getElementById('gm-2026-01-target-deliveries').value = 30;
+                document.getElementById('gm-2026-01-actual-deliveries').value = 15;  // 50%
+                document.getElementById('gm-2026-01-satisfaction-score').value = 70;  // <80
+                document.getElementById('gm-2026-01-nps-score').value = 65;  // <75
+                document.getElementById('gm-2026-01-total-accessories').value = 15000;
+                document.getElementById('gm-2026-01-potential-accessories').value = 15;  // 1000 <1200
+                document.getElementById('gm-2026-01-tradein-count').value = 2;  // 13% <20
+                document.getElementById('gm-2026-01-service-packages').value = 8;  // 40% <60
+                document.getElementById('gm-2026-01-insurance-sales').value = 5;  // 25% <40
+                document.getElementById('gm-2026-01-finance-percent').value = 30;  // <40
+                
+                document.getElementById('gm-2026-01-target-deliveries').dispatchEvent(new Event('input'));
+                
+                console.log('✅ Bad data filled - check colors (should be ORANGE/YELLOW)');
+            }, 3000);
+            
+        }, 1000);
+    </script>
+</body>
+</html>

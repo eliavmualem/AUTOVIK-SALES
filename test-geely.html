@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת ג'ילי מודיעין</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 בדיקת ג'ילי מודיעין</h1>
+        <div id="test-container"></div>
+    </div>
+
+    <script src="js/showroom-config.js"></script>
+    <script src="js/geely-layout-generator.js"></script>
+    <script src="js/calc-geely.js"></script>
+    
+    <script>
+        // Test the layout generation
+        const container = document.getElementById('test-container');
+        
+        console.log('Testing Geely Modiin...');
+        
+        const config = window.getShowroomConfig('geely-modiin');
+        console.log('Config:', config);
+        
+        if (config) {
+            const layout = window.createGeelyMonthLayout('geely-modiin', '2026-01');
+            container.innerHTML = layout;
+            console.log('✅ Layout generated successfully!');
+            
+            // Test with sample data
+            setTimeout(() => {
+                console.log('Filling sample data...');
+                
+                // Fill targets table
+                document.getElementById('gm-2026-01-target-deliveries').value = 20;
+                document.getElementById('gm-2026-01-actual-deliveries').value = 18;
+                document.getElementById('gm-2026-01-nps-score').value = 78;
+                document.getElementById('gm-2026-01-total-accessories').value = 50000;
+                document.getElementById('gm-2026-01-tradein-count').value = 3;
+                document.getElementById('gm-2026-01-service-packages').value = 12;
+                document.getElementById('gm-2026-01-finance-percent').value = 30;
+                document.getElementById('gm-2026-01-insurance-sales').value = 8;
+                
+                // Fill potentials
+                document.getElementById('gm-2026-01-potential-accessories').value = 18;
+                document.getElementById('gm-2026-01-potential-service').value = 18;
+                document.getElementById('gm-2026-01-potential-insurance').value = 18;
+                
+                // Fill manager data
+                document.getElementById('gm-2026-01-uri-tradein-profit').value = 1000;
+                document.getElementById('gm-2026-01-uri-select-commission').value = 500;
+                
+                console.log('Sample data filled!');
+                
+                // Calculate
+                window.calculateGeelyMonth('geely-modiin', '2026-01');
+                
+                // Display results
+                setTimeout(() => {
+                    const results = {
+                        deliveryPercent: document.getElementById('gm-2026-01-delivery-percent').textContent,
+                        avgAccessories: document.getElementById('gm-2026-01-avg-accessories').textContent,
+                        tradeinPercent: document.getElementById('gm-2026-01-tradein-percent').textContent,
+                        servicePercent: document.getElementById('gm-2026-01-service-percent').textContent,
+                        insurancePercent: document.getElementById('gm-2026-01-insurance-percent').textContent,
+                        deliveryCommission: document.getElementById('gm-2026-01-uri-delivery-commission').textContent,
+                        npsDeduction: document.getElementById('gm-2026-01-uri-nps-deduction').textContent,
+                        accessoriesCommission: document.getElementById('gm-2026-01-uri-accessories-commission').textContent,
+                        tradeinCommission: document.getElementById('gm-2026-01-uri-tradein-commission').textContent,
+                        financeBonus: document.getElementById('gm-2026-01-uri-finance-bonus').textContent,
+                        insuranceCommission: document.getElementById('gm-2026-01-uri-insurance-commission').textContent,
+                        total: document.getElementById('gm-2026-01-uri-total').textContent
+                    };
+                    
+                    console.log('📊 Results:', results);
+                    console.log('Expected:');
+                    console.log('- Deliveries: 18×200 = ₪3,600 (no NPS deduction since 78% >= 75%)');
+                    console.log('- Avg accessories: 50000/18 = ₪2,778 → 3% rate → 50000×0.03 = ₪1,500');
+                    console.log('- Trade-in: 3/18 = 16.7% → 150 per deal → 3×150 = ₪450');
+                    console.log('- Finance: 30% > 25% → ₪500 bonus');
+                    console.log('- Insurance: 8/18 = 44.4% → 40-45% tier → ₪500');
+                    
+                    alert('✅ בדיקה הושלמה! בדוק את הקונסול לתוצאות.');
+                }, 100);
+            }, 500);
+        } else {
+            console.error('❌ Config not found!');
+        }
+    </script>
+</body>
+</html>

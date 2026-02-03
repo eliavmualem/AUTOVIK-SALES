@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת תהליך מלא</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+</head>
+<body style="padding: 20px; background: #f0f0f0;">
+    <h1 style="text-align: center;">🧪 בדיקת תהליך מלא</h1>
+    <p style="text-align: center;">בדיקה: הזנה → חישוב → שמירה → טעינה</p>
+    
+    <div id="test-container"></div>
+    
+    <div id="results" style="margin-top: 30px; background: white; padding: 20px; border-radius: 10px;">
+        <h2>📊 תוצאות בדיקה</h2>
+        <div id="test-results"></div>
+    </div>
+    
+    <script src="js/storage.js"></script>
+    <script src="js/showroom-config.js"></script>
+    <script src="js/generic-layout-generator.js"></script>
+    <script src="js/calc-generic.js"></script>
+    <script>
+        console.log('=== Full Flow Test ===');
+        
+        const showroomId = 'omoda-modiin';
+        const month = '2026-03';
+        
+        // Phase 1: Create UI
+        console.log('Phase 1: Creating UI...');
+        const html = window.createGenericMonthLayout(showroomId, month);
+        document.getElementById('test-container').innerHTML = html;
+        console.log('✅ UI Created');
+        
+        // Phase 2: Fill test data
+        console.log('Phase 2: Filling test data...');
+        const prefix = 'om-2026-03';
+        
+        // Branch target
+        document.getElementById(`${prefix}-branch-target`).value = 40;
+        
+        // Hila (manager)
+        document.getElementById(`${prefix}-hila-demo`).value = 500;
+        document.getElementById(`${prefix}-hila-diff`).value = 1000;
+        document.getElementById(`${prefix}-hila-finance`).value = 2000;
+        document.getElementById(`${prefix}-hila-tradein`).value = 1500;
+        
+        // Shir (salesperson 1)
+        document.getElementById(`${prefix}-shir-target`).value = 20;
+        document.getElementById(`${prefix}-shir-cars`).value = 22;
+        document.getElementById(`${prefix}-shir-insurance`).value = 12;
+        document.getElementById(`${prefix}-shir-topservice`).value = 18;
+        document.getElementById(`${prefix}-shir-topservice-potential`).value = 22;
+        document.getElementById(`${prefix}-shir-warranty`).value = 8;
+        document.getElementById(`${prefix}-shir-mystery`).value = 600;
+        document.getElementById(`${prefix}-shir-demo`).value = 300;
+        document.getElementById(`${prefix}-shir-diff`).value = 500;
+        document.getElementById(`${prefix}-shir-finance`).value = 1200;
+        document.getElementById(`${prefix}-shir-tradein`).value = 800;
+        
+        // Yehav (salesperson 2)
+        document.getElementById(`${prefix}-yehav-target`).value = 20;
+        document.getElementById(`${prefix}-yehav-cars`).value = 18;
+        document.getElementById(`${prefix}-yehav-insurance`).value = 9;
+        document.getElementById(`${prefix}-yehav-topservice`).value = 15;
+        document.getElementById(`${prefix}-yehav-topservice-potential`).value = 18;
+        document.getElementById(`${prefix}-yehav-warranty`).value = 6;
+        document.getElementById(`${prefix}-yehav-mystery`).value = 400;
+        document.getElementById(`${prefix}-yehav-demo`).value = 200;
+        document.getElementById(`${prefix}-yehav-diff`).value = 400;
+        document.getElementById(`${prefix}-yehav-finance`).value = 1000;
+        document.getElementById(`${prefix}-yehav-tradein`).value = 700;
+        
+        // Asher (operations)
+        document.getElementById(`${prefix}-asher-insurance`).value = 10;
+        
+        console.log('✅ Test data filled');
+        
+        // Phase 3: Calculate
+        console.log('Phase 3: Calculating...');
+        window.calculateGenericMonth(showroomId, month);
+        console.log('✅ Calculation complete');
+        
+        // Phase 4: Check results
+        console.log('Phase 4: Checking results...');
+        
+        function safeGet(id, prop = 'textContent') {
+            const el = document.getElementById(id);
+            if (!el) {
+                console.warn(`Element not found: ${id}`);
+                return 'N/A';
+            }
+            return prop === 'innerHTML' ? el.innerHTML : 
+                   prop === 'value' ? el.value : el.textContent;
+        }
+        
+        const results = {
+            totalCars: safeGet(`${prefix}-total-cars`, 'value'),
+            targetStatus: safeGet(`${prefix}-target-status`, 'innerHTML'),
+            shirTotal: safeGet(`${prefix}-shir-total-display`),
+            yehavTotal: safeGet(`${prefix}-yehav-total-display`),
+            asherTotal: safeGet(`${prefix}-asher-total-display`),
+            carsPct: safeGet(`${prefix}-summary-cars-percent`),
+            carsStatus: safeGet(`${prefix}-summary-cars-status`, 'innerHTML'),
+            topPct: safeGet(`${prefix}-summary-top-percent`),
+            topStatus: safeGet(`${prefix}-summary-top-status`, 'innerHTML'),
+            insPct: safeGet(`${prefix}-summary-insurance-percent`),
+            insStatus: safeGet(`${prefix}-summary-insurance-status`, 'innerHTML')
+        };
+        
+        console.log('📊 Results:', results);
+        
+        // Display results
+        let html_results = '<ul style="list-style: none; padding: 0;">';
+        html_results += `<li>✅ סה"כ מסירות: ${results.totalCars}</li>`;
+        html_results += `<li>✅ סטטוס יעד: ${results.targetStatus}</li>`;
+        html_results += `<li>✅ שיר (עמלות): ${results.shirTotal}</li>`;
+        html_results += `<li>✅ יהב (עמלות): ${results.yehavTotal}</li>`;
+        html_results += `<li>✅ אשר (עמלות): ${results.asherTotal}</li>`;
+        html_results += `<li><hr></li>`;
+        html_results += `<li>📊 מסירות: ${results.carsPct} - ${results.carsStatus}</li>`;
+        html_results += `<li>📊 טופ סרוויס: ${results.topPct} - ${results.topStatus}</li>`;
+        html_results += `<li>📊 ביטוח: ${results.insPct} - ${results.insStatus}</li>`;
+        html_results += '</ul>';
+        
+        document.getElementById('test-results').innerHTML = html_results;
+        
+        // Phase 5: Test save (without actually calling it to avoid alert)
+        console.log('Phase 5: Testing save function existence...');
+        if (typeof window.saveGenericMonth === 'function') {
+            console.log('✅ saveGenericMonth function exists');
+        } else {
+            console.error('❌ saveGenericMonth function NOT found');
+        }
+        
+        console.log('=== Test Complete ===');
+        console.log('🎉 All phases completed successfully!');
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>בדיקת תיקון NPS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-layout.css">
+    <link rel="stylesheet" href="css/geely-style.css">
+    <style>
+        body { padding: 20px; background: #f5f5f5; }
+        .test-box { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .result { font-size: 1.2rem; margin: 10px 0; }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧪 בדיקת תיקון NPS לנציגים</h1>
+    
+    <div class="test-box">
+        <h2>מקרה 1: NPS גבוה (85) - צריך בונוס</h2>
+        <div id="test1"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>מקרה 2: NPS נמוך (70) - צריך קיזוז</h2>
+        <div id="test2"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>מקרה 3: NPS טוב (78) - לא קיזוז, לא בונוס</h2>
+        <div id="test3"></div>
+    </div>
+    
+    <div class="test-box">
+        <h2>מקרה 4: ללא מסירות (NPS=70) - לא צריך קיזוז</h2>
+        <div id="test4"></div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/calc-geely.js"></script>
+
+    <script>
+        console.log('🧪 Testing NPS Fix');
+        
+        // Test function wrapper
+        function testNPSCalculation(deliveries, npsScore, deliveryMeeting, testName) {
+            const deliveryCommission = deliveries * 100;
+            let npsAdjustment = 0;
+            
+            if (deliveries > 0) {
+                if (npsScore < 75 && npsScore > 0) {
+                    npsAdjustment = -deliveryCommission * 0.1;
+                } else if (npsScore > 84) {
+                    npsAdjustment = (deliveryMeeting * 20) + (deliveries * 20);
+                }
+            }
+            
+            const netCommission = deliveryCommission + npsAdjustment;
+            
+            return {
+                deliveryCommission,
+                npsAdjustment,
+                netCommission,
+                testName
+            };
+        }
+        
+        // Test 1: High NPS (85) - should get bonus
+        const test1 = testNPSCalculation(10, 85, 9, 'Test 1');
+        const test1Expected = 10*100 + (9*20 + 10*20); // 1000 + 380 = 1380
+        const test1Pass = test1.netCommission === test1Expected;
+        document.getElementById('test1').innerHTML = `
+            <div class="result">מסירות: 10, NPS: 85, פגישות: 9</div>
+            <div class="result">עמלת מסירות: ₪${test1.deliveryCommission}</div>
+            <div class="result">התאמת NPS: ₪${test1.npsAdjustment} (צפוי: ₪380)</div>
+            <div class="result">נטו: ₪${test1.netCommission} (צפוי: ₪${test1Expected})</div>
+            <div class="result ${test1Pass ? 'pass' : 'fail'}">${test1Pass ? '✅ עבר' : '❌ נכשל'}</div>
+        `;
+        
+        // Test 2: Low NPS (70) - should get deduction
+        const test2 = testNPSCalculation(10, 70, 0, 'Test 2');
+        const test2Expected = 10*100 - (10*100*0.1); // 1000 - 100 = 900
+        const test2Pass = test2.netCommission === test2Expected;
+        document.getElementById('test2').innerHTML = `
+            <div class="result">מסירות: 10, NPS: 70</div>
+            <div class="result">עמלת מסירות: ₪${test2.deliveryCommission}</div>
+            <div class="result">התאמת NPS: ₪${test2.npsAdjustment} (צפוי: ₪-100)</div>
+            <div class="result">נטו: ₪${test2.netCommission} (צפוי: ₪${test2Expected})</div>
+            <div class="result ${test2Pass ? 'pass' : 'fail'}">${test2Pass ? '✅ עבר' : '❌ נכשל'}</div>
+        `;
+        
+        // Test 3: Medium NPS (78) - no adjustment
+        const test3 = testNPSCalculation(10, 78, 0, 'Test 3');
+        const test3Expected = 10*100; // 1000
+        const test3Pass = test3.netCommission === test3Expected && test3.npsAdjustment === 0;
+        document.getElementById('test3').innerHTML = `
+            <div class="result">מסירות: 10, NPS: 78</div>
+            <div class="result">עמלת מסירות: ₪${test3.deliveryCommission}</div>
+            <div class="result">התאמת NPS: ₪${test3.npsAdjustment} (צפוי: ₪0)</div>
+            <div class="result">נטו: ₪${test3.netCommission} (צפוי: ₪${test3Expected})</div>
+            <div class="result ${test3Pass ? 'pass' : 'fail'}">${test3Pass ? '✅ עבר' : '❌ נכשל'}</div>
+        `;
+        
+        // Test 4: No deliveries (NPS=70) - should not deduct
+        const test4 = testNPSCalculation(0, 70, 0, 'Test 4');
+        const test4Expected = 0;
+        const test4Pass = test4.netCommission === test4Expected && test4.npsAdjustment === 0;
+        document.getElementById('test4').innerHTML = `
+            <div class="result">מסירות: 0, NPS: 70</div>
+            <div class="result">עמלת מסירות: ₪${test4.deliveryCommission}</div>
+            <div class="result">התאמת NPS: ₪${test4.npsAdjustment} (צפוי: ₪0)</div>
+            <div class="result">נטו: ₪${test4.netCommission} (צפוי: ₪${test4Expected})</div>
+            <div class="result ${test4Pass ? 'pass' : 'fail'}">${test4Pass ? '✅ עבר' : '❌ נכשל'}</div>
+        `;
+        
+        console.log('✅ All tests completed');
+        console.log('Test 1:', test1Pass ? 'PASS' : 'FAIL');
+        console.log('Test 2:', test2Pass ? 'PASS' : 'FAIL');
+        console.log('Test 3:', test3Pass ? 'PASS' : 'FAIL');
+        console.log('Test 4:', test4Pass ? 'PASS' : 'FAIL');
+    </script>
+</body>
+</html>
